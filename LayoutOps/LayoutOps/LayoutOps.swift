@@ -380,13 +380,80 @@ public func SetSize(view: UIView, width: CGFloat, height: CGFloat) -> LayoutOper
         ])
 }
 
-public func SizeToFit(view: UIView, size: CGSize) -> LayoutOperation {
-    let sz = view.sizeThatFits(size)
-    return SetSize(view, width: sz.width, height: sz.height)
+//MARK: size to fit
+
+public enum SizeToFitIntention {
+    /**
+     Use defined value
+     */
+    case Value(CGFloat)
+    /**
+     Use max value to fully fit content
+     */
+    case Max
+    /**
+     Use current frame value to fit content in it
+     */
+    case Current
+    /**
+     Use current frame value for fit calculation, but keep it as value for frame
+     */
+    case KeepCurrent
 }
 
-public func SizeToFit(view: UIView) -> LayoutOperation {
-    return SizeToFit(view, size: CGSize(width: CGFloat.max, height: CGFloat.max))
+private struct SizeToFitOperation: LayoutOperation {
+    let view: UIView
+    let width: SizeToFitIntention
+    let height: SizeToFitIntention
+    
+    func calculateLayouts(inout layouts: [UIView : CGRect]) {
+        
+        let fr = frameForView(view, layouts: &layouts)
+        
+        var w: CGFloat = 0
+        switch width {
+        case .Value(let val):
+            w = val
+        case .Max:
+            w = CGFloat.max
+        case .Current:
+            w = fr.width
+        case .KeepCurrent:
+            w = fr.width
+        }
+        
+        var h: CGFloat = 0
+        switch height {
+        case .Value(let val):
+            h = val
+        case .Max:
+            h = CGFloat.max
+        case .Current:
+            h = fr.height
+        case .KeepCurrent:
+            h = fr.height
+        }
+        
+        var sz = view.sizeThatFits(CGSizeMake(w, h))
+        
+        if case .KeepCurrent = width {
+            sz.width = fr.width
+        }
+        
+        if case .KeepCurrent = height {
+            sz.height = fr.height
+        }
+        
+        SetSize(view, width: sz.width, height: sz.height).calculateLayouts(&layouts)
+    }
+}
+
+public func SizeToFit(view: UIView, width: SizeToFitIntention, height: SizeToFitIntention) -> LayoutOperation {
+    return SizeToFitOperation(view: view, width: width, height: height)
+}
+
+public func SizeToFitMax(view: UIView) -> LayoutOperation {
+    return SizeToFit(view, width: .Max, height: .Max)
 }
 
 //MARK: center
@@ -518,9 +585,9 @@ public func AlignRight(view: UIView?) -> LayoutOperation {
 
 public func HFillVFit(view: UIView, leftInset: CGFloat, rightInset: CGFloat) -> LayoutOperation {
     return Combine([
-        SizeToFit(view),
-        HFill(view, leftInset: leftInset, rightInset: rightInset)
-    ])
+        HFill(view, leftInset: leftInset, rightInset: rightInset),
+        SizeToFit(view, width: .KeepCurrent, height: .Max),
+        ])
 }
 
 public func HFillVFit(view: UIView, inset: CGFloat) -> LayoutOperation {
