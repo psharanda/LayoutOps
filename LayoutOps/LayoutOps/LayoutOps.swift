@@ -456,6 +456,11 @@ public func SizeToFitMax(view: UIView) -> LayoutOperation {
     return SizeToFit(view, width: .Max, height: .Max)
 }
 
+public func SizeToFit(view: UIView) -> LayoutOperation {
+    return SizeToFit(view, width: .Current, height: .Current)
+}
+
+
 //MARK: center
 
 public func Center(view: UIView?, insets: UIEdgeInsets) -> LayoutOperation {
