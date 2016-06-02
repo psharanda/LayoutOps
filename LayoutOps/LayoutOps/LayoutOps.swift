@@ -478,10 +478,12 @@ public func SizeToFit(view: UIView?, width: SizeToFitIntention, height: SizeToFi
     return SizeToFitOperation(view: view, width: width, height: height)
 }
 
+// same as SizeToFit(view, width: .Max, height: .Max)
 public func SizeToFitMax(view: UIView?) -> LayoutOperation {
     return SizeToFit(view, width: .Max, height: .Max)
 }
 
+// same as SizeToFit(view, width: .Current, height: .Current)
 public func SizeToFit(view: UIView?) -> LayoutOperation {
     return SizeToFit(view, width: .Current, height: .Current)
 }
@@ -538,6 +540,10 @@ public func Fill(view: UIView?, insets: UIEdgeInsets) -> LayoutOperation {
         HFill(view, leftInset: insets.left, rightInset: insets.right),
         VFill(view, topInset: insets.top, bottomInset: insets.bottom)
         ])
+}
+
+public func Fill(view: UIView?, inset: CGFloat) -> LayoutOperation {
+    return Fill(view, insets: UIEdgeInsets(top: inset, left: inset, bottom: inset, right: inset))
 }
 
 public func Fill(view: UIView?) -> LayoutOperation {
@@ -812,5 +818,16 @@ private struct FollowOperation<T: Anchor> : LayoutOperation {
 
 public func Follow<T: Anchor>(anchor: T, withAnchor: T) -> LayoutOperation {
     return FollowOperation(anchorToFollow: anchor, followerAnchor: withAnchor)
+}
+
+public func FollowCenter(ofView: UIView, dx dx1: CGFloat, dy dy1: CGFloat, withView: UIView, dx dx2: CGFloat, dy dy2: CGFloat) -> LayoutOperation {
+    return Combine([
+            Follow(HCenterAnchor(ofView, inset: dx1), withAnchor: HCenterAnchor(withView, inset: dx2)),
+            Follow(VCenterAnchor(ofView, inset: dy1), withAnchor: VCenterAnchor(withView, inset: dy2))
+        ])
+}
+
+public func FollowCenter(ofView: UIView, withView: UIView) -> LayoutOperation {
+    return FollowCenter(ofView, dx: 0, dy: 0, withView: withView, dx: 0, dy: 0)
 }
 
