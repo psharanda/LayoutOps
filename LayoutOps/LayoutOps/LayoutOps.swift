@@ -215,7 +215,13 @@ private struct BoxLayoutOperation<T:BoxDimension> : LayoutOperation {
         if let superview = superview {
             
             var totalWeight: CGFloat = 0.0
-            var totalSizeForFlexs: CGFloat = T.getDimension(superview.bounds).size
+            
+            var bounds = superview.bounds
+            if let superViewFrame = layouts[superview] {
+                bounds = superViewFrame
+            }
+            
+            var totalSizeForFlexs: CGFloat = T.getDimension(bounds).size
             
             for i in intentions {
                 switch (i) {
