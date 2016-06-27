@@ -15,15 +15,51 @@ private extension CGFloat {
     }
 }
 
+public enum HViewAnchor {
+    case Parent
+    case Left(UIView?)
+    case HCenter(UIView?)
+    case Right(UIView?)
+}
+
+public enum VViewAnchor {
+    case Parent
+    case Top(UIView?)
+    case Bottom(UIView?)
+    case VCenter(UIView?)
+}
+
+public struct Viewport {
+    let topAnchor: VViewAnchor
+    let bottomAnchor: VViewAnchor
+    let leftAnchor: HViewAnchor
+    let rightAnchor: HViewAnchor
+    
+    init(topAnchor: VViewAnchor, leftAnchor: HViewAnchor, bottomAnchor: VViewAnchor, rightAnchor: HViewAnchor) {
+        self.topAnchor = topAnchor
+        self.leftAnchor = leftAnchor
+        self.bottomAnchor = bottomAnchor
+        self.rightAnchor = rightAnchor
+    }
+    
+    init() {
+        self.topAnchor = .Parent
+        self.leftAnchor = .Parent
+        self.bottomAnchor = .Parent
+        self.rightAnchor = .Parent
+    }
+}
+
+
 public protocol LayoutOperation {
-    func calculateLayouts(inout layouts:[UIView: CGRect])
+    func calculateLayouts(inout layouts:[UIView: CGRect], viewport: Viewport)
 }
 
 public extension LayoutOperation {
     func layout() {
         
         var layoutsMap = [UIView: CGRect]()
-        calculateLayouts(&layoutsMap)
+        calculateLayouts(&layoutsMap, viewport: Viewport())
         for (view, frame) in layoutsMap {
             view.frame = CGRect(x: frame.origin.x.pixelPerfect, y: frame.origin.y.pixelPerfect, width: frame.size.width.pixelPerfect, height: frame.size.height.pixelPerfect)
         }
@@ -31,7 +67,7 @@ public extension LayoutOperation {
     
     func preciseLayout() {
         var layoutsMap = [UIView: CGRect]()
-        calculateLayouts(&layoutsMap)
+        calculateLayouts(&layoutsMap, viewport: Viewport())
         for (view, frame) in layoutsMap {
             view.frame = frame
         }
@@ -58,7 +94,13 @@ private extension LayoutOperation {
 }
 
 private struct NoLayoutOperation: LayoutOperation {
-    func calculateLayouts(inout layouts: [UIView : CGRect]) {
+    
+    var topAnchor: VViewAnchor = .Parent
+    var bottomAnchor: VViewAnchor = .Parent
+    var leftAnchor: VViewAnchor = .Parent
+    var rightAnchor: VViewAnchor = .Parent
+    
+    func calculateLayouts(inout layouts: [UIView : CGRect], viewport: Viewport) {
         
     }
 }
@@ -69,21 +111,33 @@ public func NOOP() -> LayoutOperation {
 
 private struct CombineOperation : LayoutOperation {
     
+    var topAnchor: VViewAnchor = .Parent
+    var bottomAnchor: VViewAnchor = .Parent
+    var leftAnchor: VViewAnchor = .Parent
+    var rightAnchor: VViewAnchor = .Parent
+    
     let layoutOperations: [LayoutOperation]
     
-    func calculateLayouts(inout layouts: [UIView : CGRect]) {
+    let viewport: Viewport?
+    
+    func calculateLayouts(inout layouts: [UIView : CGRect], viewport: Viewport) {
         for layoutOperation in layoutOperations {
-            layoutOperation.calculateLayouts(&layouts)
+            layoutOperation.calculateLayouts(&layouts, viewport: self.viewport ?? viewport)
         }
     }
     
-    init(layoutOperations: [LayoutOperation]) {
+    init(layoutOperations: [LayoutOperation], viewport: Viewport? = nil) {
         self.layoutOperations = layoutOperations
+        self.viewport = viewport
     }
 }
 
 public func Combine(layoutOperations: [LayoutOperation]) -> LayoutOperation {
     return CombineOperation(layoutOperations: layoutOperations)
+}
+
+public func Combine(layoutOperations: [LayoutOperation], viewport: Viewport) -> LayoutOperation {
+    return CombineOperation(layoutOperations: layoutOperations, viewport: viewport)
 }
 
 
@@ -184,14 +238,14 @@ private struct BoxHeight: BoxDimension {
     }
 }
 
-private struct BoxLayoutOperation<T:BoxDimension> : LayoutOperation {
+private struct PutLayoutOperation<T:BoxDimension> : LayoutOperation {
     let intentions: [PutIntention]
     
     init(intentions: [PutIntention]) {
         self.intentions = intentions
     }
     
-    func calculateLayouts(inout layouts: [UIView : CGRect]) {
+    func calculateLayouts(inout layouts: [UIView : CGRect], viewport: Viewport) {
         
         var superview: UIView? = nil
         
@@ -284,11 +338,11 @@ private struct BoxLayoutOperation<T:BoxDimension> : LayoutOperation {
 }
 
 public func HPut(intentions: [PutIntention]) -> LayoutOperation {
-    return BoxLayoutOperation<BoxWidth>(intentions: intentions)
+    return PutLayoutOperation<BoxWidth>(intentions: intentions)
 }
 
 public func VPut(intentions: [PutIntention]) -> LayoutOperation {
-    return BoxLayoutOperation<BoxHeight>(intentions: intentions)
+    return PutLayoutOperation<BoxHeight>(intentions: intentions)
 }
 
 //MARK: width & height
@@ -348,7 +402,7 @@ private struct DirectLayoutOperation<T:DirectLayoutAction> : LayoutOperation
 {
     let view: UIView?
     let value: CGFloat
-    func calculateLayouts(inout layouts: [UIView : CGRect]) {
+    func calculateLayouts(inout layouts: [UIView : CGRect], viewport: Viewport) {
         
         guard let view = view else {
             return
@@ -434,7 +488,7 @@ private struct SizeToFitOperation: LayoutOperation {
     let width: SizeToFitIntention
     let height: SizeToFitIntention
     
-    func calculateLayouts(inout layouts: [UIView : CGRect]) {
+    func calculateLayouts(inout layouts: [UIView : CGRect], viewport: Viewport) {
         
         guard let view = view else {
             return
@@ -476,7 +530,7 @@ private struct SizeToFitOperation: LayoutOperation {
             sz.height = fr.height
         }
         
-        SetSize(view, width: sz.width, height: sz.height).calculateLayouts(&layouts)
+        SetSize(view, width: sz.width, height: sz.height).calculateLayouts(&layouts, viewport: viewport)
     }
 }
 
@@ -518,10 +572,6 @@ public func HCenter(view: UIView?, leftInset: CGFloat, rightInset: CGFloat) -> L
     return HPut([Fix(leftInset), Flex(), Fix(view), Flex(), Fix(rightInset)])
 }
 
-public func HCenter(view: UIView?, inset: CGFloat) -> LayoutOperation {
-    return HCenter(view, leftInset: inset, rightInset: inset)
-}
-
 public func HCenter(view: UIView?) -> LayoutOperation {
     return HCenter(view, leftInset: 0, rightInset: 0)
 }
@@ -530,10 +580,6 @@ public func HCenter(view: UIView?) -> LayoutOperation {
 
 public func VCenter(view: UIView?, topInset: CGFloat, bottomInset: CGFloat) -> LayoutOperation {
     return VPut([Fix(topInset), Flex(), Fix(view), Flex(), Fix(bottomInset)])
-}
-
-public func VCenter(view: UIView?, inset: CGFloat) -> LayoutOperation {
-    return VCenter(view, topInset: inset, bottomInset: inset)
 }
 
 public func VCenter(view: UIView?) -> LayoutOperation {
@@ -799,7 +845,7 @@ private struct FollowOperation<T: Anchor> : LayoutOperation {
     let anchorToFollow: T
     let followerAnchor: T
     
-    func calculateLayouts(inout layouts: [UIView : CGRect]) {
+    func calculateLayouts(inout layouts: [UIView : CGRect], viewport: Viewport) {
         
         guard let toFollowView = anchorToFollow.view, let followerView = followerAnchor.view else {
             return
@@ -837,3 +883,19 @@ public func FollowCenter(ofView: UIView, withView: UIView) -> LayoutOperation {
     return FollowCenter(ofView, dx: 0, dy: 0, withView: withView, dx: 0, dy: 0)
 }
 
+
+public func FollowCenter2(ofView: UIView, dx dx1: CGFloat, dy dy1: CGFloat, withView: UIView, dx dx2: CGFloat, dy dy2: CGFloat) -> LayoutOperation {
+    return Combine([
+        Center(withView),
+        ], viewport: Viewport(
+            topAnchor: .VCenter(ofView),
+            leftAnchor: .HCenter(ofView),
+            bottomAnchor: .VCenter(ofView),
+            rightAnchor: .HCenter(ofView)
+        ))
+}
+
+//TODO: 
+// 1. min max
+// 2. viewport
+// 3. PUT multiple Flex([view1, view2], weight: 2)
