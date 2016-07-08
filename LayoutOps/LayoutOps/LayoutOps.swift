@@ -23,10 +23,10 @@ public enum HViewAnchor {
     case HCenter(UIView?)
     case Right(UIView?)
     
-    func insetValue(layouts:[UIView: CGRect]) -> CGFloat {
+    func anchorValue(layouts:[UIView: CGRect]) -> CGFloat? {
         switch self {
         case .Parent:
-            return 0
+            return nil
         case .Left(let v):
             return v.flatMap { layouts[$0]?.origin.x } ?? 0
         case .Right(let v):
@@ -43,10 +43,10 @@ public enum VViewAnchor {
     case Bottom(UIView?)
     case VCenter(UIView?)
     
-    func insetValue(layouts:[UIView: CGRect]) -> CGFloat {
+    func anchorValue(layouts:[UIView: CGRect]) -> CGFloat? {
         switch self {
         case .Parent:
-            return 0
+            return nil
         case .Top(let v):
             return v.flatMap { layouts[$0]?.origin.y } ?? 0
         case .Bottom(let v):
@@ -78,8 +78,12 @@ public struct Viewport {
     }
     
     func apply(bounds: CGRect, layouts:[UIView: CGRect]) -> CGRect {
-        let insets = UIEdgeInsets(top: topAnchor.insetValue(layouts), left: leftAnchor.insetValue(layouts), bottom: bottomAnchor.insetValue(layouts), right: rightAnchor.insetValue(layouts))
-        return UIEdgeInsetsInsetRect(bounds, insets)
+        let left = leftAnchor.anchorValue(layouts) ?? bounds.origin.x
+        let top = topAnchor.anchorValue(layouts) ?? bounds.origin.y
+        let right = rightAnchor.anchorValue(layouts) ?? bounds.maxX
+        let bottom = bottomAnchor.anchorValue(layouts) ?? bounds.maxY
+        
+        return CGRect(x: left, y: top, width: right - left, height: bottom - top)
     }
 }
 
