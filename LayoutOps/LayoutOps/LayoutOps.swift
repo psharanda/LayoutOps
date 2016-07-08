@@ -505,7 +505,7 @@ private struct PutLayoutOperation<T:BoxDimension> : LayoutOperation {
             
             var bounds = superview.bounds
             if let superViewFrame = layouts[superview] {
-                bounds = superViewFrame
+                bounds = CGRect(x: 0, y: 0, width: superViewFrame.width, height: superViewFrame.height)
             }
             
             bounds = viewport.apply(bounds, layouts: layouts)
