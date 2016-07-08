@@ -63,14 +63,14 @@ public struct Viewport {
     let leftAnchor: HViewAnchor
     let rightAnchor: HViewAnchor
     
-    init(topAnchor: VViewAnchor, leftAnchor: HViewAnchor, bottomAnchor: VViewAnchor, rightAnchor: HViewAnchor) {
+    public init(topAnchor: VViewAnchor, leftAnchor: HViewAnchor, bottomAnchor: VViewAnchor, rightAnchor: HViewAnchor) {
         self.topAnchor = topAnchor
         self.leftAnchor = leftAnchor
         self.bottomAnchor = bottomAnchor
         self.rightAnchor = rightAnchor
     }
     
-    init() {
+    public init() {
         self.topAnchor = .Parent
         self.leftAnchor = .Parent
         self.bottomAnchor = .Parent
