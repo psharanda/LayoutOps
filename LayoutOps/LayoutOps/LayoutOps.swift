@@ -9,49 +9,49 @@
 import UIKit
 
 private extension CGFloat {
-    var pixelPerfect: CGFloat {
-        let scale = UIScreen.mainScreen().scale;
-        return round(self * scale)/scale;
+     var pixelPerfect: CGFloat {
+        let scale = UIScreen.main.scale;
+        return (self * scale).rounded()/scale;
     }
 }
 
 //MARK: - viewport
 
 public enum HViewAnchor {
-    case Parent
-    case Left(UIView?)
-    case HCenter(UIView?)
-    case Right(UIView?)
+    case parent
+    case left(UIView?)
+    case hCenter(UIView?)
+    case right(UIView?)
     
-    func anchorValue(layouts:[UIView: CGRect]) -> CGFloat? {
+    func anchorValue(forLayouts layouts: [UIView: CGRect]) -> CGFloat? {
         switch self {
-        case .Parent:
+        case .parent:
             return nil
-        case .Left(let v):
+        case .left(let v):
             return v.flatMap { layouts[$0]?.origin.x } ?? 0
-        case .Right(let v):
+        case .right(let v):
             return v.flatMap { layouts[$0].flatMap { $0.origin.x + $0.size.width }  } ?? 0
-        case .HCenter(let v):
+        case .hCenter(let v):
             return v.flatMap { layouts[$0].flatMap { $0.origin.x + $0.size.width/2 }  } ?? 0
         }
     }
 }
 
 public enum VViewAnchor {
-    case Parent
-    case Top(UIView?)
-    case Bottom(UIView?)
-    case VCenter(UIView?)
+    case parent
+    case top(UIView?)
+    case bottom(UIView?)
+    case vCenter(UIView?)
     
-    func anchorValue(layouts:[UIView: CGRect]) -> CGFloat? {
+    func anchorValue(forLayouts layouts: [UIView: CGRect]) -> CGFloat? {
         switch self {
-        case .Parent:
+        case .parent:
             return nil
-        case .Top(let v):
+        case .top(let v):
             return v.flatMap { layouts[$0]?.origin.y } ?? 0
-        case .Bottom(let v):
+        case .bottom(let v):
             return v.flatMap { layouts[$0].flatMap { $0.origin.y + $0.size.height }  } ?? 0
-        case .VCenter(let v):
+        case .vCenter(let v):
             return v.flatMap { layouts[$0].flatMap { $0.origin.y + $0.size.height/2 }  } ?? 0
         }
     }
@@ -71,17 +71,17 @@ public struct Viewport {
     }
     
     public init() {
-        self.topAnchor = .Parent
-        self.leftAnchor = .Parent
-        self.bottomAnchor = .Parent
-        self.rightAnchor = .Parent
+        self.topAnchor = .parent
+        self.leftAnchor = .parent
+        self.bottomAnchor = .parent
+        self.rightAnchor = .parent
     }
     
     func apply(bounds: CGRect, layouts:[UIView: CGRect]) -> CGRect {
-        let left = leftAnchor.anchorValue(layouts) ?? bounds.origin.x
-        let top = topAnchor.anchorValue(layouts) ?? bounds.origin.y
-        let right = rightAnchor.anchorValue(layouts) ?? bounds.maxX
-        let bottom = bottomAnchor.anchorValue(layouts) ?? bounds.maxY
+        let left = leftAnchor.anchorValue(forLayouts: layouts) ?? bounds.origin.x
+        let top = topAnchor.anchorValue(forLayouts: layouts) ?? bounds.origin.y
+        let right = rightAnchor.anchorValue(forLayouts: layouts) ?? bounds.maxX
+        let bottom = bottomAnchor.anchorValue(forLayouts: layouts) ?? bounds.maxY
         
         return CGRect(x: left, y: top, width: right - left, height: bottom - top)
     }
@@ -90,14 +90,14 @@ public struct Viewport {
 //MARK: - LayoutOperation
 
 public protocol LayoutOperation {
-    func calculateLayouts(inout layouts:[UIView: CGRect], viewport: Viewport)
+    func calculate(layouts:inout [UIView: CGRect], viewport: Viewport)
 }
 
 public extension LayoutOperation {
     func layout() {
         
         var layoutsMap = [UIView: CGRect]()
-        calculateLayouts(&layoutsMap, viewport: Viewport())
+        calculate(layouts: &layoutsMap, viewport: Viewport())
         for (view, frame) in layoutsMap {
             view.frame = CGRect(x: frame.origin.x.pixelPerfect, y: frame.origin.y.pixelPerfect, width: frame.size.width.pixelPerfect, height: frame.size.height.pixelPerfect)
         }
@@ -105,13 +105,13 @@ public extension LayoutOperation {
     
     func preciseLayout() {
         var layoutsMap = [UIView: CGRect]()
-        calculateLayouts(&layoutsMap, viewport: Viewport())
+        calculate(layouts: &layoutsMap, viewport: Viewport())
         for (view, frame) in layoutsMap {
             view.frame = frame
         }
     }
     
-    func when(condition: (Void) -> Bool) -> LayoutOperation {
+    func when(_ condition: (Void) -> Bool) -> LayoutOperation {
         if condition() {
             return self
         } else {
@@ -121,7 +121,7 @@ public extension LayoutOperation {
 }
 
 private extension LayoutOperation {
-    func frameForView(view: UIView, inout layouts: [UIView : CGRect]) -> CGRect {
+    func frame(forView view: UIView, layouts: inout [UIView : CGRect]) -> CGRect {
         if let r = layouts[view] {
             return r
         } else {
@@ -135,7 +135,7 @@ private extension LayoutOperation {
 
 private struct NoLayoutOperation: LayoutOperation {
     
-    func calculateLayouts(inout layouts: [UIView : CGRect], viewport: Viewport) {
+    func calculate(layouts: inout [UIView : CGRect], viewport: Viewport) {
         
     }
 }
@@ -152,9 +152,9 @@ private struct CombineOperation : LayoutOperation {
     
     let viewport: Viewport?
     
-    func calculateLayouts(inout layouts: [UIView : CGRect], viewport: Viewport) {
+    func calculate(layouts: inout [UIView : CGRect], viewport: Viewport) {
         for layoutOperation in layoutOperations {
-            layoutOperation.calculateLayouts(&layouts, viewport: self.viewport ?? viewport)
+            layoutOperation.calculate(layouts: &layouts, viewport: self.viewport ?? viewport)
         }
     }
     
@@ -164,7 +164,7 @@ private struct CombineOperation : LayoutOperation {
     }
 }
 
-public func Combine(operations: [LayoutOperation]) -> LayoutOperation {
+public func Combine(_ operations: [LayoutOperation]) -> LayoutOperation {
     return CombineOperation(layoutOperations: operations)
 }
 
@@ -172,7 +172,7 @@ public func Combine(viewport: Viewport, operations: [LayoutOperation]) -> Layout
     return CombineOperation(layoutOperations: operations, viewport: viewport)
 }
 
-public func Combine(operations: LayoutOperation...) -> LayoutOperation {
+public func Combine(_ operations: LayoutOperation...) -> LayoutOperation {
     return CombineOperation(layoutOperations: operations)
 }
 
@@ -183,11 +183,11 @@ public func Combine(viewport: Viewport, operations: LayoutOperation...) -> Layou
 
 //MARK: - x & y & width & height
 private protocol DirectLayoutAction {
-    static func updateRect(rect: CGRect, withValue: CGFloat) -> CGRect
+    static func update(rect: CGRect, withValue: CGFloat) -> CGRect
 }
 
 private struct LeftDirectLayoutAction : DirectLayoutAction {
-    static func updateRect(rect: CGRect, withValue: CGFloat) -> CGRect {
+    static func update(rect:  CGRect, withValue: CGFloat) -> CGRect {
         var result = rect
         result.origin.x = withValue
         return result
@@ -195,7 +195,7 @@ private struct LeftDirectLayoutAction : DirectLayoutAction {
 }
 
 private struct TopDirectLayoutAction : DirectLayoutAction {
-    static func updateRect(rect: CGRect, withValue: CGFloat) -> CGRect {
+    static func update(rect:  CGRect, withValue: CGFloat) -> CGRect {
         var result = rect
         result.origin.y = withValue
         return result
@@ -203,7 +203,7 @@ private struct TopDirectLayoutAction : DirectLayoutAction {
 }
 
 private struct BottomDirectLayoutAction : DirectLayoutAction {
-    static func updateRect(rect: CGRect, withValue: CGFloat) -> CGRect {
+    static func update(rect:  CGRect, withValue: CGFloat) -> CGRect {
         var result = rect
         result.origin.y = withValue - rect.size.height
         
@@ -212,7 +212,7 @@ private struct BottomDirectLayoutAction : DirectLayoutAction {
 }
 
 private struct RightDirectLayoutAction : DirectLayoutAction {
-    static func updateRect(rect: CGRect, withValue: CGFloat) -> CGRect {
+    static func update(rect:  CGRect, withValue: CGFloat) -> CGRect {
         var result = rect
         result.origin.x = withValue - rect.size.width
         return result
@@ -220,7 +220,7 @@ private struct RightDirectLayoutAction : DirectLayoutAction {
 }
 
 private struct WidthDirectLayoutAction : DirectLayoutAction {
-    static func updateRect(rect: CGRect, withValue: CGFloat) -> CGRect {
+    static func update(rect:  CGRect, withValue: CGFloat) -> CGRect {
         var result = rect
         result.size.width = withValue
         return result
@@ -228,7 +228,7 @@ private struct WidthDirectLayoutAction : DirectLayoutAction {
 }
 
 private struct HeightDirectLayoutAction : DirectLayoutAction {
-    static func updateRect(rect: CGRect, withValue: CGFloat) -> CGRect {
+    static func update(rect:  CGRect, withValue: CGFloat) -> CGRect {
         var result = rect
         result.size.height = withValue
         return result
@@ -239,65 +239,65 @@ private struct DirectLayoutOperation<T:DirectLayoutAction> : LayoutOperation
 {
     let view: UIView?
     let value: CGFloat
-    func calculateLayouts(inout layouts: [UIView : CGRect], viewport: Viewport) {
+    func calculate(layouts: inout [UIView : CGRect], viewport: Viewport) {
         
         guard let view = view else {
             return
         }
         
-        layouts[view] = T.updateRect(frameForView(view, layouts: &layouts), withValue: value)
+        layouts[view] = T.update(rect: frame(forView: view, layouts: &layouts), withValue: value)
     }
 }
 
-public func SetX(view: UIView?, value: CGFloat) -> LayoutOperation {
+public func SetX(_ view: UIView?, value: CGFloat) -> LayoutOperation {
     return SetLeft(view, value: value)
 }
 
-public func SetY(view: UIView?, value: CGFloat) -> LayoutOperation {
+public func SetY(_ view: UIView?, value: CGFloat) -> LayoutOperation {
     return SetTop(view, value: value)
 }
 
-public func SetWidth(view: UIView?, value: CGFloat) -> LayoutOperation {
+public func SetWidth(_ view: UIView?, value: CGFloat) -> LayoutOperation {
     return DirectLayoutOperation<WidthDirectLayoutAction>(view: view, value: value)
 }
 
-public func SetHeight(view: UIView?, value: CGFloat) -> LayoutOperation {
+public func SetHeight(_ view: UIView?, value: CGFloat) -> LayoutOperation {
     return DirectLayoutOperation<HeightDirectLayoutAction>(view: view, value: value)
 }
 
-public func SetLeft(view: UIView?, value: CGFloat) -> LayoutOperation {
+public func SetLeft(_ view: UIView?, value: CGFloat) -> LayoutOperation {
     return DirectLayoutOperation<LeftDirectLayoutAction>(view: view, value: value)
 }
 
-public func SetRight(view: UIView?, value: CGFloat) -> LayoutOperation {
+public func SetRight(_ view: UIView?, value: CGFloat) -> LayoutOperation {
     return DirectLayoutOperation<RightDirectLayoutAction>(view: view, value: value)
 }
 
-public func SetTop(view: UIView?, value: CGFloat) -> LayoutOperation {
+public func SetTop(_ view: UIView?, value: CGFloat) -> LayoutOperation {
     return DirectLayoutOperation<TopDirectLayoutAction>(view: view, value: value)
 }
 
-public func SetBottom(view: UIView?, value: CGFloat) -> LayoutOperation {
+public func SetBottom(_ view: UIView?, value: CGFloat) -> LayoutOperation {
     return DirectLayoutOperation<BottomDirectLayoutAction>(view: view, value: value)
 }
 
 //MARK: - size
 
-public func SetSize(view: UIView?, width: CGFloat, height: CGFloat) -> LayoutOperation {
+public func SetSize(_ view: UIView?, width: CGFloat, height: CGFloat) -> LayoutOperation {
     return Combine( [
         SetWidth(view, value: width),
         SetHeight(view, value: height)
     ])
 }
 
-public func SetSize(view: UIView?, size: CGSize) -> LayoutOperation {
+public func SetSize(_ view: UIView?, size: CGSize) -> LayoutOperation {
     return Combine( [
         SetWidth(view, value: size.width),
         SetHeight(view, value: size.height)
         ])
 }
 
-public func SetFrame(view: UIView?, x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat) -> LayoutOperation {
+public func SetFrame(_ view: UIView?, x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat) -> LayoutOperation {
     return Combine( [
         SetLeft(view, value: x),
         SetTop(view, value: y),
@@ -306,7 +306,7 @@ public func SetFrame(view: UIView?, x: CGFloat, y: CGFloat, width: CGFloat, heig
     ])
 }
 
-public func SetFrame(view: UIView?, frame: CGRect) -> LayoutOperation {
+public func SetFrame(_ view: UIView?, frame: CGRect) -> LayoutOperation {
     return Combine( [
         SetLeft(view, value: frame.origin.x),
         SetTop(view, value: frame.origin.y),
@@ -321,46 +321,46 @@ public enum SizeToFitIntention {
     /**
      Use defined value
      */
-    case Value(CGFloat)
+    case value(CGFloat)
     /**
      Use max value to fully fit content
      */
-    case Max
+    case max
     /**
      Use current frame value to fit content in it
      */
-    case Current
+    case current
     /**
      Use current frame value for fit calculation, but keep it as value for frame
      */
-    case KeepCurrent
+    case keepCurrent
 }
 
 public enum SizeConstraint {
-    case Default
-    case Min(CGFloat)
-    case Max(CGFloat)
-    case MinMax(CGFloat, CGFloat)
+    case `default`
+    case min(CGFloat)
+    case max(CGFloat)
+    case minMax(CGFloat, CGFloat)
     
     
      public var minValue: CGFloat {
         switch self {
-        case .Default, .Max:
-            return CGFloat.min
-        case .Min(let min):
+        case .default, .max:
+            return CGFloat.leastNormalMagnitude
+        case .min(let min):
             return min
-        case .MinMax(let min, _):
+        case .minMax(let min, _):
             return min
         }
     }
     
     public var maxValue: CGFloat {
         switch self {
-        case .Default, .Min:
-            return CGFloat.max
-        case .Max(let max):
+        case .default, .min:
+            return CGFloat.greatestFiniteMagnitude
+        case .max(let max):
             return max
-        case .MinMax(_, let max):
+        case .minMax(_, let max):
             return max
         }
     }
@@ -374,78 +374,78 @@ private struct SizeToFitOperation: LayoutOperation {
     let widthSizeConstraint: SizeConstraint
     let heightSizeConstraint: SizeConstraint
     
-    func calculateLayouts(inout layouts: [UIView : CGRect], viewport: Viewport) {
+    func calculate(layouts: inout [UIView : CGRect], viewport: Viewport) {
         
         guard let view = view else {
             return
         }
         
-        let fr = frameForView(view, layouts: &layouts)
+        let fr = frame(forView: view, layouts: &layouts)
         
         var w: CGFloat = 0
         switch width {
-        case .Value(let val):
+        case .value(let val):
             w = val
-        case .Max:
-            w = CGFloat.max
-        case .Current:
+        case .max:
+            w = CGFloat.greatestFiniteMagnitude
+        case .current:
             w = fr.width
-        case .KeepCurrent:
+        case .keepCurrent:
             w = fr.width
         }
         
         var h: CGFloat = 0
         switch height {
-        case .Value(let val):
+        case .value(let val):
             h = val
-        case .Max:
-            h = CGFloat.max
-        case .Current:
+        case .max:
+            h = CGFloat.greatestFiniteMagnitude
+        case .current:
             h = fr.height
-        case .KeepCurrent:
+        case .keepCurrent:
             h = fr.height
         }
         
-        var sz = view.sizeThatFits(CGSizeMake(w, h))
+        var sz = view.sizeThatFits(CGSize(width: w, height: h))
         
-        if case .KeepCurrent = width {
+        if case .keepCurrent = width {
             sz.width = fr.width
         }
         
-        if case .KeepCurrent = height {
+        if case .keepCurrent = height {
             sz.height = fr.height
         }
         
         sz.width = min(max(widthSizeConstraint.minValue, sz.width), widthSizeConstraint.maxValue)
         sz.height = min(max(heightSizeConstraint.minValue, sz.height), heightSizeConstraint.maxValue)
         
-        SetSize(view, width: sz.width, height: sz.height).calculateLayouts(&layouts, viewport: viewport)
+        SetSize(view, width: sz.width, height: sz.height).calculate(layouts: &layouts, viewport: viewport)
     }
 }
 
-public func SizeToFit(view: UIView?, width: SizeToFitIntention, height: SizeToFitIntention, widthConstraint: SizeConstraint = .Default, heightConstraint: SizeConstraint = .Default) -> LayoutOperation {
+public func SizeToFit(_ view: UIView?, width: SizeToFitIntention, height: SizeToFitIntention, widthConstraint: SizeConstraint = .default, heightConstraint: SizeConstraint = .default) -> LayoutOperation {
     return SizeToFitOperation(view: view, width: width, height: height, widthSizeConstraint: widthConstraint, heightSizeConstraint:  heightConstraint)
 }
 
 /**
  same as SizeToFit(view, width: .Max, height: .Max)
 */
-public func SizeToFitMax(view: UIView?) -> LayoutOperation {
-    return SizeToFit(view, width: .Max, height: .Max)
+public func SizeToFitMax(_ view: UIView?) -> LayoutOperation {
+    return SizeToFit(view, width: .max, height: .max)
 }
 
 /**
  same as SizeToFit(view, width: .Current, height: .Current)
 */
-public func SizeToFit(view: UIView?) -> LayoutOperation {
-    return SizeToFit(view, width: .Current, height: .Current)
+public func SizeToFit(_ view: UIView?) -> LayoutOperation {
+    return SizeToFit(view, width: .current, height: .current)
 }
 
 /**
  same as SizeToFit(view, width: .Max, height: .Max)
  */
-public func SizeToFitConstraints(view: UIView?, height: SizeToFitIntention, widthConstraint: SizeConstraint, heightConstraint: SizeConstraint) -> LayoutOperation {
-    return SizeToFit(view, width: .Max, height: .Max, widthConstraint: widthConstraint, heightConstraint: heightConstraint)
+public func SizeToFitConstraints(_ view: UIView?, height: SizeToFitIntention, widthConstraint: SizeConstraint, heightConstraint: SizeConstraint) -> LayoutOperation {
+    return SizeToFit(view, width: .max, height: .max, widthConstraint: widthConstraint, heightConstraint: heightConstraint)
 }
 
 //MARK: - Put
@@ -458,7 +458,7 @@ public enum PutIntention {
      
      weight is 1.0 by default
      */
-    case FlexIntention(views: [UIView]?, weight: CGFloat)
+    case flexIntention(views: [UIView]?, weight: CGFloat)
     
     /**
      1. (view: v value: x) - view with fixed size
@@ -467,9 +467,9 @@ public enum PutIntention {
      4. (view: nil value: nil) - do nothing, nop
      
      */
-    case FixIntention(views: [UIView]?, value: CGFloat?)
+    case fixIntention(views: [UIView]?, value: CGFloat?)
     
-    public func when(condition: (Void) -> Bool) -> PutIntention {
+    public func when(_ condition: (Void) -> Bool) -> PutIntention {
         if condition() {
             return self
         } else {
@@ -482,56 +482,56 @@ public enum PutIntention {
 
 
 //MARK: - Flex shorthands
-public func Flex(weight: CGFloat) -> PutIntention {
-    return .FlexIntention(views: nil, weight: weight)
+public func Flex(_ weight: CGFloat) -> PutIntention {
+    return .flexIntention(views: nil, weight: weight)
 }
 
-public func Flex(view: UIView?) -> PutIntention {
+public func Flex(_ view: UIView?) -> PutIntention {
     return Flex([view])
 }
 
-public func Flex(views: [UIView?]) -> PutIntention {
+public func Flex(_ views: [UIView?]) -> PutIntention {
     return Flex(views, 1.0)
 }
 
 public func Flex() -> PutIntention {
-    return .FlexIntention(views: nil, weight: 1.0)
+    return .flexIntention(views: nil, weight: 1.0)
 }
 
-public func Flex(view: UIView?, _ weight: CGFloat) -> PutIntention {
+public func Flex(_ view: UIView?, _ weight: CGFloat) -> PutIntention {
     return Flex([view], weight)
 }
 
-public func Flex(views: [UIView?], _ weight: CGFloat) -> PutIntention {
+public func Flex(_ views: [UIView?], _ weight: CGFloat) -> PutIntention {
     let nonNilViews = views.flatMap { $0 }
-    return .FlexIntention(views: nonNilViews, weight: weight)
+    return .flexIntention(views: nonNilViews, weight: weight)
 }
 
 //MARK: - Fix shorthands
-public func Fix(value: CGFloat) -> PutIntention {
-    return .FixIntention(views: nil, value: value)
+public func Fix(_ value: CGFloat) -> PutIntention {
+    return .fixIntention(views: nil, value: value)
 }
 
-public func Fix(view: UIView?) -> PutIntention {
-    return .FixIntention(views: view.flatMap{[$0]} ?? nil, value: nil)
+public func Fix(_ view: UIView?) -> PutIntention {
+    return .fixIntention(views: view.flatMap{[$0]} ?? nil, value: nil)
 }
 
-public func Fix(views: [UIView?]) -> PutIntention {
+public func Fix(_ views: [UIView?]) -> PutIntention {
     let nonNilViews = views.flatMap { $0 }
-    return .FixIntention(views: nonNilViews, value: nil)
+    return .fixIntention(views: nonNilViews, value: nil)
 }
 
 public func Fix() -> PutIntention {
-    return .FixIntention(views: nil, value: nil)
+    return .fixIntention(views: nil, value: nil)
 }
 
-public func Fix(view: UIView?, _ value: CGFloat) -> PutIntention {
+public func Fix(_ view: UIView?, _ value: CGFloat) -> PutIntention {
     return Fix([view], value)
 }
 
-public func Fix(views: [UIView?], _ value: CGFloat) -> PutIntention {
+public func Fix(_ views: [UIView?], _ value: CGFloat) -> PutIntention {
     let nonNilViews = views.flatMap { $0 }
-    return .FixIntention(views: nonNilViews, value: value)
+    return .fixIntention(views: nonNilViews, value: value)
 }
 
 private struct Dimension {
@@ -540,16 +540,16 @@ private struct Dimension {
 }
 
 private protocol BoxDimension {
-    static func getDimension(rect: CGRect) -> Dimension
-    static func setDimension(dimension: Dimension, inRect: CGRect) -> CGRect
+    static func get(dimensionInRect rect: CGRect) -> Dimension
+    static func set(dimension: Dimension, inRect: CGRect) -> CGRect
 }
 
 private struct BoxWidth: BoxDimension {
     
-    static func getDimension(rect: CGRect) -> Dimension {
+    static func get(dimensionInRect rect: CGRect) -> Dimension {
         return Dimension(origin: rect.origin.x, size: rect.size.width)
     }
-    static func setDimension(dimension: Dimension, inRect: CGRect) -> CGRect {
+    static func set(dimension: Dimension, inRect: CGRect) -> CGRect {
         var result = inRect
         result.origin.x = dimension.origin
         result.size.width = dimension.size
@@ -559,10 +559,10 @@ private struct BoxWidth: BoxDimension {
 
 private struct BoxHeight: BoxDimension {
     
-    static func getDimension(rect: CGRect) -> Dimension {
+    static func get(dimensionInRect rect: CGRect) -> Dimension {
         return Dimension(origin: rect.origin.y, size: rect.size.height)
     }
-    static func setDimension(dimension: Dimension, inRect: CGRect) -> CGRect {
+    static func set(dimension: Dimension, inRect: CGRect) -> CGRect {
         var result = inRect
         result.origin.y = dimension.origin
         result.size.height = dimension.size
@@ -577,7 +577,7 @@ private struct PutLayoutOperation<T:BoxDimension> : LayoutOperation {
         self.intentions = intentions
     }
     
-    func calculateLayouts(inout layouts: [UIView : CGRect], viewport: Viewport) {
+    func calculate(layouts: inout [UIView : CGRect], viewport: Viewport) {
         
         var superview: UIView? = nil
         
@@ -586,9 +586,9 @@ private struct PutLayoutOperation<T:BoxDimension> : LayoutOperation {
             
             var view: UIView? = nil
             switch (i) {
-            case .FlexIntention(let views, _):
+            case .flexIntention(let views, _):
                 view = views?.first
-            case .FixIntention(let views, _):
+            case .fixIntention(let views, _):
                 view = views?.first
             }
             
@@ -607,21 +607,21 @@ private struct PutLayoutOperation<T:BoxDimension> : LayoutOperation {
                 bounds = CGRect(x: 0, y: 0, width: superViewFrame.width, height: superViewFrame.height)
             }
             
-            bounds = viewport.apply(bounds, layouts: layouts)
+            bounds = viewport.apply(bounds: bounds, layouts: layouts)
             
-            var totalSizeForFlexs: CGFloat = T.getDimension(bounds).size
+            var totalSizeForFlexs: CGFloat = T.get(dimensionInRect: bounds).size
             
             for i in intentions {
                 switch (i) {
-                case .FlexIntention(_, let weight):
+                case .flexIntention(_, let weight):
                     totalWeight += weight
                     break
-                case .FixIntention(let views, let value):
+                case .fixIntention(let views, let value):
                     if let value = value {
                         totalSizeForFlexs -= value
                     } else {
                         if let firstView = views?.first {
-                            totalSizeForFlexs -= T.getDimension(frameForView(firstView, layouts: &layouts)).size
+                            totalSizeForFlexs -= T.get(dimensionInRect: frame(forView: firstView, layouts: &layouts)).size
                         }
                     }
                     break
@@ -630,17 +630,17 @@ private struct PutLayoutOperation<T:BoxDimension> : LayoutOperation {
             
             let unoSize = totalSizeForFlexs/totalWeight
             
-            var start:CGFloat = T.getDimension(bounds).origin
+            var start:CGFloat = T.get(dimensionInRect: bounds).origin
             for i in intentions {
                 switch (i) {
-                case .FlexIntention(let views, let weight):
+                case .flexIntention(let views, let weight):
                     
                     let newSize = weight * unoSize
                     
                     if let views = views {
                         views.forEach {view in
-                            let fr = frameForView(view, layouts: &layouts)
-                            layouts[view] = T.setDimension(Dimension(origin: start, size: newSize), inRect: fr)
+                            let fr = frame(forView: view, layouts: &layouts)
+                            layouts[view] = T.set(dimension: Dimension(origin: start, size: newSize), inRect: fr)
                         }
                         
                         start += newSize
@@ -650,12 +650,12 @@ private struct PutLayoutOperation<T:BoxDimension> : LayoutOperation {
                     
                     totalWeight += weight
                     break
-                case .FixIntention(let views, let value):
+                case .fixIntention(let views, let value):
                     if let value = value {
                         if let views = views {
                             views.forEach {view in
-                                let fr = frameForView(view, layouts: &layouts)
-                                layouts[view] = T.setDimension(Dimension(origin: start, size: value), inRect: fr)
+                                let fr = frame(forView: view, layouts: &layouts)
+                                layouts[view] = T.set(dimension: Dimension(origin: start, size: value), inRect: fr)
                             }
                             start += value
                         } else {
@@ -664,11 +664,11 @@ private struct PutLayoutOperation<T:BoxDimension> : LayoutOperation {
                     } else {
                         if let views = views, let firstView = views.first {
                             
-                            let fr = frameForView(firstView, layouts: &layouts)
-                            let size = T.getDimension(frameForView(firstView, layouts: &layouts)).size
+                            let fr = frame(forView: firstView, layouts: &layouts)
+                            let size = T.get(dimensionInRect: frame(forView: firstView, layouts: &layouts)).size
                             
                             views.forEach {view in
-                                layouts[view] = T.setDimension(Dimension(origin: start, size: size), inRect: fr)
+                                layouts[view] = T.set(dimension: Dimension(origin: start, size: size), inRect: fr)
                             }
                             start += size
                         }
@@ -680,166 +680,166 @@ private struct PutLayoutOperation<T:BoxDimension> : LayoutOperation {
     }
 }
 
-public func HPut(intentions: [PutIntention]) -> LayoutOperation {
+public func HPut(_ intentions: [PutIntention]) -> LayoutOperation {
     return PutLayoutOperation<BoxWidth>(intentions: intentions)
 }
 
-public func VPut(intentions: [PutIntention]) -> LayoutOperation {
+public func VPut(_ intentions: [PutIntention]) -> LayoutOperation {
     return PutLayoutOperation<BoxHeight>(intentions: intentions)
 }
 
-public func HPut(intentions: PutIntention...) -> LayoutOperation {
+public func HPut(_ intentions: PutIntention...) -> LayoutOperation {
     return PutLayoutOperation<BoxWidth>(intentions: intentions)
 }
 
-public func VPut(intentions: PutIntention...) -> LayoutOperation {
+public func VPut(_ intentions: PutIntention...) -> LayoutOperation {
     return PutLayoutOperation<BoxHeight>(intentions: intentions)
 }
 
 
 //MARK: - center
 
-public func Center(view: UIView?, insets: UIEdgeInsets) -> LayoutOperation {
+public func Center(_ view: UIView?, insets: UIEdgeInsets) -> LayoutOperation {
     return Combine( [
         HCenter(view, leftInset: insets.left, rightInset: insets.right),
         VCenter(view, topInset: insets.top, bottomInset: insets.bottom)
         ])
 }
 
-public func Center(view: UIView?, inset: CGFloat) -> LayoutOperation {
+public func Center(_ view: UIView?, inset: CGFloat) -> LayoutOperation {
     return Center(view, insets: UIEdgeInsetsMake(inset, inset, inset, inset))
 }
 
-public func Center(view: UIView?) -> LayoutOperation {
-    return Center(view, insets: UIEdgeInsetsZero)
+public func Center(_ view: UIView?) -> LayoutOperation {
+    return Center(view, insets: UIEdgeInsets.zero)
 }
 
 //MARK: - hcenter
 
-public func HCenter(view: UIView?, leftInset: CGFloat, rightInset: CGFloat) -> LayoutOperation {
+public func HCenter(_ view: UIView?, leftInset: CGFloat, rightInset: CGFloat) -> LayoutOperation {
     return HPut([Fix(leftInset), Flex(), Fix(view), Flex(), Fix(rightInset)])
 }
 
-public func HCenter(view: UIView?) -> LayoutOperation {
+public func HCenter(_ view: UIView?) -> LayoutOperation {
     return HCenter(view, leftInset: 0, rightInset: 0)
 }
 
 //MARK: - vcenter
 
-public func VCenter(view: UIView?, topInset: CGFloat, bottomInset: CGFloat) -> LayoutOperation {
+public func VCenter(_ view: UIView?, topInset: CGFloat, bottomInset: CGFloat) -> LayoutOperation {
     return VPut([Fix(topInset), Flex(), Fix(view), Flex(), Fix(bottomInset)])
 }
 
-public func VCenter(view: UIView?) -> LayoutOperation {
+public func VCenter(_ view: UIView?) -> LayoutOperation {
     return VCenter(view, topInset: 0, bottomInset: 0)}
 
 //MARK: - fill
 
-public func Fill(view: UIView?, insets: UIEdgeInsets) -> LayoutOperation {
+public func Fill(_ view: UIView?, insets: UIEdgeInsets) -> LayoutOperation {
     return Combine( [
         HFill(view, leftInset: insets.left, rightInset: insets.right),
         VFill(view, topInset: insets.top, bottomInset: insets.bottom)
         ])
 }
 
-public func Fill(view: UIView?, inset: CGFloat) -> LayoutOperation {
+public func Fill(_ view: UIView?, inset: CGFloat) -> LayoutOperation {
     return Fill(view, insets: UIEdgeInsets(top: inset, left: inset, bottom: inset, right: inset))
 }
 
-public func Fill(view: UIView?) -> LayoutOperation {
-    return Fill(view, insets: UIEdgeInsetsZero)
+public func Fill(_ view: UIView?) -> LayoutOperation {
+    return Fill(view, insets: UIEdgeInsets.zero)
 }
 
 //MARK: - hfill
 
-public func HFill(view: UIView?, leftInset: CGFloat, rightInset: CGFloat) -> LayoutOperation {
+public func HFill(_ view: UIView?, leftInset: CGFloat, rightInset: CGFloat) -> LayoutOperation {
     return HPut([Fix(leftInset), Flex(view), Fix(rightInset)])
 }
 
-public func HFill(view: UIView?, inset: CGFloat) -> LayoutOperation {
+public func HFill(_ view: UIView?, inset: CGFloat) -> LayoutOperation {
     return HFill(view, leftInset: inset, rightInset: inset)
 }
 
-public func HFill(view: UIView?) -> LayoutOperation {
+public func HFill(_ view: UIView?) -> LayoutOperation {
     return HFill(view, leftInset: 0, rightInset: 0)
 }
 
 //MARK: - vfill
 
-public func VFill(view: UIView?, topInset: CGFloat, bottomInset: CGFloat) -> LayoutOperation {
+public func VFill(_ view: UIView?, topInset: CGFloat, bottomInset: CGFloat) -> LayoutOperation {
     return VPut([Fix(topInset), Flex(view), Fix(bottomInset)])
 }
 
-public func VFill(view: UIView?, inset: CGFloat) -> LayoutOperation {
+public func VFill(_ view: UIView?, inset: CGFloat) -> LayoutOperation {
     return VFill(view, topInset: inset, bottomInset: inset)
 }
 
-public func VFill(view: UIView?) -> LayoutOperation {
+public func VFill(_ view: UIView?) -> LayoutOperation {
     return VFill(view, topInset: 0, bottomInset: 0)
 }
 
 //MARK: - align top
 
-public func AlignTop(view: UIView?, inset: CGFloat) -> LayoutOperation {
+public func AlignTop(_ view: UIView?, inset: CGFloat) -> LayoutOperation {
     return VPut([Fix(inset), Fix(view), Flex()])
 }
 
-public func AlignTop(view: UIView?) -> LayoutOperation {
+public func AlignTop(_ view: UIView?) -> LayoutOperation {
     return AlignTop(view, inset: 0)
 }
 
 //MARK: - align left
 
-public func AlignLeft(view: UIView?, inset: CGFloat) -> LayoutOperation {
+public func AlignLeft(_ view: UIView?, inset: CGFloat) -> LayoutOperation {
     return HPut([Fix(inset), Fix(view), Flex()])
 }
 
-public func AlignLeft(view: UIView?) -> LayoutOperation {
+public func AlignLeft(_ view: UIView?) -> LayoutOperation {
     return AlignLeft(view, inset: 0)
 }
 
 //MARK: - align bottom
 
-public func AlignBottom(view: UIView?, inset: CGFloat) -> LayoutOperation {
+public func AlignBottom(_ view: UIView?, inset: CGFloat) -> LayoutOperation {
     return VPut([Flex(), Fix(view), Fix(inset)])
 }
 
-public func AlignBottom(view: UIView?) -> LayoutOperation {
+public func AlignBottom(_ view: UIView?) -> LayoutOperation {
     return AlignBottom(view, inset: 0)
 }
 
 //MARK: - align right
 
-public func AlignRight(view: UIView?, inset: CGFloat) -> LayoutOperation {
+public func AlignRight(_ view: UIView?, inset: CGFloat) -> LayoutOperation {
     return HPut([Flex(), Fix(view), Fix(inset)])
 }
 
-public func AlignRight(view: UIView?) -> LayoutOperation {
+public func AlignRight(_ view: UIView?) -> LayoutOperation {
     return AlignRight(view, inset: 0)
 }
 
 //MARK: - fit height fill width
 
-public func HFillVFit(view: UIView, leftInset: CGFloat, rightInset: CGFloat) -> LayoutOperation {
+public func HFillVFit(_ view: UIView, leftInset: CGFloat, rightInset: CGFloat) -> LayoutOperation {
     return Combine([
         HFill(view, leftInset: leftInset, rightInset: rightInset),
-        SizeToFit(view, width: .KeepCurrent, height: .Max),
+        SizeToFit(view, width: .keepCurrent, height: .max),
         ])
 }
 
-public func HFillVFit(view: UIView, inset: CGFloat) -> LayoutOperation {
+public func HFillVFit(_ view: UIView, inset: CGFloat) -> LayoutOperation {
     return HFillVFit(view, leftInset: inset, rightInset: inset)
 }
 
-public func HFillVFit(view: UIView) -> LayoutOperation {
+public func HFillVFit(_ view: UIView) -> LayoutOperation {
     return HFillVFit(view, leftInset: 0, rightInset: 0)
 }
 
 //MARK: -  anchors
 
 public protocol Anchor {
-    func valueForRect(rect: CGRect) -> CGFloat
-    func setValueForRect(value: CGFloat, rect: CGRect) -> CGRect
+    func value(forRect: CGRect) -> CGFloat
+    func set(value: CGFloat, forRect: CGRect) -> CGRect
     
     var view: UIView? {get}
 }
@@ -848,29 +848,29 @@ public protocol Anchor {
 
 public enum HAnchor : Anchor {
     
-    case Left(UIView?, CGFloat)
-    case Center(UIView?, CGFloat)
-    case Right(UIView?, CGFloat)
+    case left(UIView?, CGFloat)
+    case center(UIView?, CGFloat)
+    case right(UIView?, CGFloat)
     
-    public func valueForRect(rect: CGRect) -> CGFloat {
+    public func value(forRect rect: CGRect) -> CGFloat {
         switch self {
-        case .Left(_, let inset):
-            return CGRectGetMinX(rect) + inset
-        case .Right(_, let inset):
-            return CGRectGetMaxX(rect) + inset
-        case .Center(_, let inset):
-            return CGRectGetMidX(rect) + inset
+        case .left(_, let inset):
+            return rect.minX + inset
+        case .right(_, let inset):
+            return rect.maxX + inset
+        case .center(_, let inset):
+            return rect.midX + inset
         }
     }
     
-    public func setValueForRect(value: CGFloat, rect: CGRect) -> CGRect {
+    public func set(value: CGFloat, forRect rect: CGRect) -> CGRect {
         var result = rect
         switch self {
-        case .Left(_, let inset):
+        case .left(_, let inset):
             result.origin.x = value - inset
-        case .Right(_, let inset):
+        case .right(_, let inset):
             result.origin.x = value - result.size.width - inset
-        case .Center(_, let inset):
+        case .center(_, let inset):
             result.origin.x = value - result.size.width/2 - inset
         }
         
@@ -879,38 +879,38 @@ public enum HAnchor : Anchor {
     
     public var view: UIView? {
         switch self {
-        case .Left(let v, _):
+        case .left(let v, _):
             return v
-        case .Right(let v, _):
+        case .right(let v, _):
             return v
-        case .Center(let v, _):
+        case .center(let v, _):
             return v
         }
     }
 }
 
-public func LeftAnchor(view: UIView?, inset: CGFloat) -> HAnchor {
-    return HAnchor.Left(view, inset)
+public func LeftAnchor(_ view: UIView?, inset: CGFloat) -> HAnchor {
+    return HAnchor.left(view, inset)
 }
 
-public func LeftAnchor(view: UIView?) -> HAnchor {
+public func LeftAnchor(_ view: UIView?) -> HAnchor {
     return LeftAnchor(view, inset: 0)
 }
 
-public func RightAnchor(view: UIView?, inset: CGFloat) -> HAnchor {
-    return HAnchor.Right(view, inset)
+public func RightAnchor(_ view: UIView?, inset: CGFloat) -> HAnchor {
+    return HAnchor.right(view, inset)
 }
 
-public func RightAnchor(view: UIView?) -> HAnchor {
+public func RightAnchor(_ view: UIView?) -> HAnchor {
     return RightAnchor(view, inset: 0)
 }
 
 
-public func HCenterAnchor(view: UIView?, inset: CGFloat) -> HAnchor {
-    return HAnchor.Center(view, inset)
+public func HCenterAnchor(_ view: UIView?, inset: CGFloat) -> HAnchor {
+    return HAnchor.center(view, inset)
 }
 
-public func HCenterAnchor(view: UIView?) -> HAnchor {
+public func HCenterAnchor(_ view: UIView?) -> HAnchor {
     return HCenterAnchor(view, inset: 0)
 }
 
@@ -918,31 +918,31 @@ public func HCenterAnchor(view: UIView?) -> HAnchor {
 //MARK: - vanchor
 
 public enum VAnchor : Anchor {
-    case Top(UIView?, CGFloat)
-    case Bottom(UIView?, CGFloat)
-    case Center(UIView?, CGFloat)
+    case top(UIView?, CGFloat)
+    case bottom(UIView?, CGFloat)
+    case center(UIView?, CGFloat)
     
-    public func valueForRect(rect: CGRect) -> CGFloat {
+    public func value(forRect rect: CGRect) -> CGFloat {
         switch self {
-        case .Top(_, let inset):
-            return CGRectGetMinY(rect) + inset
-        case .Bottom(_, let inset):
-            return CGRectGetMaxY(rect) + inset
-        case .Center(_, let inset):
-            return CGRectGetMidY(rect) + inset
+        case .top(_, let inset):
+            return rect.minY + inset
+        case .bottom(_, let inset):
+            return rect.maxY + inset
+        case .center(_, let inset):
+            return rect.midY + inset
         }
     }
     
-    public func setValueForRect(value: CGFloat, rect: CGRect) -> CGRect {
+    public func set(value: CGFloat, forRect rect: CGRect) -> CGRect {
         
         var result = rect
         
         switch self {
-        case .Top(_, let inset):
+        case .top(_, let inset):
             result.origin.y = value - inset
-        case .Bottom(_, let inset):
+        case .bottom(_, let inset):
             result.origin.y = value - result.size.height - inset
-        case .Center(_, let inset):
+        case .center(_, let inset):
             result.origin.y = value - result.size.height/2 - inset
         }
         
@@ -951,38 +951,38 @@ public enum VAnchor : Anchor {
     
     public var view: UIView? {
         switch self {
-        case .Top(let v, _):
+        case .top(let v, _):
             return v
-        case .Bottom(let v, _):
+        case .bottom(let v, _):
             return v
-        case .Center(let v, _):
+        case .center(let v, _):
             return v
         }
     }
 }
 
-public func TopAnchor(view: UIView?, inset: CGFloat) -> VAnchor {
-    return VAnchor.Top(view, inset)
+public func TopAnchor(_ view: UIView?, inset: CGFloat) -> VAnchor {
+    return VAnchor.top(view, inset)
 }
 
-public func TopAnchor(view: UIView?) -> VAnchor {
+public func TopAnchor(_ view: UIView?) -> VAnchor {
     return TopAnchor(view, inset: 0)
 }
 
-public func BottomAnchor(view: UIView?, inset: CGFloat) -> VAnchor {
-    return VAnchor.Bottom(view, inset)
+public func BottomAnchor(_ view: UIView?, inset: CGFloat) -> VAnchor {
+    return VAnchor.bottom(view, inset)
 }
 
-public func BottomAnchor(view: UIView?) -> VAnchor {
+public func BottomAnchor(_ view: UIView?) -> VAnchor {
     return BottomAnchor(view, inset: 0)
 }
 
 
-public func VCenterAnchor(view: UIView?, inset: CGFloat) -> VAnchor {
-    return VAnchor.Center(view, inset)
+public func VCenterAnchor(_ view: UIView?, inset: CGFloat) -> VAnchor {
+    return VAnchor.center(view, inset)
 }
 
-public func VCenterAnchor(view: UIView?) -> VAnchor {
+public func VCenterAnchor(_ view: UIView?) -> VAnchor {
     return VCenterAnchor(view, inset: 0)
 }
 
@@ -993,7 +993,7 @@ private struct FollowOperation<T: Anchor> : LayoutOperation {
     let anchorToFollow: T
     let followerAnchor: T
     
-    func calculateLayouts(inout layouts: [UIView : CGRect], viewport: Viewport) {
+    func calculate(layouts: inout [UIView : CGRect], viewport: Viewport) {
         
         guard let toFollowView = anchorToFollow.view, let followerView = followerAnchor.view else {
             return
@@ -1001,10 +1001,10 @@ private struct FollowOperation<T: Anchor> : LayoutOperation {
         
         assert(toFollowView.superview == followerView.superview)
         
-        let anchorToFollowFrame = frameForView(toFollowView, layouts: &layouts)
-        let followerAnchorFrame = frameForView(followerView, layouts: &layouts)
+        let anchorToFollowFrame = frame(forView: toFollowView, layouts: &layouts)
+        let followerAnchorFrame = frame(forView: followerView, layouts: &layouts)
         
-        layouts[followerView] = followerAnchor.setValueForRect(anchorToFollow.valueForRect(anchorToFollowFrame), rect: followerAnchorFrame)
+        layouts[followerView] = followerAnchor.set(value: anchorToFollow.value(forRect: anchorToFollowFrame), forRect: followerAnchorFrame)
     }
     
     init(anchorToFollow: T, followerAnchor: T) {
@@ -1016,18 +1016,18 @@ private struct FollowOperation<T: Anchor> : LayoutOperation {
 
 // anchor.value + inset = withAnchor.value + inset
 
-public func Follow<T: Anchor>(anchor: T, withAnchor: T) -> LayoutOperation {
+public func Follow<T: Anchor>(_ anchor: T, withAnchor: T) -> LayoutOperation {
     return FollowOperation(anchorToFollow: anchor, followerAnchor: withAnchor)
 }
 
-public func FollowCenter(ofView: UIView, dx dx1: CGFloat, dy dy1: CGFloat, withView: UIView, dx dx2: CGFloat, dy dy2: CGFloat) -> LayoutOperation {
+public func FollowCenter(_ ofView: UIView, dx dx1: CGFloat, dy dy1: CGFloat, withView: UIView, dx dx2: CGFloat, dy dy2: CGFloat) -> LayoutOperation {
     return Combine([
             Follow(HCenterAnchor(ofView, inset: dx1), withAnchor: HCenterAnchor(withView, inset: dx2)),
             Follow(VCenterAnchor(ofView, inset: dy1), withAnchor: VCenterAnchor(withView, inset: dy2))
         ])
 }
 
-public func FollowCenter(ofView: UIView, withView: UIView) -> LayoutOperation {
+public func FollowCenter(_ ofView: UIView, withView: UIView) -> LayoutOperation {
     return FollowCenter(ofView, dx: 0, dy: 0, withView: withView, dx: 0, dy: 0)
 }
 
