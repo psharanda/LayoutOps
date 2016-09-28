@@ -664,10 +664,10 @@ private struct PutLayoutOperation<T:BoxDimension> : LayoutOperation {
                     } else {
                         if let views = views, let firstView = views.first {
                             
-                            let fr = frameForView(firstView, layouts: &layouts)
                             let size = T.getDimension(frameForView(firstView, layouts: &layouts)).size
                             
                             views.forEach {view in
+                                let fr = frameForView(firstView, layouts: &layouts)
                                 layouts[view] = T.setDimension(Dimension(origin: start, size: size), inRect: fr)
                             }
                             start += size
