@@ -13,6 +13,11 @@ private extension CGFloat {
         let scale = UIScreen.mainScreen().scale;
         return round(self * scale)/scale;
     }
+    
+    var ceilPixelPerfect: CGFloat {
+        let scale = UIScreen.mainScreen().scale;
+        return ceil(self * scale)/scale;
+    }
 }
 
 //MARK: - viewport
@@ -70,6 +75,48 @@ public struct Viewport {
         self.rightAnchor = rightAnchor
     }
     
+    public init(topAnchor: VViewAnchor, bottomAnchor: VViewAnchor) {
+        self.topAnchor = topAnchor
+        self.leftAnchor = .Parent
+        self.bottomAnchor = bottomAnchor
+        self.rightAnchor = .Parent
+    }
+    
+    public init(leftAnchor: HViewAnchor, rightAnchor: HViewAnchor) {
+        self.topAnchor = .Parent
+        self.leftAnchor = leftAnchor
+        self.bottomAnchor = .Parent
+        self.rightAnchor = rightAnchor
+    }
+    
+    public init(topAnchor: VViewAnchor) {
+        self.topAnchor = topAnchor
+        self.leftAnchor = .Parent
+        self.bottomAnchor = .Parent
+        self.rightAnchor = .Parent
+    }
+    
+    public init(leftAnchor: HViewAnchor) {
+        self.topAnchor = .Parent
+        self.leftAnchor = leftAnchor
+        self.bottomAnchor = .Parent
+        self.rightAnchor = .Parent
+    }
+    
+    public init(bottomAnchor: VViewAnchor) {
+        self.topAnchor = .Parent
+        self.leftAnchor = .Parent
+        self.bottomAnchor = bottomAnchor
+        self.rightAnchor = .Parent
+    }
+    
+    public init(rightAnchor: HViewAnchor) {
+        self.topAnchor = .Parent
+        self.leftAnchor = .Parent
+        self.bottomAnchor = .Parent
+        self.rightAnchor = rightAnchor
+    }
+    
     public init() {
         self.topAnchor = .Parent
         self.leftAnchor = .Parent
@@ -99,7 +146,7 @@ public extension LayoutOperation {
         var layoutsMap = [UIView: CGRect]()
         calculateLayouts(&layoutsMap, viewport: Viewport())
         for (view, frame) in layoutsMap {
-            view.frame = CGRect(x: frame.origin.x.pixelPerfect, y: frame.origin.y.pixelPerfect, width: frame.size.width.pixelPerfect, height: frame.size.height.pixelPerfect)
+            view.frame = CGRect(x: frame.origin.x.pixelPerfect, y: frame.origin.y.pixelPerfect, width: frame.size.width.ceilPixelPerfect, height: frame.size.height.ceilPixelPerfect)
         }
     }
     
@@ -287,7 +334,7 @@ public func SetSize(view: UIView?, width: CGFloat, height: CGFloat) -> LayoutOpe
     return Combine( [
         SetWidth(view, value: width),
         SetHeight(view, value: height)
-    ])
+        ])
 }
 
 public func SetSize(view: UIView?, size: CGSize) -> LayoutOperation {
@@ -303,7 +350,7 @@ public func SetFrame(view: UIView?, x: CGFloat, y: CGFloat, width: CGFloat, heig
         SetTop(view, value: y),
         SetWidth(view, value: width),
         SetHeight(view, value: height)
-    ])
+        ])
 }
 
 public func SetFrame(view: UIView?, frame: CGRect) -> LayoutOperation {
@@ -312,7 +359,7 @@ public func SetFrame(view: UIView?, frame: CGRect) -> LayoutOperation {
         SetTop(view, value: frame.origin.y),
         SetWidth(view, value: frame.size.width),
         SetHeight(view, value: frame.size.height)
-    ])
+        ])
 }
 
 //MARK: - size to fit
@@ -343,7 +390,7 @@ public enum SizeConstraint {
     case MinMax(CGFloat, CGFloat)
     
     
-     public var minValue: CGFloat {
+    public var minValue: CGFloat {
         switch self {
         case .Default, .Max:
             return CGFloat.min
@@ -429,14 +476,14 @@ public func SizeToFit(view: UIView?, width: SizeToFitIntention, height: SizeToFi
 
 /**
  same as SizeToFit(view, width: .Max, height: .Max)
-*/
+ */
 public func SizeToFitMax(view: UIView?) -> LayoutOperation {
     return SizeToFit(view, width: .Max, height: .Max)
 }
 
 /**
  same as SizeToFit(view, width: .Current, height: .Current)
-*/
+ */
 public func SizeToFit(view: UIView?) -> LayoutOperation {
     return SizeToFit(view, width: .Current, height: .Current)
 }
@@ -444,7 +491,7 @@ public func SizeToFit(view: UIView?) -> LayoutOperation {
 /**
  same as SizeToFit(view, width: .Max, height: .Max)
  */
-public func SizeToFitConstraints(view: UIView?, height: SizeToFitIntention, widthConstraint: SizeConstraint, heightConstraint: SizeConstraint) -> LayoutOperation {
+public func SizeToFitMaxWithConstraints(view: UIView?, widthConstraint: SizeConstraint, heightConstraint: SizeConstraint) -> LayoutOperation {
     return SizeToFit(view, width: .Max, height: .Max, widthConstraint: widthConstraint, heightConstraint: heightConstraint)
 }
 
@@ -667,7 +714,7 @@ private struct PutLayoutOperation<T:BoxDimension> : LayoutOperation {
                             let size = T.getDimension(frameForView(firstView, layouts: &layouts)).size
                             
                             views.forEach {view in
-                                let fr = frameForView(firstView, layouts: &layouts)
+                                let fr = frameForView(view, layouts: &layouts)
                                 layouts[view] = T.setDimension(Dimension(origin: start, size: size), inRect: fr)
                             }
                             start += size
@@ -1022,8 +1069,8 @@ public func Follow<T: Anchor>(anchor: T, withAnchor: T) -> LayoutOperation {
 
 public func FollowCenter(ofView: UIView, dx dx1: CGFloat, dy dy1: CGFloat, withView: UIView, dx dx2: CGFloat, dy dy2: CGFloat) -> LayoutOperation {
     return Combine([
-            Follow(HCenterAnchor(ofView, inset: dx1), withAnchor: HCenterAnchor(withView, inset: dx2)),
-            Follow(VCenterAnchor(ofView, inset: dy1), withAnchor: VCenterAnchor(withView, inset: dy2))
+        Follow(HCenterAnchor(ofView, inset: dx1), withAnchor: HCenterAnchor(withView, inset: dx2)),
+        Follow(VCenterAnchor(ofView, inset: dy1), withAnchor: VCenterAnchor(withView, inset: dy2))
         ])
 }
 
