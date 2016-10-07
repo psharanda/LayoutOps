@@ -893,13 +893,17 @@ public protocol Anchor {
 
 //MARK: - hanchor
 
-public enum HAnchor : Anchor {
+public protocol HAnchor: Anchor {
+    
+}
+
+private enum HAnchorType : HAnchor {
     
     case Left(UIView?, CGFloat)
     case Center(UIView?, CGFloat)
     case Right(UIView?, CGFloat)
     
-    public func valueForRect(rect: CGRect) -> CGFloat {
+    func valueForRect(rect: CGRect) -> CGFloat {
         switch self {
         case .Left(_, let inset):
             return CGRectGetMinX(rect) + inset
@@ -910,7 +914,7 @@ public enum HAnchor : Anchor {
         }
     }
     
-    public func setValueForRect(value: CGFloat, rect: CGRect) -> CGRect {
+    func setValueForRect(value: CGFloat, rect: CGRect) -> CGRect {
         var result = rect
         switch self {
         case .Left(_, let inset):
@@ -924,7 +928,7 @@ public enum HAnchor : Anchor {
         return result
     }
     
-    public var view: UIView? {
+    var view: UIView? {
         switch self {
         case .Left(let v, _):
             return v
@@ -937,7 +941,7 @@ public enum HAnchor : Anchor {
 }
 
 public func LeftAnchor(view: UIView?, inset: CGFloat) -> HAnchor {
-    return HAnchor.Left(view, inset)
+    return HAnchorType.Left(view, inset)
 }
 
 public func LeftAnchor(view: UIView?) -> HAnchor {
@@ -945,7 +949,7 @@ public func LeftAnchor(view: UIView?) -> HAnchor {
 }
 
 public func RightAnchor(view: UIView?, inset: CGFloat) -> HAnchor {
-    return HAnchor.Right(view, inset)
+    return HAnchorType.Right(view, inset)
 }
 
 public func RightAnchor(view: UIView?) -> HAnchor {
@@ -954,7 +958,7 @@ public func RightAnchor(view: UIView?) -> HAnchor {
 
 
 public func HCenterAnchor(view: UIView?, inset: CGFloat) -> HAnchor {
-    return HAnchor.Center(view, inset)
+    return HAnchorType.Center(view, inset)
 }
 
 public func HCenterAnchor(view: UIView?) -> HAnchor {
@@ -964,12 +968,17 @@ public func HCenterAnchor(view: UIView?) -> HAnchor {
 
 //MARK: - vanchor
 
-public enum VAnchor : Anchor {
+public protocol VAnchor: Anchor {
+    
+}
+
+private enum VAnchorType : VAnchor {
     case Top(UIView?, CGFloat)
     case Bottom(UIView?, CGFloat)
     case Center(UIView?, CGFloat)
+    case Baseline(UIView?, Baselinable?, BaselineType, CGFloat)
     
-    public func valueForRect(rect: CGRect) -> CGFloat {
+    func valueForRect(rect: CGRect) -> CGFloat {
         switch self {
         case .Top(_, let inset):
             return CGRectGetMinY(rect) + inset
@@ -977,10 +986,12 @@ public enum VAnchor : Anchor {
             return CGRectGetMaxY(rect) + inset
         case .Center(_, let inset):
             return CGRectGetMidY(rect) + inset
+        case .Baseline(_, let baselinable, let baselineType, let inset):
+            return rect.origin.y + (baselinable?.baselineValueOfType(baselineType, size: rect.size) ?? 0) + inset
         }
     }
     
-    public func setValueForRect(value: CGFloat, rect: CGRect) -> CGRect {
+    func setValueForRect(value: CGFloat, rect: CGRect) -> CGRect {
         
         var result = rect
         
@@ -991,12 +1002,14 @@ public enum VAnchor : Anchor {
             result.origin.y = value - result.size.height - inset
         case .Center(_, let inset):
             result.origin.y = value - result.size.height/2 - inset
+        case .Baseline(_, let baselinable, let baselineType, let inset):
+            result.origin.y = value - (baselinable?.baselineValueOfType(baselineType, size: result.size) ?? 0) - inset
         }
         
         return result
     }
     
-    public var view: UIView? {
+    var view: UIView? {
         switch self {
         case .Top(let v, _):
             return v
@@ -1004,12 +1017,14 @@ public enum VAnchor : Anchor {
             return v
         case .Center(let v, _):
             return v
+        case .Baseline(let v, _, _, _):
+            return v
         }
     }
 }
 
 public func TopAnchor(view: UIView?, inset: CGFloat) -> VAnchor {
-    return VAnchor.Top(view, inset)
+    return VAnchorType.Top(view, inset)
 }
 
 public func TopAnchor(view: UIView?) -> VAnchor {
@@ -1017,7 +1032,7 @@ public func TopAnchor(view: UIView?) -> VAnchor {
 }
 
 public func BottomAnchor(view: UIView?, inset: CGFloat) -> VAnchor {
-    return VAnchor.Bottom(view, inset)
+    return VAnchorType.Bottom(view, inset)
 }
 
 public func BottomAnchor(view: UIView?) -> VAnchor {
@@ -1026,7 +1041,7 @@ public func BottomAnchor(view: UIView?) -> VAnchor {
 
 
 public func VCenterAnchor(view: UIView?, inset: CGFloat) -> VAnchor {
-    return VAnchor.Center(view, inset)
+    return VAnchorType.Center(view, inset)
 }
 
 public func VCenterAnchor(view: UIView?) -> VAnchor {
@@ -1035,10 +1050,10 @@ public func VCenterAnchor(view: UIView?) -> VAnchor {
 
 //MARK: - follow
 
-private struct FollowOperation<T: Anchor> : LayoutOperation {
+private struct FollowOperation: LayoutOperation {
     
-    let anchorToFollow: T
-    let followerAnchor: T
+    let anchorToFollow: Anchor
+    let followerAnchor: Anchor
     
     func calculateLayouts(inout layouts: [UIView : CGRect], viewport: Viewport) {
         
@@ -1054,7 +1069,7 @@ private struct FollowOperation<T: Anchor> : LayoutOperation {
         layouts[followerView] = followerAnchor.setValueForRect(anchorToFollow.valueForRect(anchorToFollowFrame), rect: followerAnchorFrame)
     }
     
-    init(anchorToFollow: T, followerAnchor: T) {
+    init(anchorToFollow: Anchor, followerAnchor: Anchor) {
         self.anchorToFollow = anchorToFollow
         self.followerAnchor = followerAnchor
     }
@@ -1063,7 +1078,11 @@ private struct FollowOperation<T: Anchor> : LayoutOperation {
 
 // anchor.value + inset = withAnchor.value + inset
 
-public func Follow<T: Anchor>(anchor: T, withAnchor: T) -> LayoutOperation {
+public func Follow(anchor: HAnchor, withAnchor: HAnchor) -> LayoutOperation {
+    return FollowOperation(anchorToFollow: anchor, followerAnchor: withAnchor)
+}
+
+public func Follow(anchor: VAnchor, withAnchor: VAnchor) -> LayoutOperation {
     return FollowOperation(anchorToFollow: anchor, followerAnchor: withAnchor)
 }
 
@@ -1078,3 +1097,37 @@ public func FollowCenter(ofView: UIView, withView: UIView) -> LayoutOperation {
     return FollowCenter(ofView, dx: 0, dy: 0, withView: withView, dx: 0, dy: 0)
 }
 
+
+public enum BaselineType {
+    case First
+    case Last
+}
+
+public func BaselineAnchor<T: UIView where T: Baselinable>(view: T?, type: BaselineType, inset: CGFloat) -> VAnchor {
+    return VAnchorType.Baseline(view, view, type, inset)
+}
+
+public func BaselineAnchor<T: UIView where T: Baselinable>(view: T?, type: BaselineType) -> VAnchor {
+    return VAnchorType.Baseline(view, view, type, 0)
+}
+
+public func BaselineAnchor<T: UIView where T: Baselinable>(view: T?) -> VAnchor {
+    return VAnchorType.Baseline(view, view, .First, 0)
+}
+
+public protocol Baselinable {
+    func baselineValueOfType(type: BaselineType, size: CGSize) -> CGFloat
+}
+
+extension UILabel: Baselinable {
+    public func baselineValueOfType(type: BaselineType, size: CGSize) -> CGFloat {
+        let sz = sizeThatFits(size)
+        
+        switch type {
+        case .First:
+            return (size.height - sz.height)/2 + font.ascender
+        case .Last:
+            return size.height - (size.height - sz.height)/2 + font.descender
+        }
+    }
+}
