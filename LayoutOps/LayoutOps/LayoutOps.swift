@@ -233,18 +233,18 @@ private protocol DirectLayoutAction {
     static func updateRect(rect: CGRect, withValue: CGFloat) -> CGRect
 }
 
-private struct LeftDirectLayoutAction : DirectLayoutAction {
-    static func updateRect(rect: CGRect, withValue: CGFloat) -> CGRect {
-        var result = rect
-        result.origin.x = withValue
-        return result
-    }
-}
-
 private struct TopDirectLayoutAction : DirectLayoutAction {
     static func updateRect(rect: CGRect, withValue: CGFloat) -> CGRect {
         var result = rect
         result.origin.y = withValue
+        return result
+    }
+}
+
+private struct CenterYDirectLayoutAction : DirectLayoutAction {
+    static func updateRect(rect: CGRect, withValue: CGFloat) -> CGRect {
+        var result = rect
+        result.origin.y = withValue - rect.size.height/2
         return result
     }
 }
@@ -254,6 +254,22 @@ private struct BottomDirectLayoutAction : DirectLayoutAction {
         var result = rect
         result.origin.y = withValue - rect.size.height
         
+        return result
+    }
+}
+
+private struct LeftDirectLayoutAction : DirectLayoutAction {
+    static func updateRect(rect: CGRect, withValue: CGFloat) -> CGRect {
+        var result = rect
+        result.origin.x = withValue
+        return result
+    }
+}
+
+private struct CenterXDirectLayoutAction : DirectLayoutAction {
+    static func updateRect(rect: CGRect, withValue: CGFloat) -> CGRect {
+        var result = rect
+        result.origin.x = withValue - rect.size.width/2
         return result
     }
 }
@@ -316,6 +332,10 @@ public func SetLeft(view: UIView?, value: CGFloat) -> LayoutOperation {
     return DirectLayoutOperation<LeftDirectLayoutAction>(view: view, value: value)
 }
 
+public func SetCenterX(view: UIView?, value: CGFloat) -> LayoutOperation {
+    return DirectLayoutOperation<CenterXDirectLayoutAction>(view: view, value: value)
+}
+
 public func SetRight(view: UIView?, value: CGFloat) -> LayoutOperation {
     return DirectLayoutOperation<RightDirectLayoutAction>(view: view, value: value)
 }
@@ -324,8 +344,44 @@ public func SetTop(view: UIView?, value: CGFloat) -> LayoutOperation {
     return DirectLayoutOperation<TopDirectLayoutAction>(view: view, value: value)
 }
 
+public func SetCenterY(view: UIView?, value: CGFloat) -> LayoutOperation {
+    return DirectLayoutOperation<CenterYDirectLayoutAction>(view: view, value: value)
+}
+
 public func SetBottom(view: UIView?, value: CGFloat) -> LayoutOperation {
     return DirectLayoutOperation<BottomDirectLayoutAction>(view: view, value: value)
+}
+
+//MARK: - origin
+
+public func SetOrigin(view: UIView?, x: CGFloat, y: CGFloat) -> LayoutOperation {
+    return Combine( [
+        SetX(view, value: x),
+        SetY(view, value: y)
+        ])
+}
+
+public func SetOrigin(view: UIView?, point: CGPoint) -> LayoutOperation {
+    return Combine( [
+        SetX(view, value: point.x),
+        SetY(view, value: point.y)
+        ])
+}
+
+//MARK: - center
+
+public func SetCenter(view: UIView?, x: CGFloat, y: CGFloat) -> LayoutOperation {
+    return Combine( [
+        SetCenterX(view, value: x),
+        SetCenterY(view, value: y)
+        ])
+}
+
+public func SetCenter(view: UIView?, point: CGPoint) -> LayoutOperation {
+    return Combine( [
+        SetCenterX(view, value: point.x),
+        SetCenterY(view, value: point.y)
+        ])
 }
 
 //MARK: - size
