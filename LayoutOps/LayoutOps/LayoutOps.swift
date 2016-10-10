@@ -40,6 +40,19 @@ public enum HViewAnchor {
             return layouts[v].flatMap { $0.origin.x + $0.size.width/2 }
         }
     }
+    
+    var view: UIView? {
+        switch self {
+        case .Parent:
+            return nil
+        case .Left(let v):
+            return v
+        case .Right(let v):
+            return v
+        case .HCenter(let v):
+            return v
+        }
+    }
 }
 
 public enum VViewAnchor {
@@ -60,6 +73,19 @@ public enum VViewAnchor {
             return layouts[v].flatMap { $0.origin.y + $0.size.height/2 }
         }
     }
+    
+    var view: UIView? {
+        switch self {
+        case .Parent:
+            return nil
+        case .Top(let v):
+            return v
+        case .Bottom(let v):
+            return v
+        case .VCenter(let v):
+            return v
+        }
+    }
 }
 
 public struct Viewport {
@@ -76,52 +102,34 @@ public struct Viewport {
     }
     
     public init(topAnchor: VViewAnchor, bottomAnchor: VViewAnchor) {
-        self.topAnchor = topAnchor
-        self.leftAnchor = .Parent
-        self.bottomAnchor = bottomAnchor
-        self.rightAnchor = .Parent
+        self.init(topAnchor: topAnchor, leftAnchor: .Parent, bottomAnchor: bottomAnchor, rightAnchor: .Parent)
     }
     
     public init(leftAnchor: HViewAnchor, rightAnchor: HViewAnchor) {
-        self.topAnchor = .Parent
-        self.leftAnchor = leftAnchor
-        self.bottomAnchor = .Parent
-        self.rightAnchor = rightAnchor
+        self.init(topAnchor: .Parent, leftAnchor: leftAnchor, bottomAnchor: .Parent, rightAnchor: rightAnchor)
     }
     
     public init(topAnchor: VViewAnchor) {
-        self.topAnchor = topAnchor
-        self.leftAnchor = .Parent
-        self.bottomAnchor = .Parent
-        self.rightAnchor = .Parent
+        
+        self.init(topAnchor: topAnchor, leftAnchor: .Parent, bottomAnchor: .Parent, rightAnchor: .Parent)
     }
     
     public init(leftAnchor: HViewAnchor) {
-        self.topAnchor = .Parent
-        self.leftAnchor = leftAnchor
-        self.bottomAnchor = .Parent
-        self.rightAnchor = .Parent
+        self.init(topAnchor: .Parent, leftAnchor: leftAnchor, bottomAnchor: .Parent, rightAnchor: .Parent)
     }
     
     public init(bottomAnchor: VViewAnchor) {
-        self.topAnchor = .Parent
-        self.leftAnchor = .Parent
-        self.bottomAnchor = bottomAnchor
-        self.rightAnchor = .Parent
+        
+        self.init(topAnchor: .Parent, leftAnchor: .Parent, bottomAnchor: bottomAnchor, rightAnchor: .Parent)
     }
     
     public init(rightAnchor: HViewAnchor) {
-        self.topAnchor = .Parent
-        self.leftAnchor = .Parent
-        self.bottomAnchor = .Parent
-        self.rightAnchor = rightAnchor
+        self.init(topAnchor: .Parent, leftAnchor: .Parent, bottomAnchor: .Parent, rightAnchor: rightAnchor)
     }
     
     public init() {
-        self.topAnchor = .Parent
-        self.leftAnchor = .Parent
-        self.bottomAnchor = .Parent
-        self.rightAnchor = .Parent
+        
+        self.init(topAnchor: .Parent, leftAnchor: .Parent, bottomAnchor: .Parent, rightAnchor: .Parent)
     }
     
     func apply(bounds: CGRect, layouts:[UIView: CGRect]) -> CGRect {
@@ -131,6 +139,48 @@ public struct Viewport {
         let bottom = bottomAnchor.anchorValue(layouts) ?? bounds.maxY
         
         return CGRect(x: left, y: top, width: right - left, height: bottom - top)
+    }
+    
+    func verify(superview: UIView) {
+        
+        
+        var topIsWrong = false
+        var leftIsWrong = false
+        var bottomIsWrong = false
+        var rightIsWrong = false
+        
+        if let tv = topAnchor.view where tv.superview !== superview {
+            topIsWrong = true
+        }
+        
+        if let lv = leftAnchor.view where lv.superview  !== superview {
+            leftIsWrong = true
+        }
+        
+        if let bv = bottomAnchor.view where bv.superview  !== superview {
+            bottomIsWrong = true
+        }
+        
+        if let rv = rightAnchor.view where rv.superview  !== superview {
+            rightIsWrong = true
+        }
+        
+        if topIsWrong || leftIsWrong || bottomIsWrong || rightIsWrong {
+            
+            print("[LayoutOps:WARNING] Viewport anchor views have different superviews")
+            if topIsWrong {
+                print("Top Anchor is Wrong: \(topAnchor.view)")
+            }
+            if leftIsWrong {
+                print("Left Anchor is Wrong: \(leftAnchor.view)")
+            }
+            if bottomIsWrong {
+                print("Bottom Anchor is Wrong: \(bottomAnchor.view)")
+            }
+            if rightIsWrong {
+                print("Right Anchor is Wrong: \(rightAnchor.view)")
+            }
+        }
     }
 }
 
@@ -684,7 +734,12 @@ private struct PutLayoutOperation<T:BoxDimension> : LayoutOperation {
             }
             
             if let v = view?.superview {
-                assert(superview == nil || v == superview, "Layout intentions can't be calculated for views with diffferent superview")
+                
+                if !(superview == nil || v == superview) {
+                    print("[LayoutOps:WARNING] Put operation will produce undefined results for views with different superview")
+                    print("Correct Superview: \(superview)")
+                    print("Wrong Superview: \(v)")
+                }
                 superview = v;
             }
         }
@@ -697,6 +752,8 @@ private struct PutLayoutOperation<T:BoxDimension> : LayoutOperation {
             if let superViewFrame = layouts[superview] {
                 bounds = CGRect(x: 0, y: 0, width: superViewFrame.width, height: superViewFrame.height)
             }
+            
+            viewport.verify(superview)
             
             bounds = viewport.apply(bounds, layouts: layouts)
             
@@ -1121,7 +1178,11 @@ private struct FollowOperation: LayoutOperation {
         let toFollowView = anchorToFollow.view
         let followerView = followerAnchor.view
         
-        assert(toFollowView.superview == followerView.superview)
+        if(toFollowView.superview != followerView.superview) {
+            print("[LayoutOps:WARNING] Follow operation will produce undefined results for views with different superview")
+            print("View to follow: \(toFollowView)")
+            print("Follower view: \(followerView)")
+        }
         
         let anchorToFollowFrame = frameForView(toFollowView, layouts: &layouts)
         let followerAnchorFrame = frameForView(followerView, layouts: &layouts)
