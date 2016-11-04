@@ -24,30 +24,6 @@ private extension CGFloat {
     }
 }
 
-//public struct ViewLayoutMap {
-//    
-//    private var dict = [Int: CGRect]()
-//    private var set = [UIView]()
-//    
-//    func forEach(f: (UIView, CGRect) -> Void) {
-////         Set(set).forEach { value in
-////            f(value, dict[value.hashValue]!)
-////        }
-//    }
-//    
-//    subscript(key: UIView) -> CGRect? {
-//        get {
-//            return key.frame
-//        }
-//        
-//        set {
-//            if let newValue = newValue {
-//                key.frame = newValue
-//            }
-//        }
-//    }
-//}
-
 public typealias ViewLayoutMap = [UIView: CGRect]
 
 //MARK: - LayoutOperation

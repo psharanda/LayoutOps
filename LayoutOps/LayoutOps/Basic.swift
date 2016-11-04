@@ -20,7 +20,7 @@ private struct BasicLayoutOperation: LayoutOperation {
         viewport.verify(superview)
         
         
-        let superviewFrame = layouts[superview] ?? superview.frame
+        let superviewFrame = frameForView(superview, layouts: &layouts)
         let superviewBounds = CGRect(x: 0, y: 0, width: superviewFrame.width, height: superviewFrame.height)
         let superviewBoundsInViewPort = viewport.apply(superviewBounds, layouts: layouts)
         
