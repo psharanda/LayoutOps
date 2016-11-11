@@ -43,7 +43,7 @@ class FollowDemo_CornerAnchors: UIView, DemoViewProtocol {
     }
     
     static let title = "Corners"
-    static let comments = "Follow operation sets one view's anchor to be the same with others view anchor. Anchors can be horizontal and vertical, and can be followed only with anchors of the same type."
+    static let comments = "Follow operation makes one view's anchor to be the same with others view anchor. Anchors can be horizontal and vertical, and can be followed only with anchors of the same type"
 }
 
 class FollowDemo_CenterAnchors: UIView, DemoViewProtocol {
@@ -85,7 +85,7 @@ class FollowDemo_CenterAnchors: UIView, DemoViewProtocol {
     }
     
     static let title = "Center"
-    static let comments = "There are not only edge anchors, but also center anchors."
+    static let comments = "There are not only edge anchors, but also center anchors"
 }
 
 class FollowDemo_SizeAnchors: UIView, DemoViewProtocol {
@@ -122,7 +122,7 @@ class FollowDemo_SizeAnchors: UIView, DemoViewProtocol {
     }
     
     static let title = "Size"
-    static let comments = "Ah yes, there are also size anchors. Size is kind of awkward anchor, but why not, it can be followed as well"
+    static let comments = "There are also size anchors"
 }
 
 class FollowDemo_BaselineAnchors: UIView, DemoViewProtocol {
@@ -164,6 +164,6 @@ class FollowDemo_BaselineAnchors: UIView, DemoViewProtocol {
     }
     
     static let title = "Baseline"
-    static let comments = "Baseline anchor is special. Only Baselinable views have it. For the moment only UILabel is confirmed this protocol. Baseline anchor can be first or last."
+    static let comments = "Baseline anchor is special. Only Baselinable views have it. For the moment only UILabel is conforming this protocol. Baseline anchor can be first or last (belongs to line first or last line of text)."
 }
  

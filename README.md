@@ -1,54 +1,20 @@
 # LayoutOps
+
 Frame based layout library for UIKit written in Swift
 
-# Usage
+## How to use
 
-```swift
-import UIKit
+Check demos here [here](README/DEMOS.md)
 
-class ViewController: UIViewController {
-    
-    var redView: UIView! = nil
-    var orangeView: UIView! = nil
-    
-    var label: UILabel! = nil
-    
+## Integration
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = UIColor.whiteColor()
+### Carthage
 
-        orangeView = UIView.init()
-        orangeView.backgroundColor = UIColor.orangeColor()
-        view.addSubview(orangeView)
-        
-        redView = UIView.init()
-        redView.backgroundColor = UIColor.redColor()
-        view.addSubview(redView)
-        
-        label = UILabel()
-        label.numberOfLines = 0
-        label.text = "Nullam quis risus eget urna mollis ornare vel eu leo. Cras mattis consectetur purus sit amet fermentum. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum."
-        view.addSubview(label)
-    }
+Add `github "psharanda/LayoutOps"` to your `Cartfile`
 
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        Combine( [
-            HPut(
-                [Flex(), Fix(orangeView,100), Flex(2), Fix(redView, 100),Flex()]
-            ),
-            VPut(
-                [Flex(), Fix(orangeView, 100), Flex()]
-            ),
-            VPut(
-                [Flex(), Fix(redView, 100), Flex()]
-            ),
-            HFillVFit(label, inset: 20),
-            AlignBottom(label, inset: 20)
-            ]).layout()
-    }
-}
-```   
-<img src="https://raw.githubusercontent.com/psharanda/LayoutOps/master/README/demo.png" alt="Hello LayoutOps!!!" width="244" height="401"/>
+### Manual
+
+1. Add LayoutOps to you project as a submodule using `git submodule add https://github.com/psharanda/LayoutOps.git`
+2. Open the `LayoutOps` folder & drag `LayoutOps.xcodeproj` into your project tree
+3. Add `LayoutOps.framework` to your target's `Link Binary with Libraries` Build Phase
+4. Import LayoutOps with `import LayoutOps` and you're ready to go

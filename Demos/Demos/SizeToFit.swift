@@ -42,8 +42,8 @@ class SizeToFitDemo_Value: UIView, DemoViewProtocol {
         ).layout()
     }
     
-    static let title = ".Value"
-    static let comments = "SizeToFit operation fits view in defined box using -sizeThatFits: method. Box (width and height) can be defined using different options. " + ".Value option sets exact value for box. Result size will be equal or less than it."
+    static let title = ".Value(x)"
+    static let comments = "SizeToFit operation fits view in defined box using -sizeThatFits: method. Box (width and height) can be defined using different options. .Value(x) option sets exact value for box. Result size will be equal or less than it."
 }
 
 class SizeToFitDemo_Max: UIView, DemoViewProtocol {
@@ -83,7 +83,7 @@ class SizeToFitDemo_Max: UIView, DemoViewProtocol {
     }
     
     static let title = ".Max"
-    static let comments = "SizeToFit operation fits view in defined box using -sizeThatFits: method. Box (width and height) can be defined using different options. " + ".Max option sets infinite value for box. Result size will be most comfortable for view to display content. WARNING: multiline labels are comfortable with single line, don't use .Max for them"
+    static let comments = ".Max option sets infinite value for fitting box. Result size will be most comfortable for view to display content. WARNING: multiline labels are comfortable with single line, don't use .Max for them"
 }
 
 class SizeToFitDemo_Current: UIView, DemoViewProtocol {
@@ -125,7 +125,7 @@ class SizeToFitDemo_Current: UIView, DemoViewProtocol {
     }
     
     static let title = ".Current"
-    static let comments = "SizeToFit operation fits view in defined box using -sizeThatFits: method. Box (width and height) can be defined using different options. " + ".Current options sets value for box with current frame's width or height."
+    static let comments = ".Current option sets value for box with current frame's width or height."
 }
 
 class SizeToFitDemo_KeepCurrent: UIView, DemoViewProtocol {
@@ -168,7 +168,7 @@ class SizeToFitDemo_KeepCurrent: UIView, DemoViewProtocol {
     }
     
     static let title = ".KeepCurrent"
-    static let comments = "SizeToFit operation fits view in defined box using -sizeThatFits: method. Box (width and height) can be defined using different options. " + ".KeepCurrent options sets value for box with current frame's width or height, but result size will be still equal to those original frame values. This is usefull to layout multiline labels. First you need to set somehow label width, and then call something like SizeToFit(label, width: .KeepCurrent, height: .Max)."
+    static let comments = ".KeepCurrent options sets value for box with current frame's width or height, but result size will be still equal to those original frame values. This is usefull to layout multiline labels. First you need to set somehow label width, and then call something like SizeToFit(label, width: .KeepCurrent, height: .Max)."
 }
 
 class SizeToFitDemo_MinMax: UIView, DemoViewProtocol {

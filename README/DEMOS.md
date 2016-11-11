@@ -1,6 +1,6 @@
 ### Basic
 #### Set*
-Set* operations directly manipulate according frame values
+Set* operations directly put frame values
 ```swift
 
 
@@ -18,7 +18,7 @@ Combine(
 ```
 <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Basic_Set-_portrait.png" alt="Set*" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Basic__Set-_landscape.png" alt="Set*" width="240.0" height="160.0"/>
 #### Center
-HCenter (horizontally), VCenter (vertically) and Center (both) operations allows to center view. Insets can be used to adjust center point (see green view, 100 pt from bottom). Size of view usually should be set with previous operations
+HCenter (horizontally), VCenter (vertically) and Center (both) operations allows to center view in superview. Insets can be used to adjust center point (see green view, 100 pt from bottom). Size of view usually should be set with previous operations
 ```swift
 
 
@@ -37,7 +37,7 @@ Combine(
 ```
 <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Basic_Center_portrait.png" alt="Center" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Basic__Center_landscape.png" alt="Center" width="240.0" height="160.0"/>
 #### Fill
-HFill (horizontally), VFill (vertically) and Fill (both) operations make view to fill its superview. Insets can be used to control how much space to left unfilled from the superview edges
+HFill (horizontally), VFill (vertically) and Fill (both) operations make view to fill its superview. Insets can be used to control how much space to be left unfilled from the superview edges
 ```swift
 
 
@@ -56,7 +56,7 @@ Combine(
 ```
 <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Basic_Fill_portrait.png" alt="Fill" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Basic__Fill_landscape.png" alt="Fill" width="240.0" height="160.0"/>
 #### Align
-Align* operations allow to put view relatively to edges of superview. Inset value can be used to determine distance to edge. Size of view usually should be set with previous operations.
+Align* operations allow to put view relatively to edges of superview. Inset value can be used to set distance to edge. Size of view usually should be set with previous operations.
 ```swift
 
 
@@ -76,8 +76,8 @@ Combine(
 ```
 <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Basic_Align_portrait.png" alt="Align" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Basic__Align_landscape.png" alt="Align" width="240.0" height="160.0"/>
 ### SizeToFit
-#### .Value
-SizeToFit operation fits view in defined box using -sizeThatFits: method. Box (width and height) can be defined using different options. .Value option sets exact value for box. Result size will be equal or less than it.
+#### .Value(x)
+SizeToFit operation fits view in defined box using -sizeThatFits: method. Box (width and height) can be defined using different options. .Value(x) option sets exact value for box. Result size will be equal or less than it.
 ```swift
 
 
@@ -94,9 +94,9 @@ Combine(
     HCenter(title)
 ).layout()
 ```
-<img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/SizeToFit_.Value_portrait.png" alt=".Value" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/SizeToFit__.Value_landscape.png" alt=".Value" width="240.0" height="160.0"/>
+<img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/SizeToFit_.Value(x)_portrait.png" alt=".Value(x)" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/SizeToFit__.Value(x)_landscape.png" alt=".Value(x)" width="240.0" height="160.0"/>
 #### .Max
-SizeToFit operation fits view in defined box using -sizeThatFits: method. Box (width and height) can be defined using different options. .Max option sets infinite value for box. Result size will be most comfortable for view to display content. WARNING: multiline labels are comfortable with single line, don't use .Max for them
+.Max option sets infinite value for fitting box. Result size will be most comfortable for view to display content. WARNING: multiline labels are comfortable with single line, don't use .Max for them
 ```swift
 
 
@@ -115,7 +115,7 @@ Combine(
 ```
 <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/SizeToFit_.Max_portrait.png" alt=".Max" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/SizeToFit__.Max_landscape.png" alt=".Max" width="240.0" height="160.0"/>
 #### .Current
-SizeToFit operation fits view in defined box using -sizeThatFits: method. Box (width and height) can be defined using different options. .Current options sets value for box with current frame's width or height.
+.Current option sets value for box with current frame's width or height.
 ```swift
 
 
@@ -137,7 +137,7 @@ Combine(
 ```
 <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/SizeToFit_.Current_portrait.png" alt=".Current" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/SizeToFit__.Current_landscape.png" alt=".Current" width="240.0" height="160.0"/>
 #### .KeepCurrent
-SizeToFit operation fits view in defined box using -sizeThatFits: method. Box (width and height) can be defined using different options. .KeepCurrent options sets value for box with current frame's width or height, but result size will be still equal to those original frame values. This is usefull to layout multiline labels. First you need to set somehow label width, and then call something like SizeToFit(label, width: .KeepCurrent, height: .Max).
+.KeepCurrent options sets value for box with current frame's width or height, but result size will be still equal to those original frame values. This is usefull to layout multiline labels. First you need to set somehow label width, and then call something like SizeToFit(label, width: .KeepCurrent, height: .Max).
 ```swift
 
 
@@ -172,7 +172,7 @@ Combine(
 <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/SizeToFit_Min-Max constraints_portrait.png" alt="Min/Max constraints" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/SizeToFit__Min-Max constraints_landscape.png" alt="Min/Max constraints" width="240.0" height="160.0"/>
 ### Follow
 #### Corners
-Follow operation sets one view's anchor to be the same with others view anchor. Anchors can be horizontal and vertical, and can be followed only with anchors of the same type.
+Follow operation makes one view's anchor to be the same with others view anchor. Anchors can be horizontal and vertical, and can be followed only with anchors of the same type
 ```swift
 
 
@@ -192,7 +192,7 @@ Combine(
 ```
 <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Follow_Corners_portrait.png" alt="Corners" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Follow__Corners_landscape.png" alt="Corners" width="240.0" height="160.0"/>
 #### Center
-There are not only edge anchors, but also center anchors.
+There are not only edge anchors, but also center anchors
 ```swift
 
 
@@ -213,7 +213,7 @@ Combine(
 ```
 <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Follow_Center_portrait.png" alt="Center" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Follow__Center_landscape.png" alt="Center" width="240.0" height="160.0"/>
 #### Size
-Ah yes, there are also size anchors. Size is kind of awkward anchor, but why not, it can be followed as well
+There are also size anchors
 ```swift
 
 
@@ -232,7 +232,7 @@ Combine(
 ```
 <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Follow_Size_portrait.png" alt="Size" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Follow__Size_landscape.png" alt="Size" width="240.0" height="160.0"/>
 #### Baseline
-Baseline anchor is special. Only Baselinable views have it. For the moment only UILabel is confirmed this protocol. Baseline anchor can be first or last.
+Baseline anchor is special. Only Baselinable views have it. For the moment only UILabel is conforming this protocol. Baseline anchor can be first or last (belongs to line first or last line of text).
 ```swift
 
 
@@ -403,7 +403,7 @@ Combine(
 <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Put_Fix+Flex grid_portrait.png" alt="Fix+Flex grid" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Put__Fix+Flex grid_landscape.png" alt="Fix+Flex grid" width="240.0" height="160.0"/>
 ### Viewport
 #### Demo
-Combine operation not only allows to group other operations, but also define viewport for them. Viewport can be defined using anchors of childview, or nil anchor if using superview edges
+Combine operation is not only for grouping other operations, but it also defines viewport for them. Viewport can be defined using anchors of any childview, or nil anchor if using superview edges
 ```swift
 
 

@@ -47,5 +47,5 @@ class ViewPortDemo: UIView, DemoViewProtocol {
     }
     
     static let title = "Demo"
-    static let comments = "Combine operation not only allows to group other operations, but also define viewport for them. Viewport can be defined using anchors of childview, or nil anchor if using superview edges"
+    static let comments = "Combine operation is not only for grouping other operations, but it also defines viewport for them. Viewport can be defined using anchors of any childview, or nil anchor if using superview edges"
 }
