@@ -27372,4 +27372,1512 @@ class ViewPortDemo: UIView, DemoViewProtocol {
     
     static let title = "Demo"
     static let comments = "Combine operation not only allows to group other operations, but also define viewport for them. Viewport can be defined using anchors of childview, or nil anchor if using superview edges"
+}//
+//  Created by Pavel Sharanda on 19.10.16.
+//  Copyright © 2016 Pavel Sharanda. All rights reserved.
+//
+
+
+import UIKit
+
+@UIApplicationMain
+class AppDelegate: UIResponder, UIApplicationDelegate {
+
+    var window: UIWindow?
+
+
+    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+        let nc = UINavigationController(rootViewController: ViewController())
+        
+        window = UIWindow(frame: UIScreen.mainScreen().bounds)
+        window?.rootViewController = nc
+        window?.makeKeyAndVisible()
+        return true
+
+    }
+
+    func applicationWillResignActive(application: UIApplication) {
+        // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
+        // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+    }
+
+    func applicationDidEnterBackground(application: UIApplication) {
+        // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
+        // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    }
+
+    func applicationWillEnterForeground(application: UIApplication) {
+        // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    }
+
+    func applicationDidBecomeActive(application: UIApplication) {
+        // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    }
+
+    func applicationWillTerminate(application: UIApplication) {
+        // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    }
+
+
+}
+
+//
+//  Created by Pavel Sharanda on 19.10.16.
+//  Copyright © 2016 Pavel Sharanda. All rights reserved.
+//
+
+
+import UIKit
+import LayoutOps
+
+class BasicDemo_Set: UIView, DemoViewProtocol {
+    
+    let blueView = makeBlueView()
+    let greenView = makeGreenView()
+    let redView = makeRedView()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        addSubview(blueView)
+        addSubview(greenView)
+        addSubview(redView)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        Combine(
+            SetOrigin(blueView, x: 10, y: 10),
+            SetSize(blueView, width: 100, height: 100),
+            
+            SetFrame(greenView, x: 120, y: 20, width: 50, height: 190),
+            
+            SetX(redView, value: 5),
+            SetY(redView, value: 120),
+            SetWidth(redView, value: 45),
+            SetHeight(redView, value: 100)
+        ).layout()
+    }
+  
+    static let title = "Set*"
+    static let comments = "Set* operations directly manipulate according frame values"
+}
+
+class BasicDemo_Center: UIView, DemoViewProtocol {
+    let blueView = makeBlueView()
+    let greenView = makeGreenView()
+    let redView = makeRedView()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        addSubview(blueView)
+        addSubview(greenView)
+        addSubview(redView)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        Combine(
+            SetY(blueView, value: 5),
+            SetSize(blueView, width: 100, height: 100),
+            HCenter(blueView),
+            
+            SetX(greenView, value: 5),
+            SetSize(greenView, width: 50, height: 120),
+            VCenter(greenView, topInset: 0, bottomInset: 100),
+            
+            SetSize(redView, width: 45, height: 100),
+            Center(redView)
+        ).layout()
+    }
+    
+    static let title = "Center"
+    static let comments = "HCenter (horizontally), VCenter (vertically) and Center (both) operations allows to center view. Insets can be used to adjust center point (see green view, 100 pt from bottom). Size of view usually should be set with previous operations"
+}
+
+class BasicDemo_Fill: UIView, DemoViewProtocol {
+    
+    let redView = makeRedView()
+    let blueView = makeBlueView()
+    let greenView = makeGreenView()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        addSubview(redView)
+        addSubview(blueView)
+        addSubview(greenView)
+        
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        Combine(
+            Fill(redView, inset: 5),
+            
+            SetY(blueView, value: 20),
+            SetHeight(blueView, value: 50),
+            HFill(blueView, inset: 10),
+            
+            SetX(greenView, value: 25),
+            SetWidth(greenView, value: 50),
+            VFill(greenView, topInset: 100, bottomInset: 15)
+            
+        ).layout()
+    }
+    
+    static let title = "Fill"
+    static let comments = "HFill (horizontally), VFill (vertically) and Fill (both) operations make view to fill its superview. Insets can be used to control how much space to left unfilled from the superview edges"
+}
+
+class BasicDemo_Align: UIView, DemoViewProtocol {
+    let blueView = makeBlueView()
+    let greenView = makeGreenView()
+    let redView = makeRedView()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        addSubview(blueView)
+        addSubview(greenView)
+        addSubview(redView)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        Combine(            
+            SetSize(blueView, width: 100, height: 100),
+            AlignLeft(blueView, inset: 5),
+            AlignTop(blueView, inset: 5),
+            
+            SetSize(greenView, width: 50, height: 120),
+            AlignLeft(greenView, inset: 10),
+            AlignBottom(greenView, inset: 15),
+            
+            SetSize(redView, width: 45, height: 100),
+            AlignRight(redView, inset: 25),
+            AlignTop(redView, inset: 25)
+        ).layout()
+    }
+    
+    static let title = "Align"
+    static let comments = "Align* operations allow to put view relatively to edges of superview. Inset value can be used to determine distance to edge. Size of view usually should be set with previous operations."
+}
+
+
+//
+//  Created by Pavel Sharanda on 19.10.16.
+//  Copyright © 2016 Pavel Sharanda. All rights reserved.
+//
+
+
+import UIKit
+import LayoutOps
+
+
+class DemoViewController: UIViewController {
+    
+    let demoView: UIView
+    
+    let descBackground = UIView()
+    let descLabel = UILabel()
+    
+    init(title: String, description: String, demoView: UIView) {
+        self.demoView = demoView
+        super.init(nibName: nil, bundle: nil)
+        self.title = title
+        
+        descLabel.text = description
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        extendedLayoutIncludesOpaqueBars = true
+        view.backgroundColor = UIColor(red: 0xF5/255.0, green: 0xF5/255.0, blue: 0xFA/255.0, alpha: 1)
+        view.addSubview(demoView)
+        
+        demoView.backgroundColor = UIColor.whiteColor()
+        demoView.layer.borderColor = UIColor(red: 0xE8/255.0, green: 0xE8/255.0, blue: 0xF3/255.0, alpha: 1).CGColor
+        demoView.layer.borderWidth = 1
+        
+        descBackground.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
+        view.addSubview(descBackground)
+        
+        descLabel.textColor = UIColor.whiteColor()
+        descLabel.textAlignment = .Center
+        descLabel.numberOfLines = 0
+        descLabel.font = UIFont.systemFontOfSize(12)
+        view.addSubview(descLabel)
+    }
+    
+    var topLayoutGuideLength: CGFloat?
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        // topLayoutGuide.length works unreliable most of times, let's just get bottom y of navbar instead
+        let nc = navigationController?.navigationBar
+        let realTopLayoutGuideLength = nc.map { $0.convertRect($0.bounds, toView: view).maxY } ?? 0
+        
+        Combine(
+            
+            HFillVFit(descLabel, inset: 10),
+            AlignBottom(descLabel, inset: 10),
+            
+            HFill(descBackground),
+            Follow(TopAnchor(descLabel, inset: -10), withAnchor: TopAnchor(descBackground, inset: 0)),
+            Follow(HeightAnchor(descLabel, inset: 20), withAnchor: HeightAnchor(descBackground)),
+            
+            Combine(Viewport( bottomAnchor: TopAnchor(descBackground)), operations:
+                Fill(demoView, insets: UIEdgeInsetsMake(realTopLayoutGuideLength + 20, 20, 20, 20))
+            )
+        ).layout()
+    }
+}
+//
+//  Created by Pavel Sharanda on 19.10.16.
+//  Copyright © 2016 Pavel Sharanda. All rights reserved.
+//
+
+import UIKit
+
+func makeViewWithColor(color: UIColor) -> UIView {
+    let view = UIView()
+    view.backgroundColor = color.colorWithAlphaComponent(0.5)
+    view.layer.borderWidth = 1
+    view.layer.borderColor = color.CGColor
+    return view
+}
+
+func makeGreenView() -> UIView {
+    return makeViewWithColor(UIColor(red: 0x76/255.0, green: 0xDA/255.0, blue: 0xAC/255.0, alpha: 1))
+}
+
+func makeBlueView() -> UIView {
+    return makeViewWithColor(UIColor(red: 0x20/255.0, green: 0x20/255.0, blue: 0x89/255.0, alpha: 1))
+}
+
+func makeRedView() -> UIView {
+    return makeViewWithColor(UIColor(red: 0xF2/255.0, green: 0x1E/255.0, blue: 0x75/255.0, alpha: 1))
+}
+
+func makeAvatarView() -> UIImageView {
+    return UIImageView(image: UIImage(named: "avatar"))
+}
+
+func makeHeartView() -> UIImageView {
+    return UIImageView(image: UIImage(named: "heart"))
+}
+
+func makeTitleLabel() -> UILabel {
+    let l = UILabel()
+    l.text = "Lorem Ipsum"
+    l.textColor = UIColor(red: 0x35/255.0, green: 0x35/255.0, blue: 0x56/255.0, alpha: 1)
+    l.backgroundColor = UIColor.grayColor().colorWithAlphaComponent(0.2)
+    return l
+}
+
+func makeDetailsLabel() -> UILabel {
+    let l = UILabel()
+    l.text = "Cras mattis consectetur purus sit amet fermentum. Maecenas faucibus mollis interdum."
+    l.numberOfLines = 0
+    l.textColor = UIColor(red: 0xB1/255.0, green: 0xB1/255.0, blue: 0xC3/255.0, alpha: 1)
+    l.backgroundColor = UIColor.grayColor().colorWithAlphaComponent(0.2)
+    return l
+}//
+//  Created by Pavel Sharanda on 11.11.16.
+//  Copyright © 2016 psharanda. All rights reserved.
+//
+
+import UIKit
+
+class DocGenViewController: UIViewController {
+    
+    private let sections: [Section]
+    
+    init(sections: [Section]) {
+        self.sections = sections
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        view.backgroundColor = UIColor.whiteColor()
+    }
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        makeSnapshots()
+    }
+    
+    private struct SectionRow {
+        let sectionTitle: String
+        let row: RowProtocol
+    }
+
+    private func makeSnapshots() {
+        
+        let allRows = sections.flatMap { section in
+            section.rows.map {
+                SectionRow(sectionTitle: section.title, row: $0)
+            }
+        }
+        
+        let codebaseString = (try! NSString(contentsOfFile: NSBundle.mainBundle().pathForResource("Codebase.generated.txt", ofType: nil)!, encoding: NSUTF8StringEncoding)) as String
+        
+        var currentRowIndex = 0
+        
+        var markdownString = ""
+        
+        var currentSectionString = ""
+        
+        
+        func renderRow(completion: ()->Void) {
+            
+            
+            let sectionRow = allRows[currentRowIndex]
+            
+            if currentSectionString != sectionRow.sectionTitle {
+                currentSectionString = sectionRow.sectionTitle
+                markdownString += "### \(currentSectionString)"
+                markdownString += "\n"
+            }
+            
+            markdownString += "#### \(sectionRow.row.title)"
+            markdownString += "\n"
+            markdownString += sectionRow.row.comments
+            markdownString += "\n"
+            
+            let v1 = sectionRow.row.view
+            view.addSubview(v1)
+            v1.frame = CGRectMake(0, 0, 320, 480)
+            v1.layoutIfNeeded()
+            v1.backgroundColor = UIColor(white: 0.9, alpha: 1)
+            
+
+            let layoutCode = extractLayoutSourceCode(codebaseString , view: v1)
+            
+            markdownString += "```swift"
+            markdownString += "\n"
+            markdownString += layoutCode
+            markdownString += "\n"
+            markdownString += "```"
+            markdownString += "\n"
+            
+            let v2 = sectionRow.row.view
+            view.addSubview(v2)
+            v2.frame = CGRectMake(0, 0, 480, 320)
+            v2.layoutIfNeeded()
+            v2.backgroundColor = UIColor(white: 0.9, alpha: 1)
+            
+            after {
+                let f1 = "\(sectionRow.sectionTitle)_\(sectionRow.row.title)_portrait.png".stringForFilePath
+                let img1 = imageWithView(v1)
+                saveImageAsPngInTempFolder(img1, name: f1)
+                v1.removeFromSuperview()
+                
+                let f2 = "\(sectionRow.sectionTitle)__\(sectionRow.row.title)_landscape.png".stringForFilePath
+                let img2 = imageWithView(v2)
+                saveImageAsPngInTempFolder(img2, name: f2)
+                v2.removeFromSuperview()
+                
+                markdownString += "<img src=\"https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/\(f1)\" alt=\"\(sectionRow.row.title)\" width=\"\(img1.size.width/2)\" height=\"\(img1.size.height/2)\"/> "
+                markdownString += "<img src=\"https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/\(f2)\" alt=\"\(sectionRow.row.title)\" width=\"\(img2.size.width/2)\" height=\"\(img2.size.height/2)\"/>"
+                markdownString += "\n"
+                
+                currentRowIndex += 1
+                if currentRowIndex >= allRows.count {
+                    completion()
+                } else {
+                    renderRow(completion)
+                }
+            }
+        }
+
+        renderRow {
+            let mdPath = (NSTemporaryDirectory() as NSString).stringByAppendingPathComponent("DEMOS.md")
+            let _ = try?(markdownString as NSString).writeToFile(mdPath, atomically: false, encoding: NSUTF8StringEncoding)
+            print("Markdown saved to "+mdPath)
+            
+            self.navigationController?.popViewControllerAnimated(true)
+        }
+    }
+}
+
+private func extractLayoutSourceCode(codebase: String, view: UIView) -> String {
+    
+    let scanner = NSScanner(string: codebase)
+    scanner.charactersToBeSkipped = nil
+    
+    let className = String(view.dynamicType)
+
+    if scanner.scanUpToString("class \(className)") != nil {
+        if scanner.scanUpToString("super.layoutSubviews()") != nil {
+            if let code = scanner.scanUpToString(".layout()") {
+                let almostResult = code + ".layout()"
+                
+                return (almostResult as NSString).stringByReplacingOccurrencesOfString("super.layoutSubviews()", withString: "").stringByReplacingOccurrencesOfString("\n        ", withString: "\n")
+            }
+        }
+    }
+
+    return "<<error>>"
+}
+
+private func after(f: ()->Void) {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW,Int64(0.1 * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), f)
+}
+
+private func imageWithView(view: UIView) -> UIImage {
+    UIGraphicsBeginImageContextWithOptions(view.bounds.size, view.opaque, 0.0)
+    view.drawViewHierarchyInRect(view.bounds, afterScreenUpdates: false)
+    let img = UIGraphicsGetImageFromCurrentImageContext()
+    UIGraphicsEndImageContext()
+    return img
+}
+
+private func saveImageAsPngInTempFolder(image: UIImage, name: String) {
+    if let imgData = UIImagePNGRepresentation(image) {
+        
+        let imgPath = (NSTemporaryDirectory() as NSString).stringByAppendingPathComponent(name)
+        print("image saved to "+imgPath)
+        imgData.writeToFile(imgPath, atomically: false)
+    }
+}
+
+extension String {
+    var stringForFilePath: String {
+        // characterSet contains all illegal characters on OS X and Windows
+        let characterSet = NSCharacterSet(charactersInString: "\"\\/?<>:*|")
+        // replace "-" with character of choice
+        return componentsSeparatedByCharactersInSet(characterSet).joinWithSeparator("-")
+    }
+}
+//
+//  Created by Pavel Sharanda on 19.10.16.
+//  Copyright © 2016 Pavel Sharanda. All rights reserved.
+//
+
+import UIKit
+import LayoutOps
+
+class FollowDemo_CornerAnchors: UIView, DemoViewProtocol {
+    
+    let blueView = makeBlueView()
+    let greenView = makeGreenView()
+    let redView = makeRedView()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        addSubview(blueView)
+        addSubview(greenView)
+        addSubview(redView)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        Combine(
+            SetOrigin(blueView, x: 10, y: 10),
+            SetSize(blueView, width: 100, height: 100),            
+            
+            SetSize(greenView, width: 50, height: 190),
+            Follow(RightAnchor(blueView), withAnchor: LeftAnchor(greenView)),
+            Follow(BottomAnchor(blueView), withAnchor: TopAnchor(greenView)),
+            
+            SetSize(redView, width: 30, height: 30),
+            Follow(LeftAnchor(blueView), withAnchor: LeftAnchor(redView)),
+            Follow(BottomAnchor(greenView), withAnchor: BottomAnchor(redView))
+            
+        ).layout()
+    }
+    
+    static let title = "Corners"
+    static let comments = "Follow operation sets one view's anchor to be the same with others view anchor. Anchors can be horizontal and vertical, and can be followed only with anchors of the same type."
+}
+
+class FollowDemo_CenterAnchors: UIView, DemoViewProtocol {
+    
+    
+    let blueView = makeBlueView()
+    let greenView = makeGreenView()
+    let redView = makeRedView()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        addSubview(blueView)
+        addSubview(greenView)
+        addSubview(redView)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        Combine(
+            SetOrigin(blueView, x: 10, y: 10),
+            SetWidth(blueView, value: 200),
+            VFill(blueView, inset: 20),
+            
+            SetSize(greenView, width: 50, height: 190),
+            Follow(RightAnchor(blueView), withAnchor: LeftAnchor(greenView)),
+            Follow(VCenterAnchor(blueView), withAnchor: VCenterAnchor(greenView)),
+            
+            SetSize(redView, width: 30, height: 30),
+            Follow(HCenterAnchor(greenView), withAnchor: HCenterAnchor(redView)),
+            Follow(VCenterAnchor(greenView), withAnchor: VCenterAnchor(redView))
+            
+        ).layout()
+    }
+    
+    static let title = "Center"
+    static let comments = "There are not only edge anchors, but also center anchors."
+}
+
+class FollowDemo_SizeAnchors: UIView, DemoViewProtocol {
+    
+    let blueView = makeBlueView()
+    let greenView = makeGreenView()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        addSubview(blueView)
+        addSubview(greenView)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        Combine(
+            SetX(blueView, value: 10),
+            
+            SetWidth(blueView, value: 50),
+            VFill(blueView, inset: 100),
+            
+            Follow(WidthAnchor(blueView), withAnchor: HeightAnchor(greenView)),
+            Follow(HeightAnchor(blueView), withAnchor: WidthAnchor(greenView)),
+            Follow(RightAnchor(blueView), withAnchor: LeftAnchor(greenView)),
+            Follow(BottomAnchor(blueView), withAnchor: TopAnchor(greenView))
+            
+        ).layout()
+    }
+    
+    static let title = "Size"
+    static let comments = "Ah yes, there are also size anchors. Size is kind of awkward anchor, but why not, it can be followed as well"
+}
+
+class FollowDemo_BaselineAnchors: UIView, DemoViewProtocol {
+    
+    let blueView = makeBlueView()
+    let greenView = makeGreenView()
+    let label = makeDetailsLabel()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+
+        addSubview(label)
+        addSubview(blueView)
+        addSubview(greenView)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        Combine(
+            
+            HFill(label, inset: 20),
+            SizeToFit(label, width: .KeepCurrent, height: .Max),
+            Center(label),
+            
+            SetHeight(blueView, value: 30),
+            SetHeight(greenView, value: 30),
+            
+            HFill(blueView, inset: 20),
+            HFill(greenView, inset: 20),
+            
+            Follow(BaselineAnchor(label, type: .First), withAnchor: BottomAnchor(blueView)),
+            Follow(BaselineAnchor(label, type: .Last), withAnchor: TopAnchor(greenView))
+        ).layout()
+    }
+    
+    static let title = "Baseline"
+    static let comments = "Baseline anchor is special. Only Baselinable views have it. For the moment only UILabel is confirmed this protocol. Baseline anchor can be first or last."
+}
+ // NSScanner+Swift.swift
+// A set of Swift-idiomatic methods for NSScanner
+//
+// (c) 2015 Nate Cook, licensed under the MIT license
+
+import Foundation
+
+extension NSScanner {
+    
+    // MARK: Strings
+    
+    /// Returns a string, scanned as long as characters from a given character set are encountered, or `nil` if none are found.
+    func scanCharactersFromSet(set: NSCharacterSet) -> String? {
+        var value: NSString? = ""
+        if scanCharactersFromSet(set, intoString: &value),
+            let value = value as? String {
+                return value
+        }
+        return nil
+    }
+    
+    /// Returns a string, scanned until a character from a given character set are encountered, or the remainder of the scanner's string. Returns `nil` if the scanner is already `atEnd`.
+    func scanUpToCharactersFromSet(set: NSCharacterSet) -> String? {
+        var value: NSString? = ""
+        if scanUpToCharactersFromSet(set, intoString: &value),
+            let value = value as? String {
+                return value
+        }
+        return nil
+    }
+    
+    /// Returns the given string if scanned, or `nil` if not found.
+    func scanString(str: String) -> String? {
+        var value: NSString? = ""
+        if scanString(str, intoString: &value),
+            let value = value as? String {
+                return value
+        }
+        return nil
+    }
+    
+    /// Returns a string, scanned until the given string is found, or the remainder of the scanner's string. Returns `nil` if the scanner is already `atEnd`.
+    func scanUpToString(str: String) -> String? {
+        var value: NSString? = ""
+        if scanUpToString(str, intoString: &value),
+            let value = value as? String {
+                return value
+        }
+        return nil
+    }
+    
+    // MARK: Numbers
+    
+    /// Returns a Double if scanned, or `nil` if not found.
+    func scanDouble() -> Double? {
+        var value = 0.0
+        if scanDouble(&value) {
+            return value
+        }
+        return nil
+    }
+    
+    /// Returns a Float if scanned, or `nil` if not found.
+    func scanFloat() -> Float? {
+        var value: Float = 0.0
+        if scanFloat(&value) {
+            return value
+        }
+        return nil
+    }
+    
+    /// Returns an Int if scanned, or `nil` if not found.
+    func scanInteger() -> Int? {
+        var value = 0
+        if scanInteger(&value) {
+            return value
+        }
+        return nil
+    }
+    
+    /// Returns an Int32 if scanned, or `nil` if not found.
+    func scanInt() -> Int32? {
+        var value: Int32 = 0
+        if scanInt(&value) {
+            return value
+        }
+        return nil
+    }
+    
+    /// Returns an Int64 if scanned, or `nil` if not found.
+    func scanLongLong() -> Int64? {
+        var value: Int64 = 0
+        if scanLongLong(&value) {
+            return value
+        }
+        return nil
+    }
+    
+    /// Returns a UInt64 if scanned, or `nil` if not found.
+    func scanUnsignedLongLong() -> UInt64? {
+        var value: UInt64 = 0
+        if scanUnsignedLongLong(&value) {
+            return value
+        }
+        return nil
+    }
+    
+    /// Returns an NSDecimal if scanned, or `nil` if not found.
+    func scanDecimal() -> NSDecimal? {
+        var value = NSDecimal()
+        if scanDecimal(&value) {
+            return value
+        }
+        return nil
+    }
+    
+    // MARK: Hex Numbers
+    
+    /// Returns a Double if scanned in hexadecimal, or `nil` if not found.
+    func scanHexDouble() -> Double? {
+        var value = 0.0
+        if scanHexDouble(&value) {
+            return value
+        }
+        return nil
+    }
+    
+    /// Returns a Float if scanned in hexadecimal, or `nil` if not found.
+    func scanHexFloat() -> Float? {
+        var value: Float = 0.0
+        if scanHexFloat(&value) {
+            return value
+        }
+        return nil
+    }
+    
+    /// Returns a UInt32 if scanned in hexadecimal, or `nil` if not found.
+    func scanHexInt() -> UInt32? {
+        var value: UInt32 = 0
+        if scanHexInt(&value) {
+            return value
+        }
+        return nil
+    }
+    
+    /// Returns a UInt64 if scanned in hexadecimal, or `nil` if not found.
+    func scanHexLongLong() -> UInt64? {
+        var value: UInt64 = 0
+        if scanHexLongLong(&value) {
+            return value
+        }
+        return nil
+    }
+}
+//
+//  Created by Pavel Sharanda on 19.10.16.
+//  Copyright © 2016 Pavel Sharanda. All rights reserved.
+//
+
+
+import UIKit
+import LayoutOps
+
+class PutDemo_Fix: UIView, DemoViewProtocol {
+    
+    let blueView = makeBlueView()
+    let greenView = makeGreenView()
+    let redView = makeRedView()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        addSubview(blueView)
+        addSubview(greenView)
+        addSubview(redView)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        Combine(
+            HPut(
+                Fix(50),
+                Fix(blueView, 120),
+                Fix(greenView, 40),
+                Fix(10),
+                Fix(redView, 60)
+            ),
+            VPut(
+                Fix(50),
+                Fix(blueView, 120),
+                Fix(greenView, 40),
+                Fix(10),
+                Fix(redView, 60)
+            )
+        ).layout()
+    }
+    
+    static let title = "Fix"
+    static let comments = "HPut and VPut operations successively layout views in superview in horizontal or vertical direction using intentions. Fix intention means that view size will take exact value, either directly defined or current one"
+}
+
+class PutDemo_Flex: UIView, DemoViewProtocol {
+    
+    let blueView = makeBlueView()
+    let greenView = makeGreenView()
+    let redView = makeRedView()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        addSubview(blueView)
+        addSubview(greenView)
+        addSubview(redView)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        Combine(
+            HPut(
+                Flex(blueView, 0.5),
+                Flex(greenView, 1.0),
+                Flex(redView, 0.5)
+            ),
+            VPut(
+                Flex(),
+                Flex(blueView),
+                Flex(greenView),
+                Flex(redView),
+                Flex()
+            )
+        ).layout()
+    }
+    
+    static let title = "Flex"
+    static let comments = "HPut and VPut operations successively layout views in superview in horizontal or vertical direction using intentions. Flex intention means that view size will take value based weight of flex value. Flex operates only with free space left after Fix intentions"
+}
+
+class PutDemo_FixFlex: UIView, DemoViewProtocol {
+    
+    let blueView = makeBlueView()
+    let greenView = makeGreenView()
+    let redView = makeRedView()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        addSubview(blueView)
+        addSubview(greenView)
+        addSubview(redView)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        Combine(
+            HPut(
+                Fix(20),
+                Fix(blueView, 100),
+                Fix(20),
+                Flex(greenView),
+                Fix(20),
+                Fix(redView, 100),
+                Fix(20)
+            ),
+            VFill(blueView, inset: 40),
+            VFill(greenView, inset: 40),
+            VFill(redView, inset: 40)
+        ).layout()
+    }
+    
+    static let title = "Fix+Flex"
+    static let comments = "Biggest power comes when we combine Fix and Flex intentions"
+}
+
+class PutDemo_FixFlexCenter: UIView, DemoViewProtocol {
+    
+    let blueView = makeBlueView()
+    let greenView = makeGreenView()
+    let redView = makeRedView()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        addSubview(blueView)
+        addSubview(greenView)
+        addSubview(redView)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        Combine(
+            HPut(
+                Flex(),
+                Fix(blueView, 70),
+                Fix(10),
+                Fix(greenView, 40),
+                Fix(20),
+                Fix(redView, 20),
+                Flex()
+            ),
+            VFill(blueView, inset: 40),
+            VFill(greenView, inset: 40),
+            VFill(redView, inset: 40)
+        ).layout()
+    }
+    
+    static let title = "Fix+Flex center many views"
+    static let comments = "It is really to easy to center bunch of views all together"
+}
+
+
+
+class PutDemo_Multi: UIView, DemoViewProtocol {
+    
+    let blueView = makeBlueView()
+    let greenView = makeGreenView()
+    let redView = makeRedView()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        addSubview(blueView)
+        addSubview(greenView)
+        addSubview(redView)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        Combine(
+            HPut(
+                Flex(),
+                Fix(blueView, 70),
+                Fix(10),
+                Fix(greenView, 40),
+                Fix(20),
+                Fix(redView, 20),
+                Flex()
+            ),
+            VPut(
+                Fix(40),
+                Flex([blueView, greenView, redView]),
+                Fix(40)
+            )
+        ).layout()
+    }
+    
+    static let title = "Multi"
+    static let comments = "Single intention can be defined for several views, all calculations are doing for first one, and others use its result as is"
+    
+}
+
+class PutDemo_FixFlexGrid: UIView, DemoViewProtocol {
+    
+    var views: [UIView] = []
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        for i in 0..<32 {
+            if (i / 4) % 2 == 0 {
+                views.append(makeGreenView())
+                views.append(makeRedView())
+            } else {
+                views.append(makeRedView())
+                views.append(makeGreenView())
+            }
+        }
+        
+        views.forEach {
+            addSubview($0)
+        }
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        func putCols() -> LayoutOperation {
+            var r = [PutIntention]()
+            for i in 0..<8 {
+                
+                var row = [UIView]()
+                for j in 0..<8 {
+                    row.append(views[i*8 + j])
+                }
+                r.append(Flex(row))
+            }
+            return HPut(r)
+        }
+        
+        func putRows() -> LayoutOperation {
+            var r = [PutIntention]()
+            
+            for i in 0..<8 {
+                
+                var col = [UIView]()
+                for j in 0..<8 {
+                    col.append(views[i + j*8])
+                }
+               r.append(Flex(col))
+            }
+            return VPut(r)
+        }
+        
+        Combine(
+            putCols(),
+            putRows()
+        ).layout()
+    }
+    
+    static let title = "Fix+Flex grid"
+    static let comments = "Elegant way to layout views in grid using just one HPut and one VPut"
+}//
+//  Created by Pavel Sharanda on 19.10.16.
+//  Copyright © 2016 Pavel Sharanda. All rights reserved.
+//
+
+import UIKit
+import LayoutOps
+
+class SizeToFitDemo_Value: UIView, DemoViewProtocol {
+    
+    
+    let icon = makeHeartView()
+    let label = makeDetailsLabel()
+    let title = makeTitleLabel()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        addSubview(icon)
+        addSubview(label)
+        addSubview(title)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        Combine(
+            SizeToFit(icon, width: .Value(100), height: .Value(100)),
+            AlignTop(icon, inset: 10),
+            HCenter(icon),
+            
+            SizeToFit(label, width: .Value(100), height: .Value(100)),
+            Center(label),
+            
+            SizeToFit(title, width: .Value(100), height: .Value(100)),
+            AlignBottom(title, inset: 10),
+            HCenter(title)
+        ).layout()
+    }
+    
+    static let title = ".Value"
+    static let comments = "SizeToFit operation fits view in defined box using -sizeThatFits: method. Box (width and height) can be defined using different options. " + ".Value option sets exact value for box. Result size will be equal or less than it."
+}
+
+class SizeToFitDemo_Max: UIView, DemoViewProtocol {
+    
+    let icon = makeHeartView()
+    let label = makeDetailsLabel()
+    let title = makeTitleLabel()
+    
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        addSubview(icon)
+        addSubview(label)
+        addSubview(title)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        Combine(
+            SizeToFitMax(icon),  //same as SizeToFit(view, width: .Max, height: .Max)
+            AlignTop(icon, inset: 10),
+            HCenter(icon),
+            
+            SizeToFit(label, width: .Max, height: .Max),
+            Center(label),
+            
+            SizeToFit(title, width: .Max, height: .Max),
+            AlignBottom(title, inset: 10),
+            HCenter(title)
+        ).layout()
+    }
+    
+    static let title = ".Max"
+    static let comments = "SizeToFit operation fits view in defined box using -sizeThatFits: method. Box (width and height) can be defined using different options. " + ".Max option sets infinite value for box. Result size will be most comfortable for view to display content. WARNING: multiline labels are comfortable with single line, don't use .Max for them"
+}
+
+class SizeToFitDemo_Current: UIView, DemoViewProtocol {
+    
+    let icon = makeHeartView()
+    let label = makeDetailsLabel()
+    let title = makeTitleLabel()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        addSubview(icon)
+        addSubview(label)
+        addSubview(title)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        Combine(
+            SetSize(icon, size: CGSize(width: 200, height: 200)),
+            SizeToFit(icon, width: .Current, height: .Current),
+            AlignTop(icon, inset: 10),
+            HCenter(icon),
+            
+            HFill(label, leftInset: 20, rightInset: 20),
+            SizeToFit(label), //same as SizeToFit(view, width: .Current, height: .Current)
+            Center(label),
+            
+            HFill(title, leftInset: 20, rightInset: 20),
+            SizeToFit(title, width: .Current, height: .Current),
+            AlignBottom(title, inset: 10),
+            HCenter(title)
+        ).layout()
+    }
+    
+    static let title = ".Current"
+    static let comments = "SizeToFit operation fits view in defined box using -sizeThatFits: method. Box (width and height) can be defined using different options. " + ".Current options sets value for box with current frame's width or height."
+}
+
+class SizeToFitDemo_KeepCurrent: UIView, DemoViewProtocol {
+    
+    let icon = makeHeartView()
+    let label = makeDetailsLabel()
+    let title = makeTitleLabel()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        addSubview(icon)
+        addSubview(label)
+        addSubview(title)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        Combine(
+            
+            SetSize(icon, size: CGSize(width: 200, height: 200)),
+            SizeToFit(icon, width: .KeepCurrent, height: .Max),
+            AlignTop(icon, inset: 10),
+            HCenter(icon),
+            
+            HFill(label, leftInset: 20, rightInset: 20),
+            SizeToFit(label, width: .KeepCurrent, height: .Max),
+            Center(label),
+            
+            HFill(title, leftInset: 20, rightInset: 20),
+            SizeToFit(title, width: .KeepCurrent, height: .Max),
+            AlignBottom(title, inset: 10),
+            HCenter(title)
+        ).layout()
+    }
+    
+    static let title = ".KeepCurrent"
+    static let comments = "SizeToFit operation fits view in defined box using -sizeThatFits: method. Box (width and height) can be defined using different options. " + ".KeepCurrent options sets value for box with current frame's width or height, but result size will be still equal to those original frame values. This is usefull to layout multiline labels. First you need to set somehow label width, and then call something like SizeToFit(label, width: .KeepCurrent, height: .Max)."
+}
+
+class SizeToFitDemo_MinMax: UIView, DemoViewProtocol {
+    
+    let label = makeDetailsLabel()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        addSubview(label)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        Combine(
+            SizeToFitMaxWithConstraints(label, widthConstraint: .Max(100), heightConstraint: .Min(300)),
+            Center(label)
+        ).layout()
+    }
+    
+    static let title = "Min/Max constraints"
+    static let comments = "SizeToFit operation also can have min, max or both constraints to limit resulted width/height. "
+}//
+//  Created by Pavel Sharanda on 19.10.16.
+//  Copyright © 2016 Pavel Sharanda. All rights reserved.
+//
+
+
+import UIKit
+
+protocol DemoViewProtocol {
+    static var title: String {get}
+    static var comments: String {get}
+}
+
+protocol RowProtocol {
+    var title: String {get}
+    var comments: String {get}
+    var view: UIView {get}
+}
+
+struct Row<T: UIView where T: DemoViewProtocol >: RowProtocol {
+    var title: String {
+        return T.title
+    }
+
+    var comments: String {
+        return T.comments
+    }
+    var view: UIView {
+        return T(frame: CGRect())
+    }
+}
+
+struct Section {
+    let title: String
+    let rows: [RowProtocol]
+}
+
+class ViewController: UIViewController {
+    
+    private lazy var tableView = UITableView(frame: CGRect(), style: .Plain)
+    
+    private var sections = [
+        Section(title: "Basic", rows: [
+                Row<BasicDemo_Set>(),
+                Row<BasicDemo_Center>(),
+                Row<BasicDemo_Fill>(),
+                Row<BasicDemo_Align>()
+            ]),
+        Section(title: "SizeToFit", rows:
+            [
+                Row<SizeToFitDemo_Value>(),
+                Row<SizeToFitDemo_Max>(),
+                Row<SizeToFitDemo_Current>(),
+                Row<SizeToFitDemo_KeepCurrent>(),
+                Row<SizeToFitDemo_MinMax>(),
+            ]
+        ),
+        Section(title: "Follow", rows:
+            [
+                Row<FollowDemo_CornerAnchors>(),
+                Row<FollowDemo_CenterAnchors>(),
+                Row<FollowDemo_SizeAnchors>(),
+                Row<FollowDemo_BaselineAnchors>()
+            ]
+        ),
+        Section(title: "Put", rows:
+            [
+                Row<PutDemo_Fix>(),
+                Row<PutDemo_Flex>(),
+                Row<PutDemo_FixFlex>(),
+                Row<PutDemo_FixFlexCenter>(),
+                Row<PutDemo_Multi>(),
+                Row<PutDemo_FixFlexGrid>()
+            ]
+        ),
+        Section(title: "Viewport", rows:
+            [
+                Row<ViewPortDemo>()
+            ]
+        ),
+        
+    ]
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        title = "Demos"
+        
+        view.addSubview(tableView)
+        
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "DocGen", style: .Plain , target: self, action: #selector(docGenClicked))
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.frame = view.bounds
+        tableView.delegate = self
+        tableView.dataSource = self
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        if let indexPathForSelectedRow = tableView.indexPathForSelectedRow {
+            tableView.deselectRowAtIndexPath(indexPathForSelectedRow, animated: true)
+        }
+    }
+    
+    @objc private func docGenClicked() {
+        let vc = DocGenViewController(sections: sections)
+        navigationController?.pushViewController(vc, animated: true)
+    }
+}
+
+extension ViewController: UITableViewDelegate, UITableViewDataSource {
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return sections.count
+    }
+    
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return sections[section].rows.count
+    }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cellId = "CellId"
+        let cell = tableView.dequeueReusableCellWithIdentifier(cellId) ?? UITableViewCell(style: .Default, reuseIdentifier: cellId)
+        cell.textLabel?.text = sections[indexPath.section].rows[indexPath.row].title
+        return cell
+    }
+
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let row = sections[indexPath.section].rows[indexPath.row]
+        let vc = DemoViewController(title: row.title, description: row.comments, demoView: row.view)
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return sections[section].title
+    }
+}
+
+//
+//  Created by Pavel Sharanda on 19.10.16.
+//  Copyright © 2016 Pavel Sharanda. All rights reserved.
+//
+
+
+import UIKit
+import LayoutOps
+
+class ViewPortDemo: UIView, DemoViewProtocol {
+    
+    let blueView = makeBlueView()
+    let greenView = makeGreenView()
+    let redView = makeRedView()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        addSubview(blueView)
+        addSubview(greenView)
+        addSubview(redView)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        Combine(
+            HFill(blueView, inset: 20),
+            VPut(
+                Fix(20),
+                Fix(blueView, 20),
+                Fix(20),
+                Flex(greenView),
+                Fix(20)
+            ),
+            AlignLeft(greenView, inset: 20),
+            SetWidth(greenView, value: 20),
+            
+            Combine(Viewport(topAnchor: BottomAnchor(blueView), leftAnchor: RightAnchor(greenView)), operations:
+                Fill(redView, inset: 5)
+            )
+        ).layout()
+    }
+    
+    static let title = "Demo"
+    static let comments = "Combine operation not only allows to group other operations, but also define viewport for them. Viewport can be defined using anchors of childview, or nil anchor if using superview edges"
 }
