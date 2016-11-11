@@ -4,7 +4,7 @@ Frame based layout library for UIKit written in Swift
 
 ## How to use
 
-Check demos here [here](README/DEMOS.md)
+Check demos [here](README/DEMOS.md)
 
 ## Integration
 
