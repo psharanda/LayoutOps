@@ -42,8 +42,8 @@ class SizeToFitDemo_Value: UIView, DemoViewProtocol {
         ).layout()
     }
     
-    static let title = ".Value(x)"
-    static let comments = "SizeToFit operation fits view in defined box using -sizeThatFits: method. Box (width and height) can be defined using different options. .Value(x) option sets exact value for box. Result size will be equal or less than it."
+    static let title = ".Value"
+    static let comments = "SizeToFit operation fits view in defined box using -sizeThatFits: method. Box (width and height) can be defined using different options. .Value option sets exact value for box. Result size will be equal or less than it."
 }
 
 class SizeToFitDemo_Max: UIView, DemoViewProtocol {
