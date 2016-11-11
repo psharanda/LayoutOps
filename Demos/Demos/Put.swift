@@ -7,7 +7,7 @@
 import UIKit
 import LayoutOps
 
-class PutDemo_Fix: UIView {
+class PutDemo_Fix: UIView, DemoViewProtocol {
     
     let blueView = makeBlueView()
     let greenView = makeGreenView()
@@ -45,9 +45,12 @@ class PutDemo_Fix: UIView {
             )
         ).layout()
     }
+    
+    static let title = "Fix"
+    static let comments = "HPut and VPut operations successively layout views in superview in horizontal or vertical direction using intentions. Fix intention means that view size will take exact value, either directly defined or current one"
 }
 
-class PutDemo_Flex: UIView {
+class PutDemo_Flex: UIView, DemoViewProtocol {
     
     let blueView = makeBlueView()
     let greenView = makeGreenView()
@@ -83,9 +86,12 @@ class PutDemo_Flex: UIView {
             )
         ).layout()
     }
+    
+    static let title = "Flex"
+    static let comments = "HPut and VPut operations successively layout views in superview in horizontal or vertical direction using intentions. Flex intention means that view size will take value based weight of flex value. Flex operates only with free space left after Fix intentions"
 }
 
-class PutDemo_FixFlex: UIView {
+class PutDemo_FixFlex: UIView, DemoViewProtocol {
     
     let blueView = makeBlueView()
     let greenView = makeGreenView()
@@ -121,9 +127,12 @@ class PutDemo_FixFlex: UIView {
             VFill(redView, inset: 40)
         ).layout()
     }
+    
+    static let title = "Fix+Flex"
+    static let comments = "Biggest power comes when we combine Fix and Flex intentions"
 }
 
-class PutDemo_FixFlexCenter: UIView {
+class PutDemo_FixFlexCenter: UIView, DemoViewProtocol {
     
     let blueView = makeBlueView()
     let greenView = makeGreenView()
@@ -159,11 +168,14 @@ class PutDemo_FixFlexCenter: UIView {
             VFill(redView, inset: 40)
         ).layout()
     }
+    
+    static let title = "Fix+Flex center many views"
+    static let comments = "It is really to easy to center bunch of views all together"
 }
 
 
 
-class PutDemo_Multi: UIView {
+class PutDemo_Multi: UIView, DemoViewProtocol {
     
     let blueView = makeBlueView()
     let greenView = makeGreenView()
@@ -201,9 +213,13 @@ class PutDemo_Multi: UIView {
             )
         ).layout()
     }
+    
+    static let title = "Multi"
+    static let comments = "Single intention can be defined for several views, all calculations are doing for first one, and others use its result as is"
+    
 }
 
-class PutDemo_FixFlexGrid: UIView {
+class PutDemo_FixFlexGrid: UIView, DemoViewProtocol {
     
     var views: [UIView] = []
     
@@ -266,4 +282,7 @@ class PutDemo_FixFlexGrid: UIView {
             putRows()
         ).layout()
     }
+    
+    static let title = "Fix+Flex grid"
+    static let comments = "Elegant way to layout views in grid using just one HPut and one VPut"
 }

@@ -7,7 +7,7 @@
 import UIKit
 import LayoutOps
 
-class BasicDemo_Set: UIView {
+class BasicDemo_Set: UIView, DemoViewProtocol {
     
     let blueView = makeBlueView()
     let greenView = makeGreenView()
@@ -40,9 +40,12 @@ class BasicDemo_Set: UIView {
             SetHeight(redView, value: 100)
         ).layout()
     }
+  
+    static let title = "Set*"
+    static let comments = "Set* operations directly manipulate according frame values"
 }
 
-class BasicDemo_Center: UIView {
+class BasicDemo_Center: UIView, DemoViewProtocol {
     let blueView = makeBlueView()
     let greenView = makeGreenView()
     let redView = makeRedView()
@@ -75,9 +78,12 @@ class BasicDemo_Center: UIView {
             Center(redView)
         ).layout()
     }
+    
+    static let title = "Center"
+    static let comments = "HCenter (horizontally), VCenter (vertically) and Center (both) operations allows to center view. Insets can be used to adjust center point (see green view, 100 pt from bottom). Size of view usually should be set with previous operations"
 }
 
-class BasicDemo_Fill: UIView {
+class BasicDemo_Fill: UIView, DemoViewProtocol {
     
     let redView = makeRedView()
     let blueView = makeBlueView()
@@ -112,9 +118,12 @@ class BasicDemo_Fill: UIView {
             
         ).layout()
     }
+    
+    static let title = "Fill"
+    static let comments = "HFill (horizontally), VFill (vertically) and Fill (both) operations make view to fill its superview. Insets can be used to control how much space to left unfilled from the superview edges"
 }
 
-class BasicDemo_Align: UIView {
+class BasicDemo_Align: UIView, DemoViewProtocol {
     let blueView = makeBlueView()
     let greenView = makeGreenView()
     let redView = makeRedView()
@@ -148,6 +157,9 @@ class BasicDemo_Align: UIView {
             AlignTop(redView, inset: 25)
         ).layout()
     }
+    
+    static let title = "Align"
+    static let comments = "Align* operations allow to put view relatively to edges of superview. Inset value can be used to determine distance to edge. Size of view usually should be set with previous operations."
 }
 
 

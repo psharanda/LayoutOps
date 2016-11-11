@@ -7,7 +7,7 @@
 import UIKit
 import LayoutOps
 
-class ViewPortDemo: UIView {
+class ViewPortDemo: UIView, DemoViewProtocol {
     
     let blueView = makeBlueView()
     let greenView = makeGreenView()
@@ -45,4 +45,7 @@ class ViewPortDemo: UIView {
             )
         ).layout()
     }
+    
+    static let title = "Demo"
+    static let comments = "Combine operation not only allows to group other operations, but also define viewport for them. Viewport can be defined using anchors of childview, or nil anchor if using superview edges"
 }

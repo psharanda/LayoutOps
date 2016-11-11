@@ -6,7 +6,7 @@
 import UIKit
 import LayoutOps
 
-class FollowDemo_CornerAnchors: UIView {
+class FollowDemo_CornerAnchors: UIView, DemoViewProtocol {
     
     let blueView = makeBlueView()
     let greenView = makeGreenView()
@@ -41,9 +41,12 @@ class FollowDemo_CornerAnchors: UIView {
             
         ).layout()
     }
+    
+    static let title = "Corners"
+    static let comments = "Follow operation sets one view's anchor to be the same with others view anchor. Anchors can be horizontal and vertical, and can be followed only with anchors of the same type."
 }
 
-class FollowDemo_CenterAnchors: UIView {
+class FollowDemo_CenterAnchors: UIView, DemoViewProtocol {
     
     
     let blueView = makeBlueView()
@@ -80,9 +83,12 @@ class FollowDemo_CenterAnchors: UIView {
             
         ).layout()
     }
+    
+    static let title = "Center"
+    static let comments = "There are not only edge anchors, but also center anchors."
 }
 
-class FollowDemo_SizeAnchors: UIView {
+class FollowDemo_SizeAnchors: UIView, DemoViewProtocol {
     
     let blueView = makeBlueView()
     let greenView = makeGreenView()
@@ -114,9 +120,12 @@ class FollowDemo_SizeAnchors: UIView {
             
         ).layout()
     }
+    
+    static let title = "Size"
+    static let comments = "Ah yes, there are also size anchors. Size is kind of awkward anchor, but why not, it can be followed as well"
 }
 
-class FollowDemo_BaselineAnchors: UIView {
+class FollowDemo_BaselineAnchors: UIView, DemoViewProtocol {
     
     let blueView = makeBlueView()
     let greenView = makeGreenView()
@@ -153,5 +162,8 @@ class FollowDemo_BaselineAnchors: UIView {
             Follow(BaselineAnchor(label, type: .Last), withAnchor: TopAnchor(greenView))
         ).layout()
     }
+    
+    static let title = "Baseline"
+    static let comments = "Baseline anchor is special. Only Baselinable views have it. For the moment only UILabel is confirmed this protocol. Baseline anchor can be first or last."
 }
  

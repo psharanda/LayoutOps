@@ -64,17 +64,17 @@
 		1BAD4FED1CDF54CA00692E31 /* LayoutOps */ = {
 			isa = PBXGroup;
 			children = (
-				1B2B82971DCD1F90008B6450 /* Anchor.swift */,
 				1B6645E31DB8F44C0059CFC8 /* Accelerate.swift */,
-				1B49D7091DB8D02800823FF3 /* SizeToFit.swift */,
-				1B49D70A1DB8D02800823FF3 /* LayoutOperation.swift */,
-				1B49D70B1DB8D02800823FF3 /* Viewport.swift */,
-				1B49D70C1DB8D02800823FF3 /* Follow.swift */,
+				1B2B82971DCD1F90008B6450 /* Anchor.swift */,
 				1B49D70D1DB8D02800823FF3 /* Basic.swift */,
-				1B49D70E1DB8D02800823FF3 /* Put.swift */,
 				1B49D70F1DB8D02800823FF3 /* Combine.swift */,
-				1BAD4FEE1CDF54CA00692E31 /* LayoutOps.h */,
+				1B49D70C1DB8D02800823FF3 /* Follow.swift */,
 				1BAD4FF01CDF54CA00692E31 /* Info.plist */,
+				1B49D70A1DB8D02800823FF3 /* LayoutOperation.swift */,
+				1BAD4FEE1CDF54CA00692E31 /* LayoutOps.h */,
+				1B49D70E1DB8D02800823FF3 /* Put.swift */,
+				1B49D7091DB8D02800823FF3 /* SizeToFit.swift */,
+				1B49D70B1DB8D02800823FF3 /* Viewport.swift */,
 			);
 			path = LayoutOps;
 			sourceTree = "<group>";

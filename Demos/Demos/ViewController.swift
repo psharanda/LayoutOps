@@ -6,16 +6,25 @@
 
 import UIKit
 
+protocol DemoViewProtocol {
+    static var title: String {get}
+    static var comments: String {get}
+}
+
 protocol RowProtocol {
     var title: String {get}
-    var description: String {get}
+    var comments: String {get}
     var view: UIView {get}
 }
 
-struct Row<T: UIView>: RowProtocol {
-    let title: String
-    let description: String
+struct Row<T: UIView where T: DemoViewProtocol >: RowProtocol {
+    var title: String {
+        return T.title
+    }
 
+    var comments: String {
+        return T.comments
+    }
     var view: UIView {
         return T(frame: CGRect())
     }
@@ -30,106 +39,43 @@ class ViewController: UIViewController {
     
     private lazy var tableView = UITableView(frame: CGRect(), style: .Plain)
     
-    private static let sizeToFitDesc =
-    "SizeToFit operation fits view in defined box using -sizeThatFits: method. Box (width and height) can be defined using different options. "
-
     private var sections = [
-        Section(title: "Basic", rows:
-            [
-                Row<BasicDemo_Set>(
-                    title: "Set*",
-                    description: "Set* operations directly manipulate according frame values"),
-                Row<BasicDemo_Center>(
-                    title: "Center",
-                    description: "HCenter (horizontally), VCenter (vertically) and Center (both) operations allows to center view. Insets can be used to adjust center point (see green view, 100 pt from bottom). Size of view usually should be set with previous operations. "),
-                Row<BasicDemo_Fill>(
-                    title: "Fill",
-                    description: "HFill (horizontally), VFill (vertically) and Fill (both) operations make view to fill its superview. Insets can be used to control how much space to left unfilled from the superview edges"),
-                Row<BasicDemo_Align>(
-                    title: "Align",
-                    description: "Align* operations allow to put view relatively to edges of superview. Inset value can be used to determine distance to edge. Size of view usually should be set with previous operations.")
+        Section(title: "Basic", rows: [
+                Row<BasicDemo_Set>(),
+                Row<BasicDemo_Center>(),
+                Row<BasicDemo_Fill>(),
+                Row<BasicDemo_Align>()
             ]),
         Section(title: "SizeToFit", rows:
             [
-                Row<SizeToFitDemo_Value>(
-                    title: ".Value",
-                    description: sizeToFitDesc + ".Value option sets exact value for box. Result size will be equal or less than it."
-                ),
-                Row<SizeToFitDemo_Max>(
-                    title: ".Max",
-                    description: sizeToFitDesc + ".Max option sets infinite value for box. Result size will be most comfortable for view to display content. WARNING: multiline labels are comfortable with single line, don't use .Max for them"
-                ),
-                Row<SizeToFitDemo_Current>(
-                    title: ".Current",
-                    description: sizeToFitDesc + ".Current options sets value for box with current frame's width or height."
-                ),
-                Row<SizeToFitDemo_KeepCurrent>(
-                    title: ".KeepCurrent",
-                    description: sizeToFitDesc + ".KeepCurrent options sets value for box with current frame's width or height, but result size will be still equal to those original frame values. This is usefull to layout multiline labels. First you need to set somehow label width, and then call something like SizeToFit(label, width: .KeepCurrent, height: .Max)."
-
-                ),
-                Row<SizeToFitDemo_MinMax>(
-                    title: "Min/Max constraints",
-                    description: "SizeToFit operation also can have min, max or both constraints to limit resulted width/height. "
-                ),
+                Row<SizeToFitDemo_Value>(),
+                Row<SizeToFitDemo_Max>(),
+                Row<SizeToFitDemo_Current>(),
+                Row<SizeToFitDemo_KeepCurrent>(),
+                Row<SizeToFitDemo_MinMax>(),
             ]
         ),
         Section(title: "Follow", rows:
             [
-                Row<FollowDemo_CornerAnchors>(
-                    title: "Corners",
-                    description: "Follow operation sets one view's anchor to be the same with others view anchor. Anchors can be horizontal and vertical, and can be followed only with anchors of the same type."
-                ),
-                Row<FollowDemo_CenterAnchors>(
-                    title: "Center",
-                    description: "There are not only edge anchors, but also center anchors."
-                ),
-                Row<FollowDemo_SizeAnchors>(
-                    title: "Size",
-                    description: "Ah yes, there are also size anchors. Size is kind of awkward anchor, but why not, it can be followed as well"
-                ),
-                Row<FollowDemo_BaselineAnchors>(
-                    title: "Baseline",
-                    description: "Baseline anchor is special. Only Baselinable views have it. For the moment only UILabel is confirmed this protocol. Baseline anchor can be first or last."
-                    
-                )
+                Row<FollowDemo_CornerAnchors>(),
+                Row<FollowDemo_CenterAnchors>(),
+                Row<FollowDemo_SizeAnchors>(),
+                Row<FollowDemo_BaselineAnchors>()
             ]
         ),
         Section(title: "Put", rows:
             [
-                Row<PutDemo_Fix>(
-                    title: "Fix",
-                    description: "HPut and VPut operations successively layout views in superview in horizontal or vertical direction using intentions. Fix intention means that view size will take exact value, either directly defined or current one"
-                ),
-                Row<PutDemo_Flex>(
-                    title: "Flex",
-                    description: "HPut and VPut operations successively layout views in superview in horizontal or vertical direction using intentions. Flex intention means that view size will take value based weight of flex value. Flex operates only with free space left after Fix intentions"
-                ),
-                Row<PutDemo_FixFlex>(
-                    title: "Fix+Flex",
-                    description: "Biggest power comes when we combine Fix and Flex intentions"
-                ),
-                Row<PutDemo_FixFlexCenter>(
-                    title: "Fix+Flex center many views",
-                    description: "It is really to easy to center bunch of views all together"
-                ),
-                Row<PutDemo_Multi>(
-                    title: "Multi",
-                    description: "Single intention can be defined for several views, all calculations are doing for first one, and others use its result as is"
-                    
-                ),
-                Row<PutDemo_FixFlexGrid>(
-                    title: "Fix+Flex grid",
-                    description: "Elegant way to layout views in grid using just one HPut and one VPut"
-                )
+                Row<PutDemo_Fix>(),
+                Row<PutDemo_Flex>(),
+                Row<PutDemo_FixFlex>(),
+                Row<PutDemo_FixFlexCenter>(),
+                Row<PutDemo_Multi>(),
+                Row<PutDemo_FixFlexGrid>()
             ]
         ),
         Section(title: "Viewport", rows:
             [
-                Row<ViewPortDemo>(
-                    title: "Demo",
-                    description: "Combine operation not only allows to group other operations, but also define viewport for them. Viewport can be defined using anchors of childview, or nil anchor if using superview edges"
-                )
+                Row<ViewPortDemo>()
             ]
         ),
         
@@ -141,6 +87,8 @@ class ViewController: UIViewController {
         title = "Demos"
         
         view.addSubview(tableView)
+        
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "DocGen", style: .Plain , target: self, action: #selector(docGenClicked))
     }
 
     override func viewDidLayoutSubviews() {
@@ -155,6 +103,11 @@ class ViewController: UIViewController {
         if let indexPathForSelectedRow = tableView.indexPathForSelectedRow {
             tableView.deselectRowAtIndexPath(indexPathForSelectedRow, animated: true)
         }
+    }
+    
+    @objc private func docGenClicked() {
+        let vc = DocGenViewController(sections: sections)
+        navigationController?.pushViewController(vc, animated: true)
     }
 }
 
@@ -176,7 +129,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let row = sections[indexPath.section].rows[indexPath.row]
-        let vc = DemoViewController(title: row.title, description: row.description, demoView: row.view)
+        let vc = DemoViewController(title: row.title, description: row.comments, demoView: row.view)
         navigationController?.pushViewController(vc, animated: true)
     }
     

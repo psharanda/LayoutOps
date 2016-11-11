@@ -11,6 +11,7 @@
 		1B2B36711DD514C3001E2641 /* Follow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2B36701DD514C3001E2641 /* Follow.swift */; };
 		1B2B36731DD514CF001E2641 /* Put.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2B36721DD514CF001E2641 /* Put.swift */; };
 		1B2B36751DD514DC001E2641 /* ViewPort.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2B36741DD514DC001E2641 /* ViewPort.swift */; };
+		1B2B36791DD64FF4001E2641 /* DocGenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2B36781DD64FF4001E2641 /* DocGenViewController.swift */; };
 		1B2B82DB1DD4EAE1008B6450 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2B82DA1DD4EAE1008B6450 /* AppDelegate.swift */; };
 		1B2B82DD1DD4EAE1008B6450 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2B82DC1DD4EAE1008B6450 /* ViewController.swift */; };
 		1B2B82E21DD4EAE1008B6450 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1B2B82E11DD4EAE1008B6450 /* Assets.xcassets */; };
@@ -36,6 +37,7 @@
 		1B2B36701DD514C3001E2641 /* Follow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Follow.swift; sourceTree = "<group>"; };
 		1B2B36721DD514CF001E2641 /* Put.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Put.swift; sourceTree = "<group>"; };
 		1B2B36741DD514DC001E2641 /* ViewPort.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewPort.swift; sourceTree = "<group>"; };
+		1B2B36781DD64FF4001E2641 /* DocGenViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocGenViewController.swift; sourceTree = "<group>"; };
 		1B2B82D71DD4EAE1008B6450 /* Demos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demos.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B2B82DA1DD4EAE1008B6450 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1B2B82DC1DD4EAE1008B6450 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -85,6 +87,7 @@
 				1B2B82F41DD4F288008B6450 /* DemoViewController.swift */,
 				1B2B82DC1DD4EAE1008B6450 /* ViewController.swift */,
 				1B2B82F31DD4F09D008B6450 /* App */,
+				1B2B36781DD64FF4001E2641 /* DocGenViewController.swift */,
 			);
 			path = Demos;
 			sourceTree = "<group>";
@@ -210,6 +213,7 @@
 				1B2B36711DD514C3001E2641 /* Follow.swift in Sources */,
 				1B2B36751DD514DC001E2641 /* ViewPort.swift in Sources */,
 				1B2B82F51DD4F288008B6450 /* DemoViewController.swift in Sources */,
+				1B2B36791DD64FF4001E2641 /* DocGenViewController.swift in Sources */,
 				1BF9C3B61DD503C100CAD6D8 /* DemoViews.swift in Sources */,
 				1B2B366E1DD514BB001E2641 /* SizeToFit.swift in Sources */,
 				1B2B36731DD514CF001E2641 /* Put.swift in Sources */,

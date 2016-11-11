@@ -6,7 +6,7 @@
 import UIKit
 import LayoutOps
 
-class SizeToFitDemo_Value: UIView {
+class SizeToFitDemo_Value: UIView, DemoViewProtocol {
     
     
     let icon = makeHeartView()
@@ -41,9 +41,12 @@ class SizeToFitDemo_Value: UIView {
             HCenter(title)
         ).layout()
     }
+    
+    static let title = ".Value"
+    static let comments = "SizeToFit operation fits view in defined box using -sizeThatFits: method. Box (width and height) can be defined using different options. " + ".Value option sets exact value for box. Result size will be equal or less than it."
 }
 
-class SizeToFitDemo_Max: UIView {
+class SizeToFitDemo_Max: UIView, DemoViewProtocol {
     
     let icon = makeHeartView()
     let label = makeDetailsLabel()
@@ -78,9 +81,12 @@ class SizeToFitDemo_Max: UIView {
             HCenter(title)
         ).layout()
     }
+    
+    static let title = ".Max"
+    static let comments = "SizeToFit operation fits view in defined box using -sizeThatFits: method. Box (width and height) can be defined using different options. " + ".Max option sets infinite value for box. Result size will be most comfortable for view to display content. WARNING: multiline labels are comfortable with single line, don't use .Max for them"
 }
 
-class SizeToFitDemo_Current: UIView {
+class SizeToFitDemo_Current: UIView, DemoViewProtocol {
     
     let icon = makeHeartView()
     let label = makeDetailsLabel()
@@ -117,9 +123,12 @@ class SizeToFitDemo_Current: UIView {
             HCenter(title)
         ).layout()
     }
+    
+    static let title = ".Current"
+    static let comments = "SizeToFit operation fits view in defined box using -sizeThatFits: method. Box (width and height) can be defined using different options. " + ".Current options sets value for box with current frame's width or height."
 }
 
-class SizeToFitDemo_KeepCurrent: UIView {
+class SizeToFitDemo_KeepCurrent: UIView, DemoViewProtocol {
     
     let icon = makeHeartView()
     let label = makeDetailsLabel()
@@ -157,9 +166,12 @@ class SizeToFitDemo_KeepCurrent: UIView {
             HCenter(title)
         ).layout()
     }
+    
+    static let title = ".KeepCurrent"
+    static let comments = "SizeToFit operation fits view in defined box using -sizeThatFits: method. Box (width and height) can be defined using different options. " + ".KeepCurrent options sets value for box with current frame's width or height, but result size will be still equal to those original frame values. This is usefull to layout multiline labels. First you need to set somehow label width, and then call something like SizeToFit(label, width: .KeepCurrent, height: .Max)."
 }
 
-class SizeToFitDemo_MinMax: UIView {
+class SizeToFitDemo_MinMax: UIView, DemoViewProtocol {
     
     let label = makeDetailsLabel()
     
@@ -181,4 +193,7 @@ class SizeToFitDemo_MinMax: UIView {
             Center(label)
         ).layout()
     }
+    
+    static let title = "Min/Max constraints"
+    static let comments = "SizeToFit operation also can have min, max or both constraints to limit resulted width/height. "
 }
