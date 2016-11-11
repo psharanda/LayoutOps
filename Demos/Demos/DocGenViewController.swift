@@ -41,6 +41,9 @@ class DocGenViewController: UIViewController {
                 SectionRow(sectionTitle: section.title, row: $0)
             }
         }
+        
+        let codebaseString = (try! NSString(contentsOfFile: NSBundle.mainBundle().pathForResource("Codebase.generated.txt", ofType: nil)!, encoding: NSUTF8StringEncoding)) as String
+        
         var currentRowIndex = 0
         
         var markdownString = ""
@@ -69,6 +72,16 @@ class DocGenViewController: UIViewController {
             v1.frame = CGRectMake(0, 0, 320, 480)
             v1.layoutIfNeeded()
             v1.backgroundColor = UIColor(white: 0.9, alpha: 1)
+            
+
+            let layoutCode = extractLayoutSourceCode(codebaseString , view: v1)
+            
+            markdownString += "```swift"
+            markdownString += "\n\r"
+            markdownString += layoutCode
+            markdownString += "\n\r"
+            markdownString += "```"
+            markdownString += "\n\r"
             
             let v2 = sectionRow.row.view
             view.addSubview(v2)
@@ -107,8 +120,26 @@ class DocGenViewController: UIViewController {
             print("Markdown saved to "+mdPath)
         }
     }
-    
+}
 
+private func extractLayoutSourceCode(codebase: String, view: UIView) -> String {
+    
+    let scanner = NSScanner(string: codebase)
+    scanner.charactersToBeSkipped = nil
+    
+    let className = String(view.dynamicType)
+
+    if scanner.scanUpToString("class \(className)") != nil {
+        if scanner.scanUpToString("super.layoutSubviews()") != nil {
+            if let code = scanner.scanUpToString(".layout()") {
+                let almostResult = code + ".layout()"
+                
+                return (almostResult as NSString).stringByReplacingOccurrencesOfString("super.layoutSubviews()", withString: "")
+            }
+        }
+    }
+
+    return "<<error>>"
 }
 
 private func after(f: ()->Void) {
