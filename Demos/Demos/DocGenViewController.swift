@@ -87,9 +87,9 @@ class DocGenViewController: UIViewController {
                 saveImageAsPngInTempFolder(img2, name: f2)
                 v2.removeFromSuperview()
                 
-                markdownString += "<img src=\"https://raw.githubusercontent.com/psharanda/LayoutOps/master/README/\(f1)\" alt=\"\(sectionRow.row.title)\" width=\"\(img1.size.width/2)\" height=\"\(img1.size.height/2)\"/>"
+                markdownString += "<img src=\"https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/\(f1)\" alt=\"\(sectionRow.row.title)\" width=\"\(img1.size.width/2)\" height=\"\(img1.size.height/2)\"/>"
                 markdownString += "\n\r"
-                markdownString += "<img src=\"https://raw.githubusercontent.com/psharanda/LayoutOps/master/README/\(f2)\" alt=\"\(sectionRow.row.title)\" width=\"\(img2.size.width/2)\" height=\"\(img2.size.height/2)\"/>"
+                markdownString += "<img src=\"https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/\(f2)\" alt=\"\(sectionRow.row.title)\" width=\"\(img2.size.width/2)\" height=\"\(img2.size.height/2)\"/>"
                 markdownString += "\n\r"
                 
                 currentRowIndex += 1
