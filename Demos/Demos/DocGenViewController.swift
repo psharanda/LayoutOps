@@ -59,13 +59,13 @@ class DocGenViewController: UIViewController {
             if currentSectionString != sectionRow.sectionTitle {
                 currentSectionString = sectionRow.sectionTitle
                 markdownString += "### \(currentSectionString)"
-                markdownString += "\n\r"
+                markdownString += "\n"
             }
             
             markdownString += "#### \(sectionRow.row.title)"
-            markdownString += "\n\r"
+            markdownString += "\n"
             markdownString += sectionRow.row.comments
-            markdownString += "\n\r"
+            markdownString += "\n"
             
             let v1 = sectionRow.row.view
             view.addSubview(v1)
@@ -77,11 +77,11 @@ class DocGenViewController: UIViewController {
             let layoutCode = extractLayoutSourceCode(codebaseString , view: v1)
             
             markdownString += "```swift"
-            markdownString += "\n\r"
+            markdownString += "\n"
             markdownString += layoutCode
-            markdownString += "\n\r"
+            markdownString += "\n"
             markdownString += "```"
-            markdownString += "\n\r"
+            markdownString += "\n"
             
             let v2 = sectionRow.row.view
             view.addSubview(v2)
@@ -101,9 +101,8 @@ class DocGenViewController: UIViewController {
                 v2.removeFromSuperview()
                 
                 markdownString += "<img src=\"https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/\(f1)\" alt=\"\(sectionRow.row.title)\" width=\"\(img1.size.width/2)\" height=\"\(img1.size.height/2)\"/>"
-                markdownString += "\n\r"
                 markdownString += "<img src=\"https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/\(f2)\" alt=\"\(sectionRow.row.title)\" width=\"\(img2.size.width/2)\" height=\"\(img2.size.height/2)\"/>"
-                markdownString += "\n\r"
+                markdownString += "\n"
                 
                 currentRowIndex += 1
                 if currentRowIndex >= allRows.count {
@@ -118,6 +117,8 @@ class DocGenViewController: UIViewController {
             let mdPath = (NSTemporaryDirectory() as NSString).stringByAppendingPathComponent("DEMOS.md")
             let _ = try?(markdownString as NSString).writeToFile(mdPath, atomically: false, encoding: NSUTF8StringEncoding)
             print("Markdown saved to "+mdPath)
+            
+            self.navigationController?.popViewControllerAnimated(true)
         }
     }
 }
@@ -134,7 +135,7 @@ private func extractLayoutSourceCode(codebase: String, view: UIView) -> String {
             if let code = scanner.scanUpToString(".layout()") {
                 let almostResult = code + ".layout()"
                 
-                return (almostResult as NSString).stringByReplacingOccurrencesOfString("super.layoutSubviews()", withString: "")
+                return (almostResult as NSString).stringByReplacingOccurrencesOfString("super.layoutSubviews()", withString: "").stringByReplacingOccurrencesOfString("\n        ", withString: "\n")
             }
         }
     }
