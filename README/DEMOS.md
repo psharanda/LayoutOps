@@ -1,8 +1,8 @@
 ### Basic
 #### Set*
 Set* operations directly manipulate according frame values
-<img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Basic_Set*_portrait.png" alt="Set*" width="160.0" height="240.0"/>
-<img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Basic__Set*_landscape.png" alt="Set*" width="240.0" height="160.0"/>
+<img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Basic_Set-_portrait.png" alt="Set*" width="160.0" height="240.0"/>
+<img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Basic__Set-_landscape.png" alt="Set*" width="240.0" height="160.0"/>
 #### Center
 HCenter (horizontally), VCenter (vertically) and Center (both) operations allows to center view. Insets can be used to adjust center point (see green view, 100 pt from bottom). Size of view usually should be set with previous operations
 <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Basic_Center_portrait.png" alt="Center" width="160.0" height="240.0"/>
@@ -34,8 +34,8 @@
 <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/SizeToFit__.KeepCurrent_landscape.png" alt=".KeepCurrent" width="240.0" height="160.0"/>
 #### Min/Max constraints
 SizeToFit operation also can have min, max or both constraints to limit resulted width/height. 
-<img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/SizeToFit_Min/Max constraints_portrait.png" alt="Min/Max constraints" width="160.0" height="240.0"/>
-<img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/SizeToFit__Min/Max constraints_landscape.png" alt="Min/Max constraints" width="240.0" height="160.0"/>
+<img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/SizeToFit_Min-Max constraints_portrait.png" alt="Min/Max constraints" width="160.0" height="240.0"/>
+<img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/SizeToFit__Min-Max constraints_landscape.png" alt="Min/Max constraints" width="240.0" height="160.0"/>
 ### Follow
 #### Corners
 Follow operation sets one view's anchor to be the same with others view anchor. Anchors can be horizontal and vertical, and can be followed only with anchors of the same type.

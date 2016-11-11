@@ -77,12 +77,12 @@ class DocGenViewController: UIViewController {
             v2.backgroundColor = UIColor(white: 0.9, alpha: 1)
             
             after {
-                let f1 = "\(sectionRow.sectionTitle)_\(sectionRow.row.title)_portrait.png"
+                let f1 = "\(sectionRow.sectionTitle)_\(sectionRow.row.title)_portrait.png".stringForFilePath
                 let img1 = imageWithView(v1)
                 saveImageAsPngInTempFolder(img1, name: f1)
                 v1.removeFromSuperview()
                 
-                let f2 = "\(sectionRow.sectionTitle)__\(sectionRow.row.title)_landscape.png"
+                let f2 = "\(sectionRow.sectionTitle)__\(sectionRow.row.title)_landscape.png".stringForFilePath
                 let img2 = imageWithView(v2)
                 saveImageAsPngInTempFolder(img2, name: f2)
                 v2.removeFromSuperview()
@@ -132,3 +132,11 @@ private func saveImageAsPngInTempFolder(image: UIImage, name: String) {
     }
 }
 
+extension String {
+    var stringForFilePath: String {
+        // characterSet contains all illegal characters on OS X and Windows
+        let characterSet = NSCharacterSet(charactersInString: "\"\\/?<>:*|")
+        // replace "-" with character of choice
+        return componentsSeparatedByCharactersInSet(characterSet).joinWithSeparator("-")
+    }
+}
