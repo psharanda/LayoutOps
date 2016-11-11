@@ -50,21 +50,3 @@ public func Follow(anchor: VAnchor, withAnchor: VAnchor) -> LayoutOperation {
 public func Follow(anchor: SizeAnchor, withAnchor: SizeAnchor) -> LayoutOperation {
     return FollowOperation(anchorToFollow: anchor, followerAnchor: withAnchor)
 }
-
-//MARK: - Baselinable
-public protocol Baselinable {
-    func baselineValueOfType(type: BaselineType, size: CGSize) -> CGFloat
-}
-
-extension UILabel: Baselinable {
-    public func baselineValueOfType(type: BaselineType, size: CGSize) -> CGFloat {
-        let sz = sizeThatFits(size)
-        
-        switch type {
-        case .First:
-            return (size.height - sz.height)/2 + font.ascender
-        case .Last:
-            return size.height - (size.height - sz.height)/2 + font.descender
-        }
-    }
-}

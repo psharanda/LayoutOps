@@ -95,6 +95,10 @@ public func HCenterAnchor(view: UIView) -> HAnchor {
     return HCenterAnchor(view, inset: 0)
 }
 
+//MARK: - Baselinable
+public protocol Baselinable {
+    func baselineValueOfType(type: BaselineType, size: CGSize) -> CGFloat
+}
 
 //MARK: - vanchor
 
@@ -251,4 +255,19 @@ public func HeightAnchor(view: UIView, inset: CGFloat) -> SizeAnchor {
 
 public func HeightAnchor(view: UIView) -> SizeAnchor {
     return HeightAnchorType(view: view, inset: 0)
+}
+
+
+
+extension UILabel: Baselinable {
+    public func baselineValueOfType(type: BaselineType, size: CGSize) -> CGFloat {
+        let sz = sizeThatFits(size)
+        
+        switch type {
+        case .First:
+            return (size.height - sz.height)/2 + font.ascender
+        case .Last:
+            return size.height - (size.height - sz.height)/2 + font.descender
+        }
+    }
 }

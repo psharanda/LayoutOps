@@ -19,18 +19,18 @@ private struct BasicLayoutOperation: LayoutOperation {
         
         viewport.verify(superview)
         
-        
         let superviewFrame = frameForView(superview, layouts: &layouts)
         let superviewBounds = CGRect(x: 0, y: 0, width: superviewFrame.width, height: superviewFrame.height)
-        let superviewBoundsInViewPort = viewport.apply(superviewBounds, layouts: layouts)
+        let superviewFrameInViewPort = viewport.apply(superviewBounds, layouts: layouts)
+        let superviewBoundsInViewPort = CGRect(x: 0, y: 0, width: superviewFrameInViewPort.width, height: superviewFrameInViewPort.height)
         
         let frame = frameForView(view, layouts: &layouts)
-        let frameInViewPort = CGRect(x: frame.origin.x - superviewBoundsInViewPort.origin.x, y: frame.origin.y - superviewBoundsInViewPort.origin.y, width: frame.width, height: frame.height)
+        let frameInViewPort = CGRect(x: frame.origin.x - superviewFrameInViewPort.origin.x, y: frame.origin.y - superviewFrameInViewPort.origin.y, width: frame.width, height: frame.height)
         
 
         let rectInViewport = processor(view, frameInViewPort, superviewBoundsInViewPort)
         
-        layouts[view] = CGRect(x: superviewBoundsInViewPort.origin.x + rectInViewport.origin.x, y: superviewBoundsInViewPort.origin.y + rectInViewport.origin.y, width: rectInViewport.width, height: rectInViewport.height)
+        layouts[view] = CGRect(x: superviewFrameInViewPort.origin.x + rectInViewport.origin.x, y: superviewFrameInViewPort.origin.y + rectInViewport.origin.y, width: rectInViewport.width, height: rectInViewport.height)
     }
 }
 
@@ -51,10 +51,6 @@ public func Center(view: UIView, insets: UIEdgeInsets) -> LayoutOperation {
                       y: centerStart(frame.height, superValue: superviewFrame.height, start: insets.top, finish: insets.bottom),
                       width: frame.size.width, height: frame.size.height)
     }
-}
-
-public func Center(view: UIView, inset: CGFloat) -> LayoutOperation {
-    return Center(view, insets: UIEdgeInsetsMake(inset, inset, inset, inset))
 }
 
 public func Center(view: UIView) -> LayoutOperation {
@@ -185,24 +181,6 @@ public func AlignRight(view: UIView, inset: CGFloat) -> LayoutOperation {
 public func AlignRight(view: UIView) -> LayoutOperation {
     return AlignRight(view, inset: 0)
 }
-
-//MARK: - fit height fill width
-
-public func HFillVFit(view: UIView, leftInset: CGFloat, rightInset: CGFloat) -> LayoutOperation {
-    return Combine([
-        HFill(view, leftInset: leftInset, rightInset: rightInset),
-        SizeToFit(view, width: .KeepCurrent, height: .Max),
-    ])
-}
-
-public func HFillVFit(view: UIView, inset: CGFloat) -> LayoutOperation {
-    return HFillVFit(view, leftInset: inset, rightInset: inset)
-}
-
-public func HFillVFit(view: UIView) -> LayoutOperation {
-    return HFillVFit(view, leftInset: 0, rightInset: 0)
-}
-
 
 //MARK: - x & y & width & height
 
