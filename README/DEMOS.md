@@ -76,8 +76,8 @@ Combine(
 ```
 <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Basic_Align_portrait.png" alt="Align" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Basic__Align_landscape.png" alt="Align" width="240.0" height="160.0"/>
 ### SizeToFit
-#### .Value(x)
-SizeToFit operation fits view in defined box using -sizeThatFits: method. Box (width and height) can be defined using different options. .Value(x) option sets exact value for box. Result size will be equal or less than it.
+#### .Value
+SizeToFit operation fits view in defined box using -sizeThatFits: method. Box (width and height) can be defined using different options. .Value option sets exact value for box. Result size will be equal or less than it.
 ```swift
 
 
@@ -94,7 +94,7 @@ Combine(
     HCenter(title)
 ).layout()
 ```
-<img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/SizeToFit_.Value(x)_portrait.png" alt=".Value(x)" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/SizeToFit__.Value(x)_landscape.png" alt=".Value(x)" width="240.0" height="160.0"/>
+<img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/SizeToFit_.Value_portrait.png" alt=".Value" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/SizeToFit__.Value_landscape.png" alt=".Value" width="240.0" height="160.0"/>
 #### .Max
 .Max option sets infinite value for fitting box. Result size will be most comfortable for view to display content. WARNING: multiline labels are comfortable with single line, don't use .Max for them
 ```swift
