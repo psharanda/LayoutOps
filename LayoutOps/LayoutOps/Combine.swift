@@ -11,7 +11,7 @@ private struct CombineOperation : LayoutOperation {
     
     let viewport: Viewport?
     
-    func calculateLayouts(inout layouts: ViewLayoutMap, viewport: Viewport) {
+    func calculateLayouts(_ layouts: inout ViewLayoutMap, viewport: Viewport) {
         for layoutOperation in layoutOperations {
             layoutOperation.calculateLayouts(&layouts, viewport: self.viewport ?? viewport)
         }
@@ -23,18 +23,18 @@ private struct CombineOperation : LayoutOperation {
     }
 }
 
-public func Combine(operations: [LayoutOperation]) -> LayoutOperation {
+public func Combine(_ operations: [LayoutOperation]) -> LayoutOperation {
     return CombineOperation(layoutOperations: operations)
 }
 
-public func Combine(viewport: Viewport, operations: [LayoutOperation]) -> LayoutOperation {
+public func Combine(_ viewport: Viewport, operations: [LayoutOperation]) -> LayoutOperation {
     return CombineOperation(layoutOperations: operations, viewport: viewport)
 }
 
-public func Combine(operations: LayoutOperation...) -> LayoutOperation {
+public func Combine(_ operations: LayoutOperation...) -> LayoutOperation {
     return CombineOperation(layoutOperations: operations)
 }
 
-public func Combine(viewport: Viewport, operations: LayoutOperation...) -> LayoutOperation {
+public func Combine(_ viewport: Viewport, operations: LayoutOperation...) -> LayoutOperation {
     return CombineOperation(layoutOperations: operations, viewport: viewport)
 }

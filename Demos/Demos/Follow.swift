@@ -149,7 +149,7 @@ class FollowDemo_BaselineAnchors: UIView, DemoViewProtocol {
         Combine(
             
             HFill(label, inset: 20),
-            SizeToFit(label, width: .KeepCurrent, height: .Max),
+            SizeToFit(label, width: .keepCurrent, height: .max),
             Center(label),
             
             SetHeight(blueView, value: 30),
@@ -158,8 +158,8 @@ class FollowDemo_BaselineAnchors: UIView, DemoViewProtocol {
             HFill(blueView, inset: 20),
             HFill(greenView, inset: 20),
             
-            Follow(BaselineAnchor(label, type: .First), withAnchor: BottomAnchor(blueView)),
-            Follow(BaselineAnchor(label, type: .Last), withAnchor: TopAnchor(greenView))
+            Follow(BaselineAnchor(label, type: .first), withAnchor: BottomAnchor(blueView)),
+            Follow(BaselineAnchor(label, type: .last), withAnchor: TopAnchor(greenView))
         ).layout()
     }
     

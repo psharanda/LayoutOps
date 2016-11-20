@@ -18,7 +18,7 @@ public struct Viewport {
         self.rightAnchor = rightAnchor
     }
     
-    func apply(bounds: CGRect, layouts: ViewLayoutMap) -> CGRect {
+    func apply(_ bounds: CGRect, layouts: ViewLayoutMap) -> CGRect {
         let left = leftAnchor.flatMap { $0.anchorValue(layouts) } ?? bounds.origin.x
         let top = topAnchor.flatMap { $0.anchorValue(layouts) } ?? bounds.origin.y
         let right = rightAnchor.flatMap { $0.anchorValue(layouts) } ?? bounds.maxX
@@ -27,7 +27,7 @@ public struct Viewport {
         return CGRect(x: left, y: top, width: right - left, height: bottom - top)
     }
     
-    func verify(superview: UIView) {
+    func verify(_ superview: UIView) {
         
         
         var topIsWrong = false
@@ -35,19 +35,19 @@ public struct Viewport {
         var bottomIsWrong = false
         var rightIsWrong = false
         
-        if let tv = topAnchor?.view where tv.superview !== superview {
+        if let tv = topAnchor?.view, tv.superview !== superview {
             topIsWrong = true
         }
         
-        if let lv = leftAnchor?.view where lv.superview  !== superview {
+        if let lv = leftAnchor?.view, lv.superview  !== superview {
             leftIsWrong = true
         }
         
-        if let bv = bottomAnchor?.view where bv.superview  !== superview {
+        if let bv = bottomAnchor?.view, bv.superview  !== superview {
             bottomIsWrong = true
         }
         
-        if let rv = rightAnchor?.view where rv.superview  !== superview {
+        if let rv = rightAnchor?.view, rv.superview  !== superview {
             rightIsWrong = true
         }
         

@@ -13,7 +13,7 @@ private struct FollowOperation: LayoutOperation {
     let anchorToFollow: Anchor
     let followerAnchor: Anchor
     
-    func calculateLayouts(inout layouts: ViewLayoutMap, viewport: Viewport) {
+    func calculateLayouts(_ layouts: inout ViewLayoutMap, viewport: Viewport) {
         
         let toFollowView = anchorToFollow.view
         let followerView = followerAnchor.view
@@ -39,14 +39,14 @@ private struct FollowOperation: LayoutOperation {
 
 // anchor.value + inset = withAnchor.value + inset
 
-public func Follow(anchor: HAnchor, withAnchor: HAnchor) -> LayoutOperation {
+public func Follow(_ anchor: HAnchor, withAnchor: HAnchor) -> LayoutOperation {
     return FollowOperation(anchorToFollow: anchor, followerAnchor: withAnchor)
 }
 
-public func Follow(anchor: VAnchor, withAnchor: VAnchor) -> LayoutOperation {
+public func Follow(_ anchor: VAnchor, withAnchor: VAnchor) -> LayoutOperation {
     return FollowOperation(anchorToFollow: anchor, followerAnchor: withAnchor)
 }
 
-public func Follow(anchor: SizeAnchor, withAnchor: SizeAnchor) -> LayoutOperation {
+public func Follow(_ anchor: SizeAnchor, withAnchor: SizeAnchor) -> LayoutOperation {
     return FollowOperation(anchorToFollow: anchor, followerAnchor: withAnchor)
 }

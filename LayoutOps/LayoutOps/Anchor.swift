@@ -9,13 +9,13 @@
 import Foundation
 
 public protocol Anchor {
-    func valueForRect(rect: CGRect) -> CGFloat
-    func setValueForRect(value: CGFloat, rect: CGRect) -> CGRect    
+    func valueForRect(_ rect: CGRect) -> CGFloat
+    func setValueForRect(_ value: CGFloat, rect: CGRect) -> CGRect    
     var view: UIView {get}
 }
 
 extension Anchor {
-    func anchorValue(layouts: ViewLayoutMap) -> CGFloat? {
+    func anchorValue(_ layouts: ViewLayoutMap) -> CGFloat? {
         return layouts[view].flatMap {  valueForRect($0) }
     }
 }
@@ -28,29 +28,29 @@ public protocol HAnchor: Anchor {
 
 private enum HAnchorType : HAnchor {
 
-    case Left(UIView, CGFloat)
-    case Center(UIView, CGFloat)
-    case Right(UIView, CGFloat)
+    case left(UIView, CGFloat)
+    case center(UIView, CGFloat)
+    case right(UIView, CGFloat)
     
-    func valueForRect(rect: CGRect) -> CGFloat {
+    func valueForRect(_ rect: CGRect) -> CGFloat {
         switch self {
-        case .Left(_, let inset):
-            return CGRectGetMinX(rect) + inset
-        case .Right(_, let inset):
-            return CGRectGetMaxX(rect) + inset
-        case .Center(_, let inset):
-            return CGRectGetMidX(rect) + inset
+        case .left(_, let inset):
+            return rect.minX + inset
+        case .right(_, let inset):
+            return rect.maxX + inset
+        case .center(_, let inset):
+            return rect.midX + inset
         }
     }
     
-    func setValueForRect(value: CGFloat, rect: CGRect) -> CGRect {
+    func setValueForRect(_ value: CGFloat, rect: CGRect) -> CGRect {
         var result = rect
         switch self {
-        case .Left(_, let inset):
+        case .left(_, let inset):
             result.origin.x = value - inset
-        case .Right(_, let inset):
+        case .right(_, let inset):
             result.origin.x = value - result.size.width - inset
-        case .Center(_, let inset):
+        case .center(_, let inset):
             result.origin.x = value - result.size.width/2 - inset
         }
         
@@ -59,45 +59,45 @@ private enum HAnchorType : HAnchor {
     
     var view: UIView {
         switch self {
-        case .Left(let v, _):
+        case .left(let v, _):
             return v
-        case .Right(let v, _):
+        case .right(let v, _):
             return v
-        case .Center(let v, _):
+        case .center(let v, _):
             return v
         }
     }
 }
 
 
-public func LeftAnchor(view: UIView, inset: CGFloat) -> HAnchor {
-    return HAnchorType.Left(view, inset)
+public func LeftAnchor(_ view: UIView, inset: CGFloat) -> HAnchor {
+    return HAnchorType.left(view, inset)
 }
 
-public func LeftAnchor(view: UIView) -> HAnchor {
+public func LeftAnchor(_ view: UIView) -> HAnchor {
     return LeftAnchor(view, inset: 0)
 }
 
-public func RightAnchor(view: UIView, inset: CGFloat) -> HAnchor {
-    return HAnchorType.Right(view, inset)
+public func RightAnchor(_ view: UIView, inset: CGFloat) -> HAnchor {
+    return HAnchorType.right(view, inset)
 }
 
-public func RightAnchor(view: UIView) -> HAnchor {
+public func RightAnchor(_ view: UIView) -> HAnchor {
     return RightAnchor(view, inset: 0)
 }
 
 
-public func HCenterAnchor(view: UIView, inset: CGFloat) -> HAnchor {
-    return HAnchorType.Center(view, inset)
+public func HCenterAnchor(_ view: UIView, inset: CGFloat) -> HAnchor {
+    return HAnchorType.center(view, inset)
 }
 
-public func HCenterAnchor(view: UIView) -> HAnchor {
+public func HCenterAnchor(_ view: UIView) -> HAnchor {
     return HCenterAnchor(view, inset: 0)
 }
 
 //MARK: - Baselinable
 public protocol Baselinable {
-    func baselineValueOfType(type: BaselineType, size: CGSize) -> CGFloat
+    func baselineValueOfType(_ type: BaselineType, size: CGSize) -> CGFloat
 }
 
 //MARK: - vanchor
@@ -107,36 +107,36 @@ public protocol VAnchor: Anchor {
 }
 
 private enum VAnchorType : VAnchor {
-    case Top(UIView, CGFloat)
-    case Bottom(UIView, CGFloat)
-    case Center(UIView, CGFloat)
-    case Baseline(UIView, Baselinable, BaselineType, CGFloat)
+    case top(UIView, CGFloat)
+    case bottom(UIView, CGFloat)
+    case center(UIView, CGFloat)
+    case baseline(UIView, Baselinable, BaselineType, CGFloat)
     
-    func valueForRect(rect: CGRect) -> CGFloat {
+    func valueForRect(_ rect: CGRect) -> CGFloat {
         switch self {
-        case .Top(_, let inset):
-            return CGRectGetMinY(rect) + inset
-        case .Bottom(_, let inset):
-            return CGRectGetMaxY(rect) + inset
-        case .Center(_, let inset):
-            return CGRectGetMidY(rect) + inset
-        case .Baseline(_, let baselinable, let baselineType, let inset):
+        case .top(_, let inset):
+            return rect.minY + inset
+        case .bottom(_, let inset):
+            return rect.maxY + inset
+        case .center(_, let inset):
+            return rect.midY + inset
+        case .baseline(_, let baselinable, let baselineType, let inset):
             return rect.origin.y + baselinable.baselineValueOfType(baselineType, size: rect.size) + inset
         }
     }
     
-    func setValueForRect(value: CGFloat, rect: CGRect) -> CGRect {
+    func setValueForRect(_ value: CGFloat, rect: CGRect) -> CGRect {
         
         var result = rect
         
         switch self {
-        case .Top(_, let inset):
+        case .top(_, let inset):
             result.origin.y = value - inset
-        case .Bottom(_, let inset):
+        case .bottom(_, let inset):
             result.origin.y = value - result.size.height - inset
-        case .Center(_, let inset):
+        case .center(_, let inset):
             result.origin.y = value - result.size.height/2 - inset
-        case .Baseline(_, let baselinable, let baselineType, let inset):
+        case .baseline(_, let baselinable, let baselineType, let inset):
             result.origin.y = value - baselinable.baselineValueOfType(baselineType, size: result.size) - inset
         }
         
@@ -145,58 +145,58 @@ private enum VAnchorType : VAnchor {
     
     var view: UIView {
         switch self {
-        case .Top(let v, _):
+        case .top(let v, _):
             return v
-        case .Bottom(let v, _):
+        case .bottom(let v, _):
             return v
-        case .Center(let v, _):
+        case .center(let v, _):
             return v
-        case .Baseline(let v, _, _, _):
+        case .baseline(let v, _, _, _):
             return v
         }
     }
 }
 
-public func TopAnchor(view: UIView, inset: CGFloat) -> VAnchor {
-    return VAnchorType.Top(view, inset)
+public func TopAnchor(_ view: UIView, inset: CGFloat) -> VAnchor {
+    return VAnchorType.top(view, inset)
 }
 
-public func TopAnchor(view: UIView) -> VAnchor {
+public func TopAnchor(_ view: UIView) -> VAnchor {
     return TopAnchor(view, inset: 0)
 }
 
-public func BottomAnchor(view: UIView, inset: CGFloat) -> VAnchor {
-    return VAnchorType.Bottom(view, inset)
+public func BottomAnchor(_ view: UIView, inset: CGFloat) -> VAnchor {
+    return VAnchorType.bottom(view, inset)
 }
 
-public func BottomAnchor(view: UIView) -> VAnchor {
+public func BottomAnchor(_ view: UIView) -> VAnchor {
     return BottomAnchor(view, inset: 0)
 }
 
 
-public func VCenterAnchor(view: UIView, inset: CGFloat) -> VAnchor {
-    return VAnchorType.Center(view, inset)
+public func VCenterAnchor(_ view: UIView, inset: CGFloat) -> VAnchor {
+    return VAnchorType.center(view, inset)
 }
 
-public func VCenterAnchor(view: UIView) -> VAnchor {
+public func VCenterAnchor(_ view: UIView) -> VAnchor {
     return VCenterAnchor(view, inset: 0)
 }
 
 public enum BaselineType {
-    case First
-    case Last
+    case first
+    case last
 }
 
-public func BaselineAnchor<T: UIView where T: Baselinable>(view: T, type: BaselineType, inset: CGFloat) -> VAnchor {
-    return VAnchorType.Baseline(view, view, type, inset)
+public func BaselineAnchor<T: UIView>(_ view: T, type: BaselineType, inset: CGFloat) -> VAnchor where T: Baselinable {
+    return VAnchorType.baseline(view, view, type, inset)
 }
 
-public func BaselineAnchor<T: UIView where T: Baselinable>(view: T, type: BaselineType) -> VAnchor {
-    return VAnchorType.Baseline(view, view, type, 0)
+public func BaselineAnchor<T: UIView>(_ view: T, type: BaselineType) -> VAnchor where T: Baselinable {
+    return VAnchorType.baseline(view, view, type, 0)
 }
 
-public func BaselineAnchor<T: UIView where T: Baselinable>(view: T) -> VAnchor {
-    return VAnchorType.Baseline(view, view, .First, 0)
+public func BaselineAnchor<T: UIView>(_ view: T) -> VAnchor where T: Baselinable {
+    return VAnchorType.baseline(view, view, .first, 0)
 }
 
 public protocol SizeAnchor: Anchor {
@@ -211,22 +211,22 @@ struct WidthAnchorType: SizeAnchor {
         self.inset = inset
     }
     
-    func valueForRect(rect: CGRect) -> CGFloat {
+    func valueForRect(_ rect: CGRect) -> CGFloat {
         return rect.width + inset
     }
     
-    func setValueForRect(value: CGFloat, rect: CGRect) -> CGRect {
+    func setValueForRect(_ value: CGFloat, rect: CGRect) -> CGRect {
         var result = rect
         result.size.width = value - inset
         return result
     }
 }
 
-public func WidthAnchor(view: UIView, inset: CGFloat) -> SizeAnchor {
+public func WidthAnchor(_ view: UIView, inset: CGFloat) -> SizeAnchor {
     return WidthAnchorType(view: view, inset: inset)
 }
 
-public func WidthAnchor(view: UIView) -> SizeAnchor {
+public func WidthAnchor(_ view: UIView) -> SizeAnchor {
     return WidthAnchorType(view: view, inset: 0)
 }
 
@@ -238,35 +238,35 @@ struct HeightAnchorType: SizeAnchor {
         self.inset = inset
     }
     
-    func valueForRect(rect: CGRect) -> CGFloat {
+    func valueForRect(_ rect: CGRect) -> CGFloat {
         return rect.height + inset
     }
     
-    func setValueForRect(value: CGFloat, rect: CGRect) -> CGRect {
+    func setValueForRect(_ value: CGFloat, rect: CGRect) -> CGRect {
         var result = rect
         result.size.height = value - inset
         return result
     }
 }
 
-public func HeightAnchor(view: UIView, inset: CGFloat) -> SizeAnchor {
+public func HeightAnchor(_ view: UIView, inset: CGFloat) -> SizeAnchor {
     return HeightAnchorType(view: view, inset: inset)
 }
 
-public func HeightAnchor(view: UIView) -> SizeAnchor {
+public func HeightAnchor(_ view: UIView) -> SizeAnchor {
     return HeightAnchorType(view: view, inset: 0)
 }
 
 
 
 extension UILabel: Baselinable {
-    public func baselineValueOfType(type: BaselineType, size: CGSize) -> CGFloat {
+    public func baselineValueOfType(_ type: BaselineType, size: CGSize) -> CGFloat {
         let sz = sizeThatFits(size)
         
         switch type {
-        case .First:
+        case .first:
             return (size.height - sz.height)/2 + font.ascender
-        case .Last:
+        case .last:
             return size.height - (size.height - sz.height)/2 + font.descender
         }
     }

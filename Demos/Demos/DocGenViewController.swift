@@ -7,7 +7,7 @@ import UIKit
 
 class DocGenViewController: UIViewController {
     
-    private let sections: [Section]
+    fileprivate let sections: [Section]
     
     init(sections: [Section]) {
         self.sections = sections
@@ -21,20 +21,20 @@ class DocGenViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = UIColor.whiteColor()
+        view.backgroundColor = UIColor.white
     }
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         makeSnapshots()
     }
     
-    private struct SectionRow {
+    fileprivate struct SectionRow {
         let sectionTitle: String
         let row: RowProtocol
     }
 
-    private func makeSnapshots() {
+    fileprivate func makeSnapshots() {
         
         let allRows = sections.flatMap { section in
             section.rows.map {
@@ -42,7 +42,7 @@ class DocGenViewController: UIViewController {
             }
         }
         
-        let codebaseString = (try! NSString(contentsOfFile: NSBundle.mainBundle().pathForResource("Codebase.generated.txt", ofType: nil)!, encoding: NSUTF8StringEncoding)) as String
+        let codebaseString = (try! NSString(contentsOfFile: Bundle.main.path(forResource: "Codebase.generated.txt", ofType: nil)!, encoding: String.Encoding.utf8.rawValue)) as String
         
         var currentRowIndex = 0
         
@@ -51,7 +51,7 @@ class DocGenViewController: UIViewController {
         var currentSectionString = ""
         
         
-        func renderRow(completion: ()->Void) {
+        func renderRow(_ completion: @escaping ()->Void) {
             
             
             let sectionRow = allRows[currentRowIndex]
@@ -69,7 +69,7 @@ class DocGenViewController: UIViewController {
             
             let v1 = sectionRow.row.view
             view.addSubview(v1)
-            v1.frame = CGRectMake(0, 0, 320, 480)
+            v1.frame = CGRect(x: 0, y: 0, width: 320, height: 480)
             v1.layoutIfNeeded()
             v1.backgroundColor = UIColor(white: 0.9, alpha: 1)
             
@@ -85,7 +85,7 @@ class DocGenViewController: UIViewController {
             
             let v2 = sectionRow.row.view
             view.addSubview(v2)
-            v2.frame = CGRectMake(0, 0, 480, 320)
+            v2.frame = CGRect(x: 0, y: 0, width: 480, height: 320)
             v2.layoutIfNeeded()
             v2.backgroundColor = UIColor(white: 0.9, alpha: 1)
             
@@ -114,28 +114,28 @@ class DocGenViewController: UIViewController {
         }
 
         renderRow {
-            let mdPath = (documentationPath() as NSString).stringByAppendingPathComponent("DEMOS.md")
-            let _ = try?(markdownString as NSString).writeToFile(mdPath, atomically: false, encoding: NSUTF8StringEncoding)
+            let mdPath = (documentationPath() as NSString).appendingPathComponent("DEMOS.md")
+            let _ = try?(markdownString as NSString).write(toFile: mdPath, atomically: false, encoding: String.Encoding.utf8.rawValue)
             print("Markdown saved to "+mdPath)
             
-            self.navigationController?.popViewControllerAnimated(true)
+            let _ = self.navigationController?.popViewController(animated: true)
         }
     }
 }
 
-private func extractLayoutSourceCode(codebase: String, view: UIView) -> String {
+private func extractLayoutSourceCode(_ codebase: String, view: UIView) -> String {
     
-    let scanner = NSScanner(string: codebase)
+    let scanner = Scanner(string: codebase)
     scanner.charactersToBeSkipped = nil
     
-    let className = String(view.dynamicType)
+    let className = String(describing: type(of: view))
 
     if scanner.scanUpToString("class \(className)") != nil {
         if scanner.scanUpToString("super.layoutSubviews()") != nil {
             if let code = scanner.scanUpToString(".layout()") {
                 let almostResult = code + ".layout()"
                 
-                return (almostResult as NSString).stringByReplacingOccurrencesOfString("super.layoutSubviews()", withString: "").stringByReplacingOccurrencesOfString("\n        ", withString: "\n")
+                return (almostResult as NSString).replacingOccurrences(of: "super.layoutSubviews()", with: "").replacingOccurrences(of: "\n        ", with: "\n")
             }
         }
     }
@@ -143,24 +143,24 @@ private func extractLayoutSourceCode(codebase: String, view: UIView) -> String {
     return "<<error>>"
 }
 
-private func after(f: ()->Void) {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW,Int64(0.1 * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), f)
+private func after(_ f: @escaping ()->Void) {
+    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(0.1 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: f)
 }
 
-private func imageWithView(view: UIView) -> UIImage {
-    UIGraphicsBeginImageContextWithOptions(view.bounds.size, view.opaque, 0.0)
-    view.drawViewHierarchyInRect(view.bounds, afterScreenUpdates: false)
+private func imageWithView(_ view: UIView) -> UIImage {
+    UIGraphicsBeginImageContextWithOptions(view.bounds.size, view.isOpaque, 0.0)
+    view.drawHierarchy(in: view.bounds, afterScreenUpdates: false)
     let img = UIGraphicsGetImageFromCurrentImageContext()
     UIGraphicsEndImageContext()
-    return img
+    return img!
 }
 
-private func saveImageAsPngInTempFolder(image: UIImage, name: String) {
+private func saveImageAsPngInTempFolder(_ image: UIImage, name: String) {
     if let imgData = UIImagePNGRepresentation(image) {
         
-        let imgPath = (documentationPath() as NSString).stringByAppendingPathComponent(name)
+        let imgPath = (documentationPath() as NSString).appendingPathComponent(name)
         print("image saved to "+imgPath)
-        imgData.writeToFile(imgPath, atomically: false)
+        try? imgData.write(to: URL(fileURLWithPath: imgPath), options: [])
     }
 }
 
@@ -170,7 +170,7 @@ private func isSimulator() -> Bool {
 
 private func documentationPath() -> String {
     if isSimulator() {
-        return ((Process.arguments[1] as NSString).stringByDeletingLastPathComponent as NSString).stringByAppendingPathComponent("README")
+        return ((CommandLine.arguments[1] as NSString).deletingLastPathComponent as NSString).appendingPathComponent("README")
     } else {
         return NSTemporaryDirectory()
     }
@@ -179,8 +179,8 @@ private func documentationPath() -> String {
 extension String {
     var stringForFilePath: String {
         // characterSet contains all illegal characters on OS X and Windows
-        let characterSet = NSCharacterSet(charactersInString: "\"\\/?<>:*|")
+        let characterSet = CharacterSet(charactersIn: "\"\\/?<>:*|")
         // replace "-" with character of choice
-        return componentsSeparatedByCharactersInSet(characterSet).joinWithSeparator("-")
+        return components(separatedBy: characterSet).joined(separator: "-")
     }
 }

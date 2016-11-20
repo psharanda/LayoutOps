@@ -5,11 +5,11 @@
 
 import UIKit
 
-func makeViewWithColor(color: UIColor) -> UIView {
+func makeViewWithColor(_ color: UIColor) -> UIView {
     let view = UIView()
-    view.backgroundColor = color.colorWithAlphaComponent(0.5)
+    view.backgroundColor = color.withAlphaComponent(0.5)
     view.layer.borderWidth = 1
-    view.layer.borderColor = color.CGColor
+    view.layer.borderColor = color.cgColor
     return view
 }
 
@@ -37,7 +37,7 @@ func makeTitleLabel() -> UILabel {
     let l = UILabel()
     l.text = "Lorem Ipsum"
     l.textColor = UIColor(red: 0x35/255.0, green: 0x35/255.0, blue: 0x56/255.0, alpha: 1)
-    l.backgroundColor = UIColor.grayColor().colorWithAlphaComponent(0.2)
+    l.backgroundColor = UIColor.gray.withAlphaComponent(0.2)
     return l
 }
 
@@ -46,6 +46,6 @@ func makeDetailsLabel() -> UILabel {
     l.text = "Cras mattis consectetur purus sit amet fermentum. Maecenas faucibus mollis interdum."
     l.numberOfLines = 0
     l.textColor = UIColor(red: 0xB1/255.0, green: 0xB1/255.0, blue: 0xC3/255.0, alpha: 1)
-    l.backgroundColor = UIColor.grayColor().colorWithAlphaComponent(0.2)
+    l.backgroundColor = UIColor.gray.withAlphaComponent(0.2)
     return l
 }

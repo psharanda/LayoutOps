@@ -29,14 +29,14 @@ class SizeToFitDemo_Value: UIView, DemoViewProtocol {
         super.layoutSubviews()
         
         Combine(
-            SizeToFit(icon, width: .Value(100), height: .Value(100)),
+            SizeToFit(icon, width: .value(100), height: .value(100)),
             AlignTop(icon, inset: 10),
             HCenter(icon),
             
-            SizeToFit(label, width: .Value(100), height: .Value(100)),
+            SizeToFit(label, width: .value(100), height: .value(100)),
             Center(label),
             
-            SizeToFit(title, width: .Value(100), height: .Value(100)),
+            SizeToFit(title, width: .value(100), height: .value(100)),
             AlignBottom(title, inset: 10),
             HCenter(title)
         ).layout()
@@ -73,10 +73,10 @@ class SizeToFitDemo_Max: UIView, DemoViewProtocol {
             AlignTop(icon, inset: 10),
             HCenter(icon),
             
-            SizeToFit(label, width: .Max, height: .Max),
+            SizeToFit(label, width: .max, height: .max),
             Center(label),
             
-            SizeToFit(title, width: .Max, height: .Max),
+            SizeToFit(title, width: .max, height: .max),
             AlignBottom(title, inset: 10),
             HCenter(title)
         ).layout()
@@ -109,7 +109,7 @@ class SizeToFitDemo_Current: UIView, DemoViewProtocol {
         
         Combine(
             SetSize(icon, size: CGSize(width: 200, height: 200)),
-            SizeToFit(icon, width: .Current, height: .Current),
+            SizeToFit(icon, width: .current, height: .current),
             AlignTop(icon, inset: 10),
             HCenter(icon),
             
@@ -118,7 +118,7 @@ class SizeToFitDemo_Current: UIView, DemoViewProtocol {
             Center(label),
             
             HFill(title, leftInset: 20, rightInset: 20),
-            SizeToFit(title, width: .Current, height: .Current),
+            SizeToFit(title, width: .current, height: .current),
             AlignBottom(title, inset: 10),
             HCenter(title)
         ).layout()
@@ -152,16 +152,16 @@ class SizeToFitDemo_KeepCurrent: UIView, DemoViewProtocol {
         Combine(
             
             SetSize(icon, size: CGSize(width: 200, height: 200)),
-            SizeToFit(icon, width: .KeepCurrent, height: .Max),
+            SizeToFit(icon, width: .keepCurrent, height: .max),
             AlignTop(icon, inset: 10),
             HCenter(icon),
             
             HFill(label, leftInset: 20, rightInset: 20),
-            SizeToFit(label, width: .KeepCurrent, height: .Max),
+            SizeToFit(label, width: .keepCurrent, height: .max),
             Center(label),
             
             HFill(title, leftInset: 20, rightInset: 20),
-            SizeToFit(title, width: .KeepCurrent, height: .Max),
+            SizeToFit(title, width: .keepCurrent, height: .max),
             AlignBottom(title, inset: 10),
             HCenter(title)
         ).layout()
@@ -189,7 +189,7 @@ class SizeToFitDemo_MinMax: UIView, DemoViewProtocol {
         super.layoutSubviews()
         
         Combine(
-            SizeToFitMaxWithConstraints(label, widthConstraint: .Max(100), heightConstraint: .Min(300)),
+            SizeToFitMaxWithConstraints(label, widthConstraint: .max(100), heightConstraint: .min(300)),
             Center(label)
         ).layout()
     }

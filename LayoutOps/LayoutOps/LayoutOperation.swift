@@ -7,7 +7,7 @@
 import UIKit
 
 struct UIScreenCache {
-    static let scale = UIScreen.mainScreen().scale;
+    static let scale = UIScreen.main.scale;
 }
 
 private extension CGFloat {
@@ -15,7 +15,7 @@ private extension CGFloat {
     
     var pixelPerfect: CGFloat {
         let scale = UIScreenCache.scale
-        return round(self * scale)/scale;
+        return (self * scale).rounded()/scale;
     }
     
     var ceilPixelPerfect: CGFloat {
@@ -29,7 +29,7 @@ public typealias ViewLayoutMap = [UIView: CGRect]
 //MARK: - LayoutOperation
 
 public protocol LayoutOperation {
-    func calculateLayouts(inout layouts: ViewLayoutMap, viewport: Viewport)
+    func calculateLayouts(_ layouts: inout ViewLayoutMap, viewport: Viewport)
 }
 
 public extension LayoutOperation {
@@ -50,7 +50,7 @@ public extension LayoutOperation {
         }
     }
     
-    func when(condition: (Void) -> Bool) -> LayoutOperation {
+    func when(_ condition: (Void) -> Bool) -> LayoutOperation {
         if condition() {
             return self
         } else {
@@ -60,7 +60,7 @@ public extension LayoutOperation {
 }
 
 extension LayoutOperation {
-    func frameForView(view: UIView, inout layouts: ViewLayoutMap) -> CGRect {
+    func frameForView(_ view: UIView, layouts: inout ViewLayoutMap) -> CGRect {
         if let r = layouts[view] {
             return r
         } else {
@@ -74,7 +74,7 @@ extension LayoutOperation {
 
 private struct NoLayoutOperation: LayoutOperation {
     
-    func calculateLayouts(inout layouts: ViewLayoutMap, viewport: Viewport) {
+    func calculateLayouts(_ layouts: inout ViewLayoutMap, viewport: Viewport) {
         
     }
 }

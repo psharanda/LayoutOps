@@ -17,7 +17,7 @@ protocol RowProtocol {
     var view: UIView {get}
 }
 
-struct Row<T: UIView where T: DemoViewProtocol >: RowProtocol {
+struct Row<T: UIView>: RowProtocol where T: DemoViewProtocol  {
     var title: String {
         return T.title
     }
@@ -37,9 +37,9 @@ struct Section {
 
 class ViewController: UIViewController {
     
-    private lazy var tableView = UITableView(frame: CGRect(), style: .Plain)
+    fileprivate lazy var tableView = UITableView(frame: CGRect(), style: .plain)
     
-    private var sections = [
+    fileprivate var sections = [
         Section(title: "Basic", rows: [
                 Row<BasicDemo_Set>(),
                 Row<BasicDemo_Center>(),
@@ -89,7 +89,7 @@ class ViewController: UIViewController {
         
         view.addSubview(tableView)
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "DocGen", style: .Plain , target: self, action: #selector(docGenClicked))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "DocGen", style: .plain , target: self, action: #selector(docGenClicked))
     }
 
     override func viewDidLayoutSubviews() {
@@ -99,42 +99,42 @@ class ViewController: UIViewController {
         tableView.dataSource = self
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if let indexPathForSelectedRow = tableView.indexPathForSelectedRow {
-            tableView.deselectRowAtIndexPath(indexPathForSelectedRow, animated: true)
+            tableView.deselectRow(at: indexPathForSelectedRow, animated: true)
         }
     }
     
-    @objc private func docGenClicked() {
+    @objc fileprivate func docGenClicked() {
         let vc = DocGenViewController(sections: sections)
         navigationController?.pushViewController(vc, animated: true)
     }
 }
 
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return sections.count
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return sections[section].rows.count
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cellId = "CellId"
-        let cell = tableView.dequeueReusableCellWithIdentifier(cellId) ?? UITableViewCell(style: .Default, reuseIdentifier: cellId)
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellId) ?? UITableViewCell(style: .default, reuseIdentifier: cellId)
         cell.textLabel?.text = sections[indexPath.section].rows[indexPath.row].title
         return cell
     }
 
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let row = sections[indexPath.section].rows[indexPath.row]
         let vc = DemoViewController(title: row.title, description: row.comments, demoView: row.view)
         navigationController?.pushViewController(vc, animated: true)
     }
     
-    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return sections[section].title
     }
 }

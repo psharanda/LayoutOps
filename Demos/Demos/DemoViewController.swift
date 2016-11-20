@@ -33,17 +33,17 @@ class DemoViewController: UIViewController {
         view.backgroundColor = UIColor(red: 0xF5/255.0, green: 0xF5/255.0, blue: 0xFA/255.0, alpha: 1)
         view.addSubview(demoView)
         
-        demoView.backgroundColor = UIColor.whiteColor()
-        demoView.layer.borderColor = UIColor(red: 0xE8/255.0, green: 0xE8/255.0, blue: 0xF3/255.0, alpha: 1).CGColor
+        demoView.backgroundColor = UIColor.white
+        demoView.layer.borderColor = UIColor(red: 0xE8/255.0, green: 0xE8/255.0, blue: 0xF3/255.0, alpha: 1).cgColor
         demoView.layer.borderWidth = 1
         
-        descBackground.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
+        descBackground.backgroundColor = UIColor.black.withAlphaComponent(0.5)
         view.addSubview(descBackground)
         
-        descLabel.textColor = UIColor.whiteColor()
-        descLabel.textAlignment = .Center
+        descLabel.textColor = UIColor.white
+        descLabel.textAlignment = .center
         descLabel.numberOfLines = 0
-        descLabel.font = UIFont.systemFontOfSize(12)
+        descLabel.font = UIFont.systemFont(ofSize: 12)
         view.addSubview(descLabel)
     }
     
@@ -54,7 +54,7 @@ class DemoViewController: UIViewController {
         
         // topLayoutGuide.length works unreliable most of times, let's just get bottom y of navbar instead
         let nc = navigationController?.navigationBar
-        let realTopLayoutGuideLength = nc.map { $0.convertRect($0.bounds, toView: view).maxY } ?? 0
+        let realTopLayoutGuideLength = nc.map { $0.convert($0.bounds, to: view).maxY } ?? 0
         
         Combine(
             

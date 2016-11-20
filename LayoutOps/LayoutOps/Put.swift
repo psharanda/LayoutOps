@@ -13,7 +13,7 @@ public enum PutIntention {
      
      weight is 1.0 by default
      */
-    case FlexIntention(views: [UIView]?, weight: CGFloat)
+    case flexIntention(views: [UIView]?, weight: CGFloat)
     
     /**
      1. (view: v value: x) - view with fixed size
@@ -22,9 +22,9 @@ public enum PutIntention {
      4. (view: nil value: nil) - do nothing, nop
      
      */
-    case FixIntention(views: [UIView]?, value: CGFloat?)
+    case fixIntention(views: [UIView]?, value: CGFloat?)
     
-    public func when(condition: (Void) -> Bool) -> PutIntention {
+    public func when(_ condition: (Void) -> Bool) -> PutIntention {
         if condition() {
             return self
         } else {
@@ -37,53 +37,53 @@ public enum PutIntention {
 
 
 //MARK: - Flex shorthands
-public func Flex(weight: CGFloat) -> PutIntention {
-    return .FlexIntention(views: nil, weight: weight)
+public func Flex(_ weight: CGFloat) -> PutIntention {
+    return .flexIntention(views: nil, weight: weight)
 }
 
-public func Flex(view: UIView) -> PutIntention {
+public func Flex(_ view: UIView) -> PutIntention {
     return Flex([view])
 }
 
-public func Flex(views: [UIView]) -> PutIntention {
+public func Flex(_ views: [UIView]) -> PutIntention {
     return Flex(views, 1.0)
 }
 
 public func Flex() -> PutIntention {
-    return .FlexIntention(views: nil, weight: 1.0)
+    return .flexIntention(views: nil, weight: 1.0)
 }
 
-public func Flex(view: UIView, _ weight: CGFloat) -> PutIntention {
+public func Flex(_ view: UIView, _ weight: CGFloat) -> PutIntention {
     return Flex([view], weight)
 }
 
-public func Flex(views: [UIView], _ weight: CGFloat) -> PutIntention {
-    return .FlexIntention(views: views, weight: weight)
+public func Flex(_ views: [UIView], _ weight: CGFloat) -> PutIntention {
+    return .flexIntention(views: views, weight: weight)
 }
 
 //MARK: - Fix shorthands
-public func Fix(value: CGFloat) -> PutIntention {
-    return .FixIntention(views: nil, value: value)
+public func Fix(_ value: CGFloat) -> PutIntention {
+    return .fixIntention(views: nil, value: value)
 }
 
-public func Fix(view: UIView) -> PutIntention {
-    return .FixIntention(views: [view], value: nil)
+public func Fix(_ view: UIView) -> PutIntention {
+    return .fixIntention(views: [view], value: nil)
 }
 
-public func Fix(views: [UIView]) -> PutIntention {
-    return .FixIntention(views: views, value: nil)
+public func Fix(_ views: [UIView]) -> PutIntention {
+    return .fixIntention(views: views, value: nil)
 }
 
 public func Fix() -> PutIntention {
-    return .FixIntention(views: nil, value: nil)
+    return .fixIntention(views: nil, value: nil)
 }
 
-public func Fix(view: UIView, _ value: CGFloat) -> PutIntention {
+public func Fix(_ view: UIView, _ value: CGFloat) -> PutIntention {
     return Fix([view], value)
 }
 
-public func Fix(views: [UIView], _ value: CGFloat) -> PutIntention {
-    return .FixIntention(views: views, value: value)
+public func Fix(_ views: [UIView], _ value: CGFloat) -> PutIntention {
+    return .fixIntention(views: views, value: value)
 }
 
 private struct Dimension {
@@ -92,16 +92,16 @@ private struct Dimension {
 }
 
 private protocol BoxDimension {
-    static func getDimension(rect: CGRect) -> Dimension
-    static func setDimension(dimension: Dimension, inRect: CGRect) -> CGRect
+    static func getDimension(_ rect: CGRect) -> Dimension
+    static func setDimension(_ dimension: Dimension, inRect: CGRect) -> CGRect
 }
 
 private struct BoxWidth: BoxDimension {
     
-    static func getDimension(rect: CGRect) -> Dimension {
+    static func getDimension(_ rect: CGRect) -> Dimension {
         return Dimension(origin: rect.origin.x, size: rect.size.width)
     }
-    static func setDimension(dimension: Dimension, inRect: CGRect) -> CGRect {
+    static func setDimension(_ dimension: Dimension, inRect: CGRect) -> CGRect {
         var result = inRect
         result.origin.x = dimension.origin
         result.size.width = dimension.size
@@ -111,10 +111,10 @@ private struct BoxWidth: BoxDimension {
 
 private struct BoxHeight: BoxDimension {
     
-    static func getDimension(rect: CGRect) -> Dimension {
+    static func getDimension(_ rect: CGRect) -> Dimension {
         return Dimension(origin: rect.origin.y, size: rect.size.height)
     }
-    static func setDimension(dimension: Dimension, inRect: CGRect) -> CGRect {
+    static func setDimension(_ dimension: Dimension, inRect: CGRect) -> CGRect {
         var result = inRect
         result.origin.y = dimension.origin
         result.size.height = dimension.size
@@ -129,7 +129,7 @@ private struct PutLayoutOperation<T:BoxDimension> : LayoutOperation {
         self.intentions = intentions
     }
     
-    func calculateLayouts(inout layouts: ViewLayoutMap, viewport: Viewport) {
+    func calculateLayouts(_ layouts: inout ViewLayoutMap, viewport: Viewport) {
         
         var superview: UIView? = nil
         
@@ -138,9 +138,9 @@ private struct PutLayoutOperation<T:BoxDimension> : LayoutOperation {
             
             var view: UIView? = nil
             switch (i) {
-            case .FlexIntention(let views, _):
+            case .flexIntention(let views, _):
                 view = views?.first
-            case .FixIntention(let views, _):
+            case .fixIntention(let views, _):
                 view = views?.first
             }
             
@@ -172,10 +172,10 @@ private struct PutLayoutOperation<T:BoxDimension> : LayoutOperation {
             
             for i in intentions {
                 switch (i) {
-                case .FlexIntention(_, let weight):
+                case .flexIntention(_, let weight):
                     totalWeight += weight
                     break
-                case .FixIntention(let views, let value):
+                case .fixIntention(let views, let value):
                     if let value = value {
                         totalSizeForFlexs -= value
                     } else {
@@ -192,7 +192,7 @@ private struct PutLayoutOperation<T:BoxDimension> : LayoutOperation {
             var start:CGFloat = T.getDimension(bounds).origin
             for i in intentions {
                 switch (i) {
-                case .FlexIntention(let views, let weight):
+                case .flexIntention(let views, let weight):
                     
                     let newSize = weight * unoSize
                     
@@ -209,7 +209,7 @@ private struct PutLayoutOperation<T:BoxDimension> : LayoutOperation {
                     
                     totalWeight += weight
                     break
-                case .FixIntention(let views, let value):
+                case .fixIntention(let views, let value):
                     if let value = value {
                         if let views = views {
                             views.forEach {view in
@@ -241,21 +241,21 @@ private struct PutLayoutOperation<T:BoxDimension> : LayoutOperation {
 
 //MARK: - HPut
 
-public func HPut(intentions: [PutIntention]) -> LayoutOperation {
+public func HPut(_ intentions: [PutIntention]) -> LayoutOperation {
     return PutLayoutOperation<BoxWidth>(intentions: intentions)
 }
 
-public func HPut(intentions: PutIntention...) -> LayoutOperation {
+public func HPut(_ intentions: PutIntention...) -> LayoutOperation {
     return PutLayoutOperation<BoxWidth>(intentions: intentions)
 }
 
 //MARK: - VPut
 
-public func VPut(intentions: [PutIntention]) -> LayoutOperation {
+public func VPut(_ intentions: [PutIntention]) -> LayoutOperation {
     return PutLayoutOperation<BoxHeight>(intentions: intentions)
 }
 
-public func VPut(intentions: PutIntention...) -> LayoutOperation {
+public func VPut(_ intentions: PutIntention...) -> LayoutOperation {
     return PutLayoutOperation<BoxHeight>(intentions: intentions)
 }
 

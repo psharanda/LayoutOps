@@ -412,6 +412,7 @@ Combine(
     VPut(
         Flex(),
         Fix(titleLabel),
+        Fix(20),
         Fix(detailsLabel),
         Flex()
     )
