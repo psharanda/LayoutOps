@@ -219,6 +219,43 @@ class PutDemo_Multi: UIView, DemoViewProtocol {
     
 }
 
+class PutDemo_Labels: UIView, DemoViewProtocol {
+    
+    let titleLabel = makeTitleLabel()
+    let detailsLabel = makeDetailsLabel()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        addSubview(titleLabel)
+        addSubview(detailsLabel)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        Combine(
+            HFillVFit(titleLabel, inset: 20),
+            HFillVFit(detailsLabel, inset: 20),
+            VPut(
+                Flex(),
+                Fix(titleLabel),
+                Fix(20),
+                Fix(detailsLabel),
+                Flex()
+            )
+        ).layout()
+    }
+    
+    static let title = "Put labels"
+    static let comments = "HFillVFit is used to fill width and size to fit height for both labels. VPut is used to center group of labels"
+    
+}
+
 class PutDemo_FixFlexGrid: UIView, DemoViewProtocol {
     
     var views: [UIView] = []

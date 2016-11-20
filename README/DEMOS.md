@@ -401,6 +401,23 @@ Combine(
 ).layout()
 ```
 <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Put_Fix+Flex grid_portrait.png" alt="Fix+Flex grid" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Put__Fix+Flex grid_landscape.png" alt="Fix+Flex grid" width="240.0" height="160.0"/>
+#### Put labels
+HFillVFit is used to fill width and size to fit height for both labels. VPut is used to center group of labels
+```swift
+
+
+Combine(
+    HFillVFit(titleLabel, inset: 20),
+    HFillVFit(detailsLabel, inset: 20),
+    VPut(
+        Flex(),
+        Fix(titleLabel),
+        Fix(detailsLabel),
+        Flex()
+    )
+).layout()
+```
+<img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Put_Put labels_portrait.png" alt="Put labels" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Put__Put labels_landscape.png" alt="Put labels" width="240.0" height="160.0"/>
 ### Viewport
 #### Demo
 Combine operation is not only for grouping other operations, but it also defines viewport for them. Viewport can be defined using anchors of any childview, or nil anchor if using superview edges

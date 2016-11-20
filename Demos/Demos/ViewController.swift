@@ -70,7 +70,8 @@ class ViewController: UIViewController {
                 Row<PutDemo_FixFlex>(),
                 Row<PutDemo_FixFlexCenter>(),
                 Row<PutDemo_Multi>(),
-                Row<PutDemo_FixFlexGrid>()
+                Row<PutDemo_FixFlexGrid>(),
+                Row<PutDemo_Labels>()
             ]
         ),
         Section(title: "Viewport", rows:

@@ -114,7 +114,7 @@ class DocGenViewController: UIViewController {
         }
 
         renderRow {
-            let mdPath = (NSTemporaryDirectory() as NSString).stringByAppendingPathComponent("DEMOS.md")
+            let mdPath = (documentationPath() as NSString).stringByAppendingPathComponent("DEMOS.md")
             let _ = try?(markdownString as NSString).writeToFile(mdPath, atomically: false, encoding: NSUTF8StringEncoding)
             print("Markdown saved to "+mdPath)
             
@@ -158,9 +158,21 @@ private func imageWithView(view: UIView) -> UIImage {
 private func saveImageAsPngInTempFolder(image: UIImage, name: String) {
     if let imgData = UIImagePNGRepresentation(image) {
         
-        let imgPath = (NSTemporaryDirectory() as NSString).stringByAppendingPathComponent(name)
+        let imgPath = (documentationPath() as NSString).stringByAppendingPathComponent(name)
         print("image saved to "+imgPath)
         imgData.writeToFile(imgPath, atomically: false)
+    }
+}
+
+private func isSimulator() -> Bool {
+    return TARGET_OS_SIMULATOR != 0
+}
+
+private func documentationPath() -> String {
+    if isSimulator() {
+        return ((Process.arguments[1] as NSString).stringByDeletingLastPathComponent as NSString).stringByAppendingPathComponent("README")
+    } else {
+        return NSTemporaryDirectory()
     }
 }
 
