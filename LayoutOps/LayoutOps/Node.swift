@@ -3,15 +3,43 @@
 //  Copyright © 2016 Pavel Sharanda. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 public protocol Taggable {
-    var tag: Int {get}
+    var tag: String {get}
 }
 
-extension Taggable where Self: RawRepresentable, Self.RawValue == Int {
-    public var tag: Int {
+extension Taggable where Self: RawRepresentable, Self.RawValue == String {
+    public var tag: String {
         return rawValue
+    }
+}
+
+extension String: Taggable {
+    public var tag: String {
+        return self
+    }
+}
+
+private var key: UInt8 = 0
+
+extension UIView {
+    private func viewWithStringTag(stringTag: String) -> UIView? {
+        for v in subviews {
+            if v.stringTag == stringTag {
+                return v
+            }
+        }
+        return nil
+    }
+    
+    private var stringTag: String? {
+        set {
+            objc_setAssociatedObject(self, &key, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+        get {
+            return objc_getAssociatedObject(self, &key) as? String
+        }
     }
 }
 
@@ -34,7 +62,7 @@ public class Node: Layoutable {
         return supernode
     }
     
-    private let initializer: ((NodeBox)->UIView)?
+    private let initializer: ((UIView?)->UIView)?
     
     private enum Tag {
         case Root
@@ -43,10 +71,12 @@ public class Node: Layoutable {
     
     private let tag: Tag
     
-    public init(tag: Taggable, subnodes: [Node] = [], initializer: (NodeBox)->UIView) {
+    public init<T: UIView>(tag: Taggable, subnodes: [Node] = [], initializer: (T?)->T) {
         
         self.tag = .Tagged(tag)
-        self.initializer = initializer
+        self.initializer = {
+            initializer(($0 as? T))
+        }
         self.subnodes = subnodes
         
         subnodes.forEach {
@@ -68,21 +98,18 @@ public class Node: Layoutable {
         }
     }
     
-    public func installInRootView(rootView: UIView) {
+    private func installInView(rootView: UIView) {
         
         switch tag {
         case .Root:
-            subnodes.forEach {
-                $0.installInRootView(rootView)
-            }
+            fatalError("RootNode can't be child")
         case .Tagged(let tag):
+            let realTag = tag.tag
             
-            let realTag = tag.tag + 1
+            let viewWithTag = rootView.viewWithStringTag(realTag)
             
-            let viewWithTag = rootView.viewWithTag(realTag)
-            
-            let view = initializer!(NodeBox(view: viewWithTag))
-            view.tag = realTag
+            let view = initializer!(viewWithTag)
+            view.stringTag = realTag
             
             if view.superview == nil {
                 rootView.addSubview(view)
@@ -90,17 +117,11 @@ public class Node: Layoutable {
             
             view.frame = frame
             subnodes.forEach {
-                $0.installInRootView(view)
+                $0.installInView(view)
             }
             
         }
     }
-}
-
-
-public enum LabelNodeString {
-    case Regular(String, UIFont)
-    case Attributed(NSAttributedString)
 }
 
 public class RootNode: Node {
@@ -112,110 +133,17 @@ public class RootNode: Node {
     public override func sizeThatFits(size: CGSize) -> CGSize {
         fatalError("RootNode is not intended to respond sizeThatFits")
     }
-}
-
-public class LabelNode: Node, Baselinable, LayoutableWithFont {
     
-    private let text: LabelNodeString    
-    public init(tag: Taggable, text: LabelNodeString, subnodes: [Node] = [], initializer: (NodeBox)->UILabel) {
-        self.text = text
-        super.init(tag: tag, subnodes: subnodes) {
-            let l = initializer($0)
-            
-            switch text {
-            case .Attributed(let attrString):
-                l.attributedText = attrString
-            case .Regular(let string, let font):
-                l.font = font
-                l.text = string
-            }
-            return l
-        }
-    }
-    
-    public override func sizeThatFits(size: CGSize) -> CGSize {
-        
-        switch text {
-        case .Attributed(let attrString):
-            return attrString.boundingRectWithSize(size, options: [.UsesLineFragmentOrigin, .UsesFontLeading], context: nil).size
-        case .Regular(let string, let font):
-            return (string as NSString).boundingRectWithSize(size, options: [.UsesLineFragmentOrigin, .UsesFontLeading], attributes: [NSFontAttributeName: font], context: nil).size
-        }
-    }
-    
-    public func baselineValueOfType(type: BaselineType, size: CGSize) -> CGFloat {
-        let sz = sizeThatFits(size)
-        var font: UIFont?
-        
-        switch text {
-        case .Attributed(let attr):
-            switch type {
-            case .First:
-                var ptr = NSRange()
-                if attr.length > 0 {
-                    font = attr.attribute(NSFontAttributeName, atIndex: 0, effectiveRange: &ptr) as? UIFont
-                }
-            case .Last:
-                var ptr = NSRange()
-                if attr.length > 0 {
-                    font = attr.attribute(NSFontAttributeName, atIndex: attr.length - 1, effectiveRange: &ptr) as? UIFont
-                }
-            }
-        case .Regular(_, let f):
-            font = f
-        }
-        
-        switch type {
-        case .First:
-            return (size.height - sz.height)/2 + (font?.ascender ?? 0)
-        case .Last:
-            return size.height - (size.height - sz.height)/2 + (font?.descender ?? 0)
-        }
-    }
-    
-    public var font: UIFont! {    
-        switch text {
-        case .Attributed(let attr):
-            var ptr = NSRange()
-            return attr.attribute(NSFontAttributeName, atIndex: 0, effectiveRange: &ptr) as? UIFont
-        case .Regular(_, let f):
-            return f
+    public func installInRootView(rootView: UIView) {
+        subnodes.forEach {
+            $0.installInView(rootView)
         }
     }
 }
 
 
 
-public class ImageNode: Node {
-    
-    private let image: UIImage
-    public init(tag: Taggable, image: UIImage, subnodes: [Node] = [], initializer: (NodeBox)->UIImageView) {
-        self.image = image
-        super.init(tag: tag, subnodes: subnodes) {
-            let imageView = initializer($0)
-            imageView.image = image
-            return imageView
-        }
-    }
-    
-    public override func sizeThatFits(size: CGSize) -> CGSize {
-        return image.size
-    }
-}
 
-public struct NodeBox {
-    private let view: UIView?
-    private init(view: UIView?) {
-        self.view  = view
-    }
-    
-    public func dequeue<T: UIView>() -> T {
-        
-        if let view = view as? T {
-            return view
-        } else {
-            return T()
-        }
-    }
-}
+
+
 

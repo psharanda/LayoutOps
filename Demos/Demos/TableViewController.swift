@@ -98,16 +98,17 @@ class SampleCell: UITableViewCell {
         cache.rootNode.installInRootView(contentView)
     }
     
-    enum Tags: Int, Taggable {
+    enum Tags: String, Taggable {
         case Title
         case Details
+        case Bg1
         case Highlight1
         case Highlight2
     }
     
     struct Cache {
         let height: CGFloat
-        let rootNode: Node
+        let rootNode: RootNode
     }
     
     var model: SampleModel?
@@ -115,8 +116,15 @@ class SampleCell: UITableViewCell {
     
     static func desiredHeight(model: SampleModel, width: CGFloat) -> Cache {
         
-        let titleNode = LabelNode(tag: Tags.Title, text: .Regular(model.title, UIFont.systemFontOfSize(24))) {
-            let v = $0.dequeue() as UILabel
+        
+        let bg1Node = Node(tag: Tags.Bg1) {
+            let v = $0 ?? UIView()
+            v.backgroundColor = UIColor.blueColor().colorWithAlphaComponent(0.2)
+            return v
+        }
+        
+        let titleNode = LabelNode(tag: Tags.Title, text: .Regular(model.title, UIFont.systemFontOfSize(24)), subnodes: [bg1Node]) {
+            let v = $0 ?? UILabel()
             v.numberOfLines = 0
             v.textColor = UIColor.darkGrayColor()
             v.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.2)
@@ -124,7 +132,7 @@ class SampleCell: UITableViewCell {
         }
         
         let h1Node = Node(tag: Tags.Highlight1) {
-            let v = $0.dequeue() as UIView
+            let v = $0 ?? UIView()
             v.backgroundColor = UIColor.redColor().colorWithAlphaComponent(0.2)
             return v
         }
@@ -132,7 +140,7 @@ class SampleCell: UITableViewCell {
         let attr = NSAttributedString(string: model.details, attributes: [NSFontAttributeName: UIFont.systemFontOfSize(12)])
         
         let detailsNode = LabelNode(tag: Tags.Details, text: .Attributed(attr)) {
-            let v = $0.dequeue() as UILabel
+            let v = $0 ?? UILabel()
             v.numberOfLines = 0
             v.textColor = UIColor.grayColor()
             v.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.2)
@@ -140,7 +148,7 @@ class SampleCell: UITableViewCell {
         }
         
         let h2Node = Node(tag: Tags.Highlight2) {
-            let v = $0.dequeue() as UIView
+            let v = $0 ?? UIView()
             v.backgroundColor = UIColor.greenColor().colorWithAlphaComponent(0.2)
             return v
         }
@@ -165,7 +173,9 @@ class SampleCell: UITableViewCell {
             ),
             
             Follow(BaselineAnchor(titleNode), withAnchor: BottomAnchor(h1Node)),
-            Follow(BaselineAnchor(detailsNode), withAnchor: BottomAnchor(h2Node))
+            Follow(BaselineAnchor(detailsNode), withAnchor: BottomAnchor(h2Node)),
+            
+            Fill(bg1Node)
         ).layout()
         
         return Cache(height: detailsNode.frame.maxY + 10, rootNode: rootNode)

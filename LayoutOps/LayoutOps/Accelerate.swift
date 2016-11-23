@@ -12,13 +12,13 @@ public protocol LayoutableWithFont: Layoutable {
 }
 
 public func AlignFittedLabelsUsingFirstBaseline(label1: LayoutableWithFont, _ label2: LayoutableWithFont) -> LayoutOperation {
-    return Follow(TopAnchor(label1, inset: label1.font.ascender), withAnchor: TopAnchor(label2, inset: label2.font.ascender))
+    return Follow(TopAnchor(label1, inset: label1.font?.ascender ?? 0), withAnchor: TopAnchor(label2, inset: label2.font?.ascender ?? 0))
 }
 
 public func AlignFittedLabelsUsingLastBaseline(label1: LayoutableWithFont, _ label2: LayoutableWithFont) -> LayoutOperation {
-    return Follow(BottomAnchor(label1, inset: label1.font.descender), withAnchor: BottomAnchor(label2, inset: label2.font.descender))
+    return Follow(BottomAnchor(label1, inset: label1.font?.descender ?? 0), withAnchor: BottomAnchor(label2, inset: label2.font?.descender ?? 0))
 }
 
 public func SetHeightAsLineHeight(label: LayoutableWithFont) -> LayoutOperation {
-    return SetHeight(label, value: label.font.lineHeight)
+    return SetHeight(label, value: label.font?.lineHeight ?? 0)
 }
