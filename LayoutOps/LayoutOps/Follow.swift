@@ -18,7 +18,7 @@ private struct FollowOperation: LayoutOperation {
         let toFollowView = anchorToFollow.view
         let followerView = followerAnchor.view
         
-        if(toFollowView.superview != followerView.superview) {
+        if(toFollowView.parent !== followerView.parent) {
             print("[LayoutOps:WARNING] Follow operation will produce undefined results for views with different superview")
             print("View to follow: \(toFollowView)")
             print("Follower view: \(followerView)")

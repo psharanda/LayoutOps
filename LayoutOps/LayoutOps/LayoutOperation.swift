@@ -10,9 +10,8 @@ struct UIScreenCache {
     static let scale = UIScreen.mainScreen().scale;
 }
 
-private extension CGFloat {
-    
-    
+extension CGFloat {
+
     var pixelPerfect: CGFloat {
         let scale = UIScreenCache.scale
         return round(self * scale)/scale;
@@ -24,7 +23,46 @@ private extension CGFloat {
     }
 }
 
-public typealias ViewLayoutMap = [UIView: CGRect]
+public protocol Layoutable: class {
+    var parent: Layoutable? {get}
+    var bounds: CGRect {get}
+    var frame: CGRect {get set}
+    func sizeThatFits(size: CGSize) -> CGSize
+}
+
+
+public struct ViewLayoutMap {
+    
+    private var map = [(Layoutable, CGRect)]()
+    
+    
+    func forEach(f: (Layoutable, CGRect) -> Void) {
+        map.forEach(f)
+    }
+    
+    subscript(key: Layoutable) -> CGRect? {
+        get {
+            for (k, v) in map {
+                if k === key {
+                    return v
+                }
+            }
+            return nil
+        }
+        
+        set {
+            if let newValue = newValue {
+                if let idx = map.indexOf({ (k, v) -> Bool in
+                    return k === key
+                }) {
+                    map[idx] = (key, newValue)
+                } else {
+                    map.append((key, newValue))
+                }
+            }
+        }
+    }
+}
 
 //MARK: - LayoutOperation
 
@@ -60,7 +98,7 @@ public extension LayoutOperation {
 }
 
 extension LayoutOperation {
-    func frameForView(view: UIView, inout layouts: ViewLayoutMap) -> CGRect {
+    func frameForView(view: Layoutable, inout layouts: ViewLayoutMap) -> CGRect {
         if let r = layouts[view] {
             return r
         } else {

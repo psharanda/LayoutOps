@@ -55,7 +55,7 @@ public enum SizeConstraint {
 }
 
 private struct SizeToFitOperation: LayoutOperation {
-    let view: UIView
+    let view: Layoutable
     let width: SizeToFitIntention
     let height: SizeToFitIntention
     let widthSizeConstraint: SizeConstraint
@@ -121,28 +121,28 @@ private struct SizeToFitOperation: LayoutOperation {
     }
 }
 
-public func SizeToFit(view: UIView, width: SizeToFitIntention, height: SizeToFitIntention, widthConstraint: SizeConstraint = .Default, heightConstraint: SizeConstraint = .Default) -> LayoutOperation {
+public func SizeToFit(view: Layoutable, width: SizeToFitIntention, height: SizeToFitIntention, widthConstraint: SizeConstraint = .Default, heightConstraint: SizeConstraint = .Default) -> LayoutOperation {
     return SizeToFitOperation(view: view, width: width, height: height, widthSizeConstraint: widthConstraint, heightSizeConstraint:  heightConstraint)
 }
 
 /**
  same as SizeToFit(view, width: .Max, height: .Max)
  */
-public func SizeToFitMax(view: UIView) -> LayoutOperation {
+public func SizeToFitMax(view: Layoutable) -> LayoutOperation {
     return SizeToFit(view, width: .Max, height: .Max)
 }
 
 /**
  same as SizeToFit(view, width: .Current, height: .Current)
  */
-public func SizeToFit(view: UIView) -> LayoutOperation {
+public func SizeToFit(view: Layoutable) -> LayoutOperation {
     return SizeToFit(view, width: .Current, height: .Current)
 }
 
 /**
  same as SizeToFit(view, width: .Max, height: .Max)
  */
-public func SizeToFitMaxWithConstraints(view: UIView, widthConstraint: SizeConstraint, heightConstraint: SizeConstraint) -> LayoutOperation {
+public func SizeToFitMaxWithConstraints(view: Layoutable, widthConstraint: SizeConstraint, heightConstraint: SizeConstraint) -> LayoutOperation {
     return SizeToFit(view, width: .Max, height: .Max, widthConstraint: widthConstraint, heightConstraint: heightConstraint)
 }
 
@@ -154,17 +154,17 @@ public func SizeToFitMaxWithConstraints(view: UIView, widthConstraint: SizeConst
     SizeToFit(view, width: .KeepCurrent, height: .Max),
  )
 */
-public func HFillVFit(view: UIView, leftInset: CGFloat, rightInset: CGFloat) -> LayoutOperation {
+public func HFillVFit(view: Layoutable, leftInset: CGFloat, rightInset: CGFloat) -> LayoutOperation {
     return Combine([
         HFill(view, leftInset: leftInset, rightInset: rightInset),
         SizeToFit(view, width: .KeepCurrent, height: .Max),
     ])
 }
 
-public func HFillVFit(view: UIView, inset: CGFloat) -> LayoutOperation {
+public func HFillVFit(view: Layoutable, inset: CGFloat) -> LayoutOperation {
     return HFillVFit(view, leftInset: inset, rightInset: inset)
 }
 
-public func HFillVFit(view: UIView) -> LayoutOperation {
+public func HFillVFit(view: Layoutable) -> LayoutOperation {
     return HFillVFit(view, leftInset: 0, rightInset: 0)
 }

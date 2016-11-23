@@ -27,7 +27,7 @@ public struct Viewport {
         return CGRect(x: left, y: top, width: right - left, height: bottom - top)
     }
     
-    func verify(superview: UIView) {
+    func verify(superview: Layoutable) {
         
         
         var topIsWrong = false
@@ -35,19 +35,19 @@ public struct Viewport {
         var bottomIsWrong = false
         var rightIsWrong = false
         
-        if let tv = topAnchor?.view where tv.superview !== superview {
+        if let tv = topAnchor?.view where tv.parent !== superview {
             topIsWrong = true
         }
         
-        if let lv = leftAnchor?.view where lv.superview  !== superview {
+        if let lv = leftAnchor?.view where lv.parent  !== superview {
             leftIsWrong = true
         }
         
-        if let bv = bottomAnchor?.view where bv.superview  !== superview {
+        if let bv = bottomAnchor?.view where bv.parent  !== superview {
             bottomIsWrong = true
         }
         
-        if let rv = rightAnchor?.view where rv.superview  !== superview {
+        if let rv = rightAnchor?.view where rv.parent  !== superview {
             rightIsWrong = true
         }
         

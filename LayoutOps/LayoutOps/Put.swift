@@ -13,7 +13,7 @@ public enum PutIntention {
      
      weight is 1.0 by default
      */
-    case FlexIntention(views: [UIView]?, weight: CGFloat)
+    case FlexIntention(views: [Layoutable]?, weight: CGFloat)
     
     /**
      1. (view: v value: x) - view with fixed size
@@ -22,7 +22,7 @@ public enum PutIntention {
      4. (view: nil value: nil) - do nothing, nop
      
      */
-    case FixIntention(views: [UIView]?, value: CGFloat?)
+    case FixIntention(views: [Layoutable]?, value: CGFloat?)
     
     public func when(condition: (Void) -> Bool) -> PutIntention {
         if condition() {
@@ -41,11 +41,11 @@ public func Flex(weight: CGFloat) -> PutIntention {
     return .FlexIntention(views: nil, weight: weight)
 }
 
-public func Flex(view: UIView) -> PutIntention {
+public func Flex(view: Layoutable) -> PutIntention {
     return Flex([view])
 }
 
-public func Flex(views: [UIView]) -> PutIntention {
+public func Flex(views: [Layoutable]) -> PutIntention {
     return Flex(views, 1.0)
 }
 
@@ -53,11 +53,11 @@ public func Flex() -> PutIntention {
     return .FlexIntention(views: nil, weight: 1.0)
 }
 
-public func Flex(view: UIView, _ weight: CGFloat) -> PutIntention {
+public func Flex(view: Layoutable, _ weight: CGFloat) -> PutIntention {
     return Flex([view], weight)
 }
 
-public func Flex(views: [UIView], _ weight: CGFloat) -> PutIntention {
+public func Flex(views: [Layoutable], _ weight: CGFloat) -> PutIntention {
     return .FlexIntention(views: views, weight: weight)
 }
 
@@ -66,11 +66,11 @@ public func Fix(value: CGFloat) -> PutIntention {
     return .FixIntention(views: nil, value: value)
 }
 
-public func Fix(view: UIView) -> PutIntention {
+public func Fix(view: Layoutable) -> PutIntention {
     return .FixIntention(views: [view], value: nil)
 }
 
-public func Fix(views: [UIView]) -> PutIntention {
+public func Fix(views: [Layoutable]) -> PutIntention {
     return .FixIntention(views: views, value: nil)
 }
 
@@ -78,11 +78,11 @@ public func Fix() -> PutIntention {
     return .FixIntention(views: nil, value: nil)
 }
 
-public func Fix(view: UIView, _ value: CGFloat) -> PutIntention {
+public func Fix(view: Layoutable, _ value: CGFloat) -> PutIntention {
     return Fix([view], value)
 }
 
-public func Fix(views: [UIView], _ value: CGFloat) -> PutIntention {
+public func Fix(views: [Layoutable], _ value: CGFloat) -> PutIntention {
     return .FixIntention(views: views, value: value)
 }
 
@@ -131,12 +131,12 @@ private struct PutLayoutOperation<T:BoxDimension> : LayoutOperation {
     
     func calculateLayouts(inout layouts: ViewLayoutMap, viewport: Viewport) {
         
-        var superview: UIView? = nil
+        var superview: Layoutable? = nil
         
         //search for superview first
         for i in intentions {
             
-            var view: UIView? = nil
+            var view: Layoutable? = nil
             switch (i) {
             case .FlexIntention(let views, _):
                 view = views?.first
@@ -144,9 +144,9 @@ private struct PutLayoutOperation<T:BoxDimension> : LayoutOperation {
                 view = views?.first
             }
             
-            if let v = view?.superview {
+            if let v = view?.parent {
                 
-                if !(superview == nil || v == superview) {
+                if !(superview == nil || v === superview) {
                     print("[LayoutOps:WARNING] Put operation will produce undefined results for views with different superview")
                     print("Correct Superview: \(superview)")
                     print("Wrong Superview: \(v)")

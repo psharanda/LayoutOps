@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1B11ECFB1DE51722001FEBE7 /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B11ECFA1DE51722001FEBE7 /* TableViewController.swift */; };
 		1B2B366E1DD514BB001E2641 /* SizeToFit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2B366D1DD514BB001E2641 /* SizeToFit.swift */; };
 		1B2B36711DD514C3001E2641 /* Follow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2B36701DD514C3001E2641 /* Follow.swift */; };
 		1B2B36731DD514CF001E2641 /* Put.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2B36721DD514CF001E2641 /* Put.swift */; };
@@ -35,6 +36,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1B11ECFA1DE51722001FEBE7 /* TableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
 		1B2B366D1DD514BB001E2641 /* SizeToFit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SizeToFit.swift; sourceTree = "<group>"; };
 		1B2B36701DD514C3001E2641 /* Follow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Follow.swift; sourceTree = "<group>"; };
 		1B2B36721DD514CF001E2641 /* Put.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Put.swift; sourceTree = "<group>"; };
@@ -93,6 +95,7 @@
 				1B2B82F41DD4F288008B6450 /* DemoViewController.swift */,
 				1B2B82DC1DD4EAE1008B6450 /* ViewController.swift */,
 				1B2B36781DD64FF4001E2641 /* DocGenViewController.swift */,
+				1B11ECFA1DE51722001FEBE7 /* TableViewController.swift */,
 				1B2B82F31DD4F09D008B6450 /* App */,
 			);
 			path = Demos;
@@ -240,6 +243,7 @@
 				1B2B36791DD64FF4001E2641 /* DocGenViewController.swift in Sources */,
 				1B2B367F1DD66D29001E2641 /* NSScanner+Swift.swift in Sources */,
 				1BF9C3B61DD503C100CAD6D8 /* DemoViews.swift in Sources */,
+				1B11ECFB1DE51722001FEBE7 /* TableViewController.swift in Sources */,
 				1B2B366E1DD514BB001E2641 /* SizeToFit.swift in Sources */,
 				1B2B36731DD514CF001E2641 /* Put.swift in Sources */,
 				1B2B82DD1DD4EAE1008B6450 /* ViewController.swift in Sources */,
