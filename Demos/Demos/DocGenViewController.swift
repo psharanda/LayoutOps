@@ -35,7 +35,7 @@ class DocGenViewController: UIViewController {
     }
 
     private func makeSnapshots() {
-        
+        warnAboutSRCROOT = true
         let allRows = sections.flatMap { section in
             section.rows.map {
                 SectionRow(sectionTitle: section.title, row: $0)
@@ -116,7 +116,7 @@ class DocGenViewController: UIViewController {
         renderRow {
             let mdPath = (documentationPath() as NSString).stringByAppendingPathComponent("DEMOS.md")
             let _ = try?(markdownString as NSString).writeToFile(mdPath, atomically: false, encoding: NSUTF8StringEncoding)
-            print("Markdown saved to "+mdPath)
+            print("Documentation saved to "+documentationPath())
             
             self.navigationController?.popViewControllerAnimated(true)
         }
@@ -159,7 +159,6 @@ private func saveImageAsPngInTempFolder(image: UIImage, name: String) {
     if let imgData = UIImagePNGRepresentation(image) {
         
         let imgPath = (documentationPath() as NSString).stringByAppendingPathComponent(name)
-        print("image saved to "+imgPath)
         imgData.writeToFile(imgPath, atomically: false)
     }
 }
@@ -168,9 +167,20 @@ private func isSimulator() -> Bool {
     return TARGET_OS_SIMULATOR != 0
 }
 
+var warnAboutSRCROOT = true
+
 private func documentationPath() -> String {
     if isSimulator() {
-        return ((Process.arguments[1] as NSString).stringByDeletingLastPathComponent as NSString).stringByAppendingPathComponent("README")
+        if Process.arguments.count < 2 {
+            if warnAboutSRCROOT {
+                print("WARNING: Add '$SRCROOT' to 'Arguments passed on launch' section to generate documentation in README folder")
+                warnAboutSRCROOT = false
+            }
+            return NSTemporaryDirectory()
+        } else {
+            return ((Process.arguments[1] as NSString).stringByDeletingLastPathComponent as NSString).stringByAppendingPathComponent("README")
+        }
+        
     } else {
         return NSTemporaryDirectory()
     }
