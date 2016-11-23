@@ -114,7 +114,7 @@ public class RootNode: Node {
     }
 }
 
-public class LabelNode: Node, Baselinable {
+public class LabelNode: Node, Baselinable, LayoutableWithFont {
     
     private let text: LabelNodeString    
     public init(tag: Taggable, text: LabelNodeString, subnodes: [Node] = [], initializer: (NodeBox)->UILabel) {
@@ -170,6 +170,16 @@ public class LabelNode: Node, Baselinable {
             return (size.height - sz.height)/2 + (font?.ascender ?? 0)
         case .Last:
             return size.height - (size.height - sz.height)/2 + (font?.descender ?? 0)
+        }
+    }
+    
+    public var font: UIFont! {    
+        switch text {
+        case .Attributed(let attr):
+            var ptr = NSRange()
+            return attr.attribute(NSFontAttributeName, atIndex: 0, effectiveRange: &ptr) as? UIFont
+        case .Regular(_, let f):
+            return f
         }
     }
 }

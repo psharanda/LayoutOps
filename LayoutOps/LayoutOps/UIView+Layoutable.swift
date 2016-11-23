@@ -24,6 +24,10 @@ extension UILabel: Baselinable {
     }
 }
 
+extension UILabel: LayoutableWithFont {
+    
+}
+
 extension CALayer: Layoutable {
     public var parent: Layoutable? {
         return superlayer
@@ -33,6 +37,8 @@ extension CALayer: Layoutable {
         return size
     }
 }
+
+
 
 
 
