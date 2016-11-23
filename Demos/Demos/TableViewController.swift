@@ -101,6 +101,8 @@ class SampleCell: UITableViewCell {
     enum Tags: Int, Taggable {
         case Title
         case Details
+        case Highlight1
+        case Highlight2
     }
     
     struct Cache {
@@ -121,6 +123,12 @@ class SampleCell: UITableViewCell {
             return v
         }
         
+        let h1Node = Node(tag: Tags.Highlight1) {
+            let v = $0.dequeue() as UIView
+            v.backgroundColor = UIColor.redColor().colorWithAlphaComponent(0.2)
+            return v
+        }
+        
         let attr = NSAttributedString(string: model.details, attributes: [NSFontAttributeName: UIFont.systemFontOfSize(12)])
         
         let detailsNode = LabelNode(tag: Tags.Details, text: .Attributed(attr)) {
@@ -131,17 +139,33 @@ class SampleCell: UITableViewCell {
             return v
         }
         
-        let rootNode = RootNode(size: CGSize(width: width, height: 0), subnodes: [titleNode, detailsNode])
+        let h2Node = Node(tag: Tags.Highlight2) {
+            let v = $0.dequeue() as UIView
+            v.backgroundColor = UIColor.greenColor().colorWithAlphaComponent(0.2)
+            return v
+        }
+        
+        let rootNode = RootNode(size: CGSize(width: width, height: 0), subnodes: [titleNode, detailsNode, h1Node, h2Node])
         
         Combine(
             HFillVFit(titleNode, inset: 10),
             HFillVFit(detailsNode, inset: 10),
+            
+            HFill(h1Node, inset: 10),
+            SetHeight(h1Node, value: 20),
+            
+            HFill(h2Node, inset: 10),
+            SetHeight(h2Node, value: 20),
+            
             VPut(
                 Fix(10),
                 Fix(titleNode),
                 Fix(10),
                 Fix(detailsNode)
-            )
+            ),
+            
+            Follow(BaselineAnchor(titleNode), withAnchor: BottomAnchor(h1Node)),
+            Follow(BaselineAnchor(detailsNode), withAnchor: BottomAnchor(h2Node))
         ).layout()
         
         return Cache(height: detailsNode.frame.maxY + 10, rootNode: rootNode)

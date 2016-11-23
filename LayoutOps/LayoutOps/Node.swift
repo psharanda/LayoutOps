@@ -114,7 +114,7 @@ public class RootNode: Node {
     }
 }
 
-public class LabelNode: Node {
+public class LabelNode: Node, Baselinable {
     
     private let text: LabelNodeString    
     public init(tag: Taggable, text: LabelNodeString, subnodes: [Node] = [], initializer: (NodeBox)->UILabel) {
@@ -142,18 +142,54 @@ public class LabelNode: Node {
             return (string as NSString).boundingRectWithSize(size, options: [.UsesLineFragmentOrigin, .UsesFontLeading], attributes: [NSFontAttributeName: font], context: nil).size
         }
     }
+    
+    public func baselineValueOfType(type: BaselineType, size: CGSize) -> CGFloat {
+        let sz = sizeThatFits(size)
+        var font: UIFont?
+        
+        switch text {
+        case .Attributed(let attr):
+            switch type {
+            case .First:
+                var ptr = NSRange()
+                if attr.length > 0 {
+                    font = attr.attribute(NSFontAttributeName, atIndex: 0, effectiveRange: &ptr) as? UIFont
+                }
+            case .Last:
+                var ptr = NSRange()
+                if attr.length > 0 {
+                    font = attr.attribute(NSFontAttributeName, atIndex: attr.length - 1, effectiveRange: &ptr) as? UIFont
+                }
+            }
+        case .Regular(_, let f):
+            font = f
+        }
+        
+        switch type {
+        case .First:
+            return (size.height - sz.height)/2 + (font?.ascender ?? 0)
+        case .Last:
+            return size.height - (size.height - sz.height)/2 + (font?.descender ?? 0)
+        }
+    }
 }
 
-public class StaticNode: Node {
+
+
+public class ImageNode: Node {
     
-    private let referenceSize: CGSize
-    public init(tag: Taggable, referenceSize: CGSize , subnodes: [Node] = [], initializer: (NodeBox)->UIView) {
-        self.referenceSize = referenceSize
-        super.init(tag: tag, subnodes: subnodes, initializer: initializer)
+    private let image: UIImage
+    public init(tag: Taggable, image: UIImage, subnodes: [Node] = [], initializer: (NodeBox)->UIImageView) {
+        self.image = image
+        super.init(tag: tag, subnodes: subnodes) {
+            let imageView = initializer($0)
+            imageView.image = image
+            return imageView
+        }
     }
     
     public override func sizeThatFits(size: CGSize) -> CGSize {
-        return referenceSize
+        return image.size
     }
 }
 

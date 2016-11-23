@@ -30,36 +30,43 @@ public protocol Layoutable: class {
     func sizeThatFits(size: CGSize) -> CGSize
 }
 
+extension Layoutable {
+    private var addressHash: Int { return unsafeAddressOf(self).hashValue }
+}
+
+struct LayoutBox: Hashable {
+    let layoutable: Layoutable
+    init(layoutable: Layoutable) {
+        self.layoutable = layoutable
+    }
+    
+    var hashValue: Int {
+        return layoutable.addressHash
+    }
+}
+
+func ==(lhs: LayoutBox, rhs: LayoutBox) -> Bool {
+    return lhs.layoutable === rhs.layoutable
+}
 
 public struct ViewLayoutMap {
     
-    private var map = [(Layoutable, CGRect)]()
+    private var map = [LayoutBox: CGRect]()
     
     
     func forEach(f: (Layoutable, CGRect) -> Void) {
-        map.forEach(f)
+        map.forEach{
+            f($0.0.layoutable, $0.1)
+        }
     }
     
     subscript(key: Layoutable) -> CGRect? {
         get {
-            for (k, v) in map {
-                if k === key {
-                    return v
-                }
-            }
-            return nil
+            return map[LayoutBox(layoutable: key)]
         }
         
         set {
-            if let newValue = newValue {
-                if let idx = map.indexOf({ (k, v) -> Bool in
-                    return k === key
-                }) {
-                    map[idx] = (key, newValue)
-                } else {
-                    map.append((key, newValue))
-                }
-            }
+            map[LayoutBox(layoutable: key)] = newValue
         }
     }
 }
