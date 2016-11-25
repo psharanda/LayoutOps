@@ -10,10 +10,10 @@ public enum LabelNodeString {
     case Attributed(NSAttributedString)
 }
 
-public class LabelNode: Node {
+public class LabelNode: AnyNode {
     
     private let text: LabelNodeString
-    public init<T: UILabel>(tag: Taggable, text: LabelNodeString, subnodes: [Node] = [], initializer: (T?)->T) {
+    public init<T: UILabel>(tag: Taggable, text: LabelNodeString, subnodes: [AnyNode] = [], initializer: (T?)->T) {
         self.text = text
         super.init(tag: tag, subnodes: subnodes) { (label: T?) -> T in
             
@@ -25,7 +25,6 @@ public class LabelNode: Node {
                 l.font = font
                 l.text = string
             }
-            initializer(l)
             return l
         }
     }

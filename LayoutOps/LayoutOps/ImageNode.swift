@@ -5,10 +5,10 @@
 
 import UIKit
 
-public class ImageNode: Node {
+public class ImageNode: AnyNode {
     
     private let image: UIImage
-    public init<T: UIImageView>(tag: Taggable, image: UIImage, subnodes: [Node] = [], initializer: (T?)->T) {
+    public init<T: UIImageView>(tag: Taggable, image: UIImage, subnodes: [AnyNode] = [], initializer: (T?)->T) {
         self.image = image
         super.init(tag: tag, subnodes: subnodes) { (imageView: T?) -> T in
             let imgView = initializer(imageView)

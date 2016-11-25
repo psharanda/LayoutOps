@@ -86,6 +86,18 @@ extension TableViewController: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
+class MyView: UIView {
+    
+    var color: UIColor? {
+        set {
+            backgroundColor = newValue
+        }
+        get {
+            return backgroundColor
+        }
+    }
+}
+
 class SampleCell: UITableViewCell {
     
     override func layoutSubviews() {
@@ -111,6 +123,14 @@ class SampleCell: UITableViewCell {
         let rootNode: RootNode
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        if let v = contentView.findViewWithTag(Tags.Highlight1) as? MyView {
+            v.color = UIColor.redColor().colorWithAlphaComponent(0.2)
+        }
+    }
+    
     var model: SampleModel?
     var cache: Cache?
     
@@ -131,9 +151,9 @@ class SampleCell: UITableViewCell {
             return v
         }
         
-        let h1Node = Node(tag: Tags.Highlight1) {
-            let v = $0 ?? UIView()
-            v.backgroundColor = UIColor.redColor().colorWithAlphaComponent(0.2)
+        let h1Node = Node<MyView>(tag: Tags.Highlight1) {
+            let v = $0 ?? MyView()
+            
             return v
         }
         

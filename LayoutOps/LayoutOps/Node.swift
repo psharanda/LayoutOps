@@ -41,9 +41,27 @@ extension UIView {
             return objc_getAssociatedObject(self, &key) as? String
         }
     }
+    
+    private func _findViewWithTag(tag: Taggable) -> UIView? {
+        if tag.tag == stringTag {
+            return self
+        }
+        
+        for v in subviews {
+            if let v = v.findViewWithTag(tag) {
+                return v
+            }
+        }
+        
+        return nil
+    }
+    
+    public func findViewWithTag<T: UIView>(tag: Taggable) -> T? {
+        return _findViewWithTag(tag).flatMap { $0 as? T }
+    }
 }
 
-public class Node: Layoutable {
+public class AnyNode: Layoutable {
     
     public var bounds: CGRect {
         return CGRect(x: 0, y: 0, width: frame.width, height: frame.height)
@@ -55,8 +73,8 @@ public class Node: Layoutable {
         return size
     }
     
-    private var subnodes: [Node]
-    private var supernode: Node?
+    private var subnodes: [AnyNode]
+    private var supernode: AnyNode?
     
     public weak var parent: Layoutable? {
         return supernode
@@ -71,7 +89,7 @@ public class Node: Layoutable {
     
     private let tag: Tag
     
-    public init<T: UIView>(tag: Taggable, subnodes: [Node] = [], initializer: (T?)->T) {
+    public init<T: UIView>(tag: Taggable, subnodes: [AnyNode] = [], initializer: (T?)->T) {
         
         self.tag = .Tagged(tag)
         self.initializer = {
@@ -84,7 +102,7 @@ public class Node: Layoutable {
         }
     }
     
-    private init(rs: CGSize, subnodes: [Node]) {
+    private init(rs: CGSize, subnodes: [AnyNode]) {
         
         self.tag = .Root
         
@@ -98,7 +116,7 @@ public class Node: Layoutable {
         }
     }
     
-    private func installInView(rootView: UIView) {
+    public func installInRootView(rootView: UIView) {
         
         switch tag {
         case .Root:
@@ -117,16 +135,15 @@ public class Node: Layoutable {
             
             view.frame = frame
             subnodes.forEach {
-                $0.installInView(view)
+                $0.installInRootView(view)
             }
-            
         }
     }
 }
 
-public class RootNode: Node {
-    //root node
-    public init(size: CGSize, subnodes: [Node]) {
+public class RootNode: AnyNode {
+
+    public init(size: CGSize, subnodes: [AnyNode]) {
         super.init(rs: size, subnodes: subnodes)
     }
     
@@ -134,13 +151,22 @@ public class RootNode: Node {
         fatalError("RootNode is not intended to respond sizeThatFits")
     }
     
-    public func installInRootView(rootView: UIView) {
+    public override func installInRootView(rootView: UIView) {
         subnodes.forEach {
-            $0.installInView(rootView)
+            $0.installInRootView(rootView)
         }
     }
 }
 
+public class Node<T: UIView>: AnyNode {
+    
+    public override init(tag: Taggable, subnodes: [AnyNode] = [], initializer: (T?)->T) {
+        super.init(tag: tag, subnodes: subnodes) { (view: T?) -> T in            
+            return initializer(view)
+        }
+    }
+    
+}
 
 
 
