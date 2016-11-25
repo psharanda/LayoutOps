@@ -12,9 +12,11 @@ public enum LabelNodeString {
 
 public class LabelNode: AnyNode {
     
+    private let numberOfLines: Int
     private let text: LabelNodeString
-    public init<T: UILabel>(tag: Taggable, text: LabelNodeString, subnodes: [AnyNode] = [], initializer: (T?)->T) {
+    public init<T: UILabel>(tag: Taggable, text: LabelNodeString, numberOfLines: Int = 1, subnodes: [AnyNode] = [], initializer: (T?)->T) {
         self.text = text
+        self.numberOfLines = numberOfLines
         super.init(tag: tag, subnodes: subnodes) { (label: T?) -> T in
             
             let l = initializer(label)
@@ -25,17 +27,30 @@ public class LabelNode: AnyNode {
                 l.font = font
                 l.text = string
             }
+            l.numberOfLines = numberOfLines
             return l
         }
     }
     
     public override func sizeThatFits(size: CGSize) -> CGSize {
         
+        struct Cache {
+            static let label = UILabel()
+        }
+        
+        Cache.label.attributedText = nil
+        Cache.label.text = nil
+        Cache.label.font = nil
+        Cache.label.numberOfLines = numberOfLines
+        
         switch text {
         case .Attributed(let attrString):
-            return attrString.boundingRectWithSize(size, options: [.UsesLineFragmentOrigin, .UsesFontLeading], context: nil).size
+            Cache.label.attributedText = attrString
+            return Cache.label.sizeThatFits(size)
         case .Regular(let string, let font):
-            return (string as NSString).boundingRectWithSize(size, options: [.UsesLineFragmentOrigin, .UsesFontLeading], attributes: [NSFontAttributeName: font], context: nil).size
+            Cache.label.text = string
+            Cache.label.font = font
+            return Cache.label.sizeThatFits(size)
         }
     }
 }

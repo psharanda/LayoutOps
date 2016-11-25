@@ -143,9 +143,8 @@ class SampleCell: UITableViewCell {
             return v
         }
         
-        let titleNode = LabelNode(tag: Tags.Title, text: .Regular(model.title, UIFont.systemFontOfSize(24)), subnodes: [bg1Node]) {
+        let titleNode = LabelNode(tag: Tags.Title, text: .Regular(model.title, UIFont.systemFontOfSize(24)), numberOfLines: 0, subnodes: [bg1Node]) {
             let v = $0 ?? UILabel()
-            v.numberOfLines = 0
             v.textColor = UIColor.darkGrayColor()
             v.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.2)
             return v
@@ -157,11 +156,14 @@ class SampleCell: UITableViewCell {
             return v
         }
         
-        let attr = NSAttributedString(string: model.details, attributes: [NSFontAttributeName: UIFont.systemFontOfSize(12)])
+        let p = NSMutableParagraphStyle()
+        p.lineSpacing = 3
+        p.lineBreakMode = .ByTruncatingTail
         
-        let detailsNode = LabelNode(tag: Tags.Details, text: .Attributed(attr)) {
+        let attr = NSAttributedString(string: model.details, attributes: [NSFontAttributeName: UIFont.systemFontOfSize(12), NSParagraphStyleAttributeName: p])
+        
+        let detailsNode = LabelNode(tag: Tags.Details, text: .Attributed(attr), numberOfLines: 4) {
             let v = $0 ?? UILabel()
-            v.numberOfLines = 0
             v.textColor = UIColor.grayColor()
             v.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.2)
             return v
