@@ -162,7 +162,7 @@ class SampleCell: UITableViewCell {
         
         let attr = NSAttributedString(string: model.details, attributes: [NSFontAttributeName: UIFont.systemFontOfSize(12), NSParagraphStyleAttributeName: p])
         
-        let detailsNode = LabelNode(tag: Tags.Details, text: .Attributed(attr), numberOfLines: 4) {
+        let detailsNode = LabelNode(tag: Tags.Details, text: .Attributed(attr), numberOfLines: 2) {
             let v = $0 ?? UILabel()
             v.textColor = UIColor.grayColor()
             v.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.2)

@@ -6,8 +6,8 @@
 import UIKit
 
 public enum LabelNodeString {
-    case Regular(String, UIFont)
-    case Attributed(NSAttributedString)
+    case Regular(String?, UIFont)
+    case Attributed(NSAttributedString?)
 }
 
 public class LabelNode: AnyNode {
@@ -65,12 +65,12 @@ extension LabelNode: Baselinable {
             switch type {
             case .First:
                 var ptr = NSRange()
-                if attr.length > 0 {
+                if let attr = attr where attr.length > 0 {
                     font = attr.attribute(NSFontAttributeName, atIndex: 0, effectiveRange: &ptr) as? UIFont
                 }
             case .Last:
                 var ptr = NSRange()
-                if attr.length > 0 {
+                if let attr = attr where attr.length > 0 {
                     font = attr.attribute(NSFontAttributeName, atIndex: attr.length - 1, effectiveRange: &ptr) as? UIFont
                 }
             }
@@ -91,7 +91,7 @@ extension LabelNode: LayoutableWithFont {
     public var font: UIFont! {
         switch text {
         case .Attributed(let attr):
-            if attr.length > 0 {
+            if let attr = attr where attr.length > 0 {
                 var ptr = NSRange()
                 return attr.attribute(NSFontAttributeName, atIndex: 0, effectiveRange: &ptr) as? UIFont
             } else {

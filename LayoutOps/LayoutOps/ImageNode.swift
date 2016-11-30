@@ -7,8 +7,8 @@ import UIKit
 
 public class ImageNode: AnyNode {
     
-    private let image: UIImage
-    public init<T: UIImageView>(tag: Taggable, image: UIImage, subnodes: [AnyNode] = [], initializer: (T?)->T) {
+    private let image: UIImage?
+    public init<T: UIImageView>(tag: Taggable, image: UIImage?, subnodes: [AnyNode] = [], initializer: (T?)->T) {
         self.image = image
         super.init(tag: tag, subnodes: subnodes) { (imageView: T?) -> T in
             let imgView = initializer(imageView)
@@ -18,6 +18,11 @@ public class ImageNode: AnyNode {
     }
     
     public override func sizeThatFits(size: CGSize) -> CGSize {
-        return image.size
+        
+        struct Cache {
+            static let imageView = UIImageView()
+        }
+        Cache.imageView.image = image
+        return Cache.imageView.sizeThatFits(size)
     }
 }
