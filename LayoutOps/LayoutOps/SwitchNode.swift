@@ -8,10 +8,10 @@ import UIKit
 public class SwitchNode: AnyNode {
     
     
-    public init<T: UISwitch>(tag: Taggable, image: UIImage?, subnodes: [AnyNode] = [], initializer: (T?)->T) {
+    public override init<T: UISwitch>(tag: Taggable, subnodes: [AnyNode] = [], initializer: (T?)->T) {
     
-        super.init(tag: tag, subnodes: subnodes) { (imageView: T?) -> T in
-            return initializer(imageView)
+        super.init(tag: tag, subnodes: subnodes) { (switchView: T?) -> T in
+            return initializer(switchView)
         }
     }
     
