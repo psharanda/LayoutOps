@@ -70,7 +70,7 @@ public class AnyNode: Layoutable {
     public var frame: CGRect = CGRect()
     
     public func sizeThatFits(size: CGSize) -> CGSize {
-        return size
+        return CGSize()
     }
     
     private var subnodes: [AnyNode]

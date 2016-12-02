@@ -34,7 +34,7 @@ extension CALayer: Layoutable {
     }
     
     public func sizeThatFits(size: CGSize) -> CGSize {
-        return size
+        return CGSize()
     }
 }
 
