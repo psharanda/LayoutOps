@@ -35,7 +35,7 @@ class DocGenViewController: UIViewController {
     }
 
     fileprivate func makeSnapshots() {
-        
+        warnAboutSRCROOT = true
         let allRows = sections.flatMap { section in
             section.rows.map {
                 SectionRow(sectionTitle: section.title, row: $0)
@@ -116,9 +116,9 @@ class DocGenViewController: UIViewController {
         renderRow {
             let mdPath = (documentationPath() as NSString).appendingPathComponent("DEMOS.md")
             let _ = try?(markdownString as NSString).write(toFile: mdPath, atomically: false, encoding: String.Encoding.utf8.rawValue)
-            print("Markdown saved to "+mdPath)
+            print("Documentation saved to "+documentationPath())
             
-            let _ = self.navigationController?.popViewController(animated: true)
+            _ = self.navigationController?.popViewController(animated: true)
         }
     }
 }
@@ -159,7 +159,6 @@ private func saveImageAsPngInTempFolder(_ image: UIImage, name: String) {
     if let imgData = UIImagePNGRepresentation(image) {
         
         let imgPath = (documentationPath() as NSString).appendingPathComponent(name)
-        print("image saved to "+imgPath)
         try? imgData.write(to: URL(fileURLWithPath: imgPath), options: [])
     }
 }
@@ -168,9 +167,20 @@ private func isSimulator() -> Bool {
     return TARGET_OS_SIMULATOR != 0
 }
 
+var warnAboutSRCROOT = true
+
 private func documentationPath() -> String {
     if isSimulator() {
-        return ((CommandLine.arguments[1] as NSString).deletingLastPathComponent as NSString).appendingPathComponent("README")
+        if CommandLine.arguments.count < 2 {
+            if warnAboutSRCROOT {
+                print("WARNING: Add '$SRCROOT' to 'Arguments passed on launch' section to generate documentation in README folder")
+                warnAboutSRCROOT = false
+            }
+            return NSTemporaryDirectory()
+        } else {
+            return ((CommandLine.arguments[1] as NSString).deletingLastPathComponent as NSString).appendingPathComponent("README")
+        }
+        
     } else {
         return NSTemporaryDirectory()
     }

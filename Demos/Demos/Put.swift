@@ -291,7 +291,7 @@ class PutDemo_FixFlexGrid: UIView, DemoViewProtocol {
             var r = [PutIntention]()
             for i in 0..<8 {
                 
-                var row = [UIView]()
+                var row = [Layoutable]()
                 for j in 0..<8 {
                     row.append(views[i*8 + j])
                 }
@@ -305,7 +305,7 @@ class PutDemo_FixFlexGrid: UIView, DemoViewProtocol {
             
             for i in 0..<8 {
                 
-                var col = [UIView]()
+                var col = [Layoutable]()
                 for j in 0..<8 {
                     col.append(views[i + j*8])
                 }

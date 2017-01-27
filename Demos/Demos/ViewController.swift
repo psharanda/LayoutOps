@@ -90,6 +90,8 @@ class ViewController: UIViewController {
         view.addSubview(tableView)
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "DocGen", style: .plain , target: self, action: #selector(docGenClicked))
+        
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Table", style: .plain , target: self, action: #selector(tableClicked))
     }
 
     override func viewDidLayoutSubviews() {
@@ -108,6 +110,11 @@ class ViewController: UIViewController {
     
     @objc fileprivate func docGenClicked() {
         let vc = DocGenViewController(sections: sections)
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    @objc fileprivate func tableClicked() {
+        let vc = TableViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
 }

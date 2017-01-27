@@ -25,7 +25,7 @@ public enum SizeToFitIntention {
 }
 
 public enum SizeConstraint {
-    case any
+    case `default`
     case min(CGFloat)
     case max(CGFloat)
     case minMax(CGFloat, CGFloat)
@@ -33,7 +33,7 @@ public enum SizeConstraint {
     
     public var minValue: CGFloat {
         switch self {
-        case .any, .max:
+        case .default, .max:
             return CGFloat.leastNormalMagnitude
         case .min(let min):
             return min
@@ -44,7 +44,7 @@ public enum SizeConstraint {
     
     public var maxValue: CGFloat {
         switch self {
-        case .any, .min:
+        case .default, .min:
             return CGFloat.greatestFiniteMagnitude
         case .max(let max):
             return max
@@ -55,7 +55,7 @@ public enum SizeConstraint {
 }
 
 private struct SizeToFitOperation: LayoutOperation {
-    let view: UIView
+    let view: Layoutable
     let width: SizeToFitIntention
     let height: SizeToFitIntention
     let widthSizeConstraint: SizeConstraint
@@ -121,28 +121,28 @@ private struct SizeToFitOperation: LayoutOperation {
     }
 }
 
-public func SizeToFit(_ view: UIView, width: SizeToFitIntention, height: SizeToFitIntention, widthConstraint: SizeConstraint = .any, heightConstraint: SizeConstraint = .any) -> LayoutOperation {
+public func SizeToFit(_ view: Layoutable, width: SizeToFitIntention, height: SizeToFitIntention, widthConstraint: SizeConstraint = .default, heightConstraint: SizeConstraint = .default) -> LayoutOperation {
     return SizeToFitOperation(view: view, width: width, height: height, widthSizeConstraint: widthConstraint, heightSizeConstraint:  heightConstraint)
 }
 
 /**
  same as SizeToFit(view, width: .Max, height: .Max)
  */
-public func SizeToFitMax(_ view: UIView) -> LayoutOperation {
+public func SizeToFitMax(_ view: Layoutable) -> LayoutOperation {
     return SizeToFit(view, width: .max, height: .max)
 }
 
 /**
  same as SizeToFit(view, width: .Current, height: .Current)
  */
-public func SizeToFit(_ view: UIView) -> LayoutOperation {
+public func SizeToFit(_ view: Layoutable) -> LayoutOperation {
     return SizeToFit(view, width: .current, height: .current)
 }
 
 /**
  same as SizeToFit(view, width: .Max, height: .Max)
  */
-public func SizeToFitMaxWithConstraints(_ view: UIView, widthConstraint: SizeConstraint, heightConstraint: SizeConstraint) -> LayoutOperation {
+public func SizeToFitMaxWithConstraints(_ view: Layoutable, widthConstraint: SizeConstraint, heightConstraint: SizeConstraint) -> LayoutOperation {
     return SizeToFit(view, width: .max, height: .max, widthConstraint: widthConstraint, heightConstraint: heightConstraint)
 }
 
@@ -154,17 +154,17 @@ public func SizeToFitMaxWithConstraints(_ view: UIView, widthConstraint: SizeCon
     SizeToFit(view, width: .KeepCurrent, height: .Max),
  )
 */
-public func HFillVFit(_ view: UIView, leftInset: CGFloat, rightInset: CGFloat) -> LayoutOperation {
+public func HFillVFit(_ view: Layoutable, leftInset: CGFloat, rightInset: CGFloat) -> LayoutOperation {
     return Combine([
         HFill(view, leftInset: leftInset, rightInset: rightInset),
         SizeToFit(view, width: .keepCurrent, height: .max),
     ])
 }
 
-public func HFillVFit(_ view: UIView, inset: CGFloat) -> LayoutOperation {
+public func HFillVFit(_ view: Layoutable, inset: CGFloat) -> LayoutOperation {
     return HFillVFit(view, leftInset: inset, rightInset: inset)
 }
 
-public func HFillVFit(_ view: UIView) -> LayoutOperation {
+public func HFillVFit(_ view: Layoutable) -> LayoutOperation {
     return HFillVFit(view, leftInset: 0, rightInset: 0)
 }
