@@ -47,7 +47,7 @@ class PutDemo_Fix: UIView, DemoViewProtocol {
     }
     
     static let title = "Fix"
-    static let comments = "view_to_replace.lx.hput and view_to_replace.lx.vput operations successively layout views in superview in horizontal or vertical direction using intentions. Fix intention means that view size will take exact value, either directly defined or current one"
+    static let comments = "hput and vput operations successively layout views in superview in horizontal or vertical direction using intentions. Fix intention means that view size will take exact value, either directly defined or current one"
 }
 
 class PutDemo_Flex: UIView, DemoViewProtocol {
@@ -88,7 +88,7 @@ class PutDemo_Flex: UIView, DemoViewProtocol {
     }
     
     static let title = "Flex"
-    static let comments = "view_to_replace.lx.hput and view_to_replace.lx.vput operations successively layout views in superview in horizontal or vertical direction using intentions. Flex intention means that view size will take value based weight of flex value. Flex operates only with free space left after Fix intentions"
+    static let comments = "hput and vput operations successively layout views in superview in horizontal or vertical direction using intentions. Flex intention means that view size will take value based weight of flex value. Flex operates only with free space left after Fix intentions"
 }
 
 class PutDemo_FixFlex: UIView, DemoViewProtocol {
@@ -215,7 +215,7 @@ class PutDemo_Multi: UIView, DemoViewProtocol {
     }
     
     static let title = "Multi"
-    static let comments = "Single intention can be defined for several views, all calculations are doing for first one, and others use its result as is"
+    static let comments = "Single intention can be defined for several views, all calculations are doing for first one, and others use this result as is"
     
 }
 
@@ -252,7 +252,7 @@ class PutDemo_Labels: UIView, DemoViewProtocol {
     }
     
     static let title = "Put labels"
-    static let comments = "HFillVFit is used to fill width and size to fit height for both labels. view_to_replace.lx.vput is used to center group of labels"
+    static let comments = "hfillvfit is used to fill width and size to fit height for both labels. vput is used to center group of labels"
     
 }
 
@@ -321,5 +321,5 @@ class PutDemo_FixFlexGrid: UIView, DemoViewProtocol {
     }
     
     static let title = "Fix+Flex grid"
-    static let comments = "Elegant way to layout views in grid using just one view_to_replace.lx.hput and one view_to_replace.lx.vput"
+    static let comments = "Elegant way to layout views in grid using just one hput and one vput"
 }

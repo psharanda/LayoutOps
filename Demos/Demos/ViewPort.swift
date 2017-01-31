@@ -30,6 +30,7 @@ class ViewPortDemo: UIView, DemoViewProtocol {
         
         
         blueView.lx.hfill(inset: 20)
+        
         self.lx.vput(
             Fix(20),
             Fix(blueView, 20),
@@ -37,8 +38,9 @@ class ViewPortDemo: UIView, DemoViewProtocol {
             Flex(greenView),
             Fix(20)
         )
+        
         greenView.lx.alignLeft(20)
-        greenView.lx.set(width: 20)
+            .set(width: 20)
         
         self.lx.inViewport(topAnchor: blueView.lx.bottomAnchor, leftAnchor: greenView.lx.rightAnchor) {
             redView.lx.fill(inset: 5)
@@ -46,5 +48,5 @@ class ViewPortDemo: UIView, DemoViewProtocol {
     }
     
     static let title = "Demo"
-    static let comments = "Combine operation is not only for grouping other operations, but it also defines viewport for them. Viewport can be defined using anchors of any childview, or nil anchor if using superview edges"
+    static let comments = "Viewport can be defined using anchors of any childview, or nil anchor if using superview edges"
 }

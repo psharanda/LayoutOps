@@ -28,13 +28,11 @@ class SizeToFitDemo_Value: UIView, DemoViewProtocol {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        icon.lx
-            .sizeToFit(width: .Value(100), height: .Value(100))
+        icon.lx.sizeToFit(width: .Value(100), height: .Value(100))
             .alignTop(10)
             .hcenter()
         
-        label.lx
-            .sizeToFit(width: .Value(100), height: .Value(100))
+        label.lx.sizeToFit(width: .Value(100), height: .Value(100))
             .center()
         
         title.lx.sizeToFit(width: .Value(100), height: .Value(100))
@@ -44,7 +42,7 @@ class SizeToFitDemo_Value: UIView, DemoViewProtocol {
     }
     
     static let title = ".Value"
-    static let comments = "SizeToFit operation fits view in defined box using -sizeThatFits: method. Box (width and height) can be defined using different options. .Value option sets exact value for box. Result size will be equal or less than it."
+    static let comments = "sizeToFit operation fits view in defined box using -sizeThatFits: method. Box (width and height) can be defined using different options. .Value option sets exact value for box. Result size will be equal or less than it."
 }
 
 class SizeToFitDemo_Max: UIView, DemoViewProtocol {
@@ -83,7 +81,7 @@ class SizeToFitDemo_Max: UIView, DemoViewProtocol {
     }
     
     static let title = ".Max"
-    static let comments = ".Max option sets infinite value for fitting box. Result size will be most comfortable for view to display content. WARNING: multiline labels are comfortable with single line, don't use .Max for them"
+    static let comments = ".Max option sets infinite value for fitting box. Result size will be most comfortable for view to display content. WARNING: multiline labels are comfortable with single line, don't use .Max for width"
 }
 
 class SizeToFitDemo_Current: UIView, DemoViewProtocol {
@@ -185,12 +183,11 @@ class SizeToFitDemo_MinMax: UIView, DemoViewProtocol {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        label.lx
-            .sizeToFitMax(widthConstraint: .Max(100), heightConstraint: .Min(300))
+        label.lx.sizeToFitMax(widthConstraint: .Max(100), heightConstraint: .Min(300))
             .center()
         
     }
     
     static let title = "Min/Max constraints"
-    static let comments = "SizeToFit operation also can have min, max or both constraints to limit resulted width/height. "
+    static let comments = "sizeToFit operation also can have min, max or both constraints to limit resulted width/height. "
 }

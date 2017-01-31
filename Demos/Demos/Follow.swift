@@ -28,7 +28,7 @@ class FollowDemo_CornerAnchors: UIView, DemoViewProtocol {
         super.layoutSubviews()
         
         blueView.lx.set(x: 10, y: 10)
-        blueView.lx.set(width: 100, height: 100)
+            .set(width: 100, height: 100)
         
         greenView.lx.set(width: 50, height: 190)
         greenView.lx.leftAnchor.follow(blueView.lx.rightAnchor)
@@ -68,8 +68,8 @@ class FollowDemo_CenterAnchors: UIView, DemoViewProtocol {
         
         
         blueView.lx.set(x: 10, y: 10)
-        blueView.lx.set(width: 200)
-        blueView.lx.vfill(inset: 20)
+            .set(width: 200)
+            .vfill(inset: 20)
         
         greenView.lx.set(width: 50, height: 190)
         greenView.lx.leftAnchor.follow(blueView.lx.rightAnchor)
@@ -105,9 +105,8 @@ class FollowDemo_SizeAnchors: UIView, DemoViewProtocol {
         super.layoutSubviews()
         
         blueView.lx.set(x: 10)
-        
-        blueView.lx.set(width: 50)
-        blueView.lx.vfill(inset: 100)
+            .set(width: 50)
+            .vfill(inset: 100)
         
         greenView.lx.heightAnchor.follow(blueView.lx.widthAnchor)
         greenView.lx.widthAnchor.follow(blueView.lx.heightAnchor)
@@ -142,14 +141,14 @@ class FollowDemo_firstBaselineAnchors: UIView, DemoViewProtocol {
         super.layoutSubviews()
         
         label.lx.hfill(inset: 20)
-        label.lx.sizeToFit(width: .KeepCurrent, height: .Max)
-        label.lx.center()
+            .sizeToFit(width: .KeepCurrent, height: .Max)
+            .center()
         
         blueView.lx.set(height: 30)
-        greenView.lx.set(height: 30)
+            .hfill(inset: 20)
         
-        blueView.lx.hfill(inset: 20)
-        greenView.lx.hfill(inset: 20)
+        greenView.lx.set(height: 30)
+            .hfill(inset: 20)
         
         blueView.lx.bottomAnchor.follow(label.lx.firstBaselineAnchor)
         greenView.lx.topAnchor.follow(label.lx.lastBaselineAnchor)
@@ -157,6 +156,6 @@ class FollowDemo_firstBaselineAnchors: UIView, DemoViewProtocol {
     }
     
     static let title = "Baseline"
-    static let comments = "Baseline anchor is special. Only Baselinable views have it. For the moment only UILabel is conforming this protocol. Baseline anchor can be first or last (belongs to line first or last line of text)."
+    static let comments = "firstBaselineAnchor/lastBaselineAnchor anchors are special. Only Baselinable views have it. For the moment only UILabel is conforming this protocol"
 }
  

@@ -1,98 +1,85 @@
 ### Basic
 #### Set*
-Set* operations directly put frame values
+set* operations directly put frame values
 ```swift
 
 
-blueView.lx
-    .set(x: 10, y: 10)
+blueView.lx.set(x: 10, y: 10)
     .set(width: 100, height: 100)
 
-greenView.lx
-    .set(x: 120, y: 20, width: 50, height: 190)
+greenView.lx.set(x: 120, y: 20, width: 50, height: 190)
 
-redView.lx
-    .set(x: 5)
+redView.lx.set(x: 5)
     .set(y: 120)
     .set(width: 45)
     .set(height: 100)
 ```
 <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Basic_Set-_portrait.png" alt="Set*" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Basic__Set-_landscape.png" alt="Set*" width="240.0" height="160.0"/>
 #### Center
-HCenter (horizontally), VCenter (vertically) and Center (both) operations allows to center view in superview. Insets can be used to adjust center point (see green view, 100 pt from bottom). Size of view usually should be set with previous operations
+hcenter (horizontally), vcenter (vertically) and center (both) operations allows to center view in superview. Insets can be used to adjust center point (see green view, 100 pt from bottom). Size of view usually should be set with previous operations
 ```swift
 
 
 
-blueView.lx
-    .set(y: 5)
+blueView.lx.set(y: 5)
     .set(width: 100, height: 100)
     .hcenter()
 
-greenView
-    .lx.set(x: 5)
+greenView.lx.set(x: 5)
     .set(width: 50, height: 120)
     .vcenter(topInset: 0, bottomInset: 100)
 
-redView.lx
-    .set(width: 45, height: 100)
+redView.lx.set(width: 45, height: 100)
     .center()
 ```
 <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Basic_Center_portrait.png" alt="Center" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Basic__Center_landscape.png" alt="Center" width="240.0" height="160.0"/>
 #### Fill
-HFill (horizontally), VFill (vertically) and Fill (both) operations make view to fill its superview. Insets can be used to control how much space to be left unfilled from the superview edges
+hfill (horizontally), vfill (vertically) and fill (both) operations make view to fill its superview. Insets can be used to control how much space to be left unfilled from the superview edges
 ```swift
 
 
 
 redView.lx.fill(inset: 5)
 
-blueView.lx
-    .set(y: 20)
+blueView.lx.set(y: 20)
     .set(height: 50)
     .hfill(inset: 10)
 
-greenView.lx
-    .set(x: 25)
+greenView.lx.set(x: 25)
     .set(width: 50)
     .vfill(topInset: 100, bottomInset: 15)
 ```
 <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Basic_Fill_portrait.png" alt="Fill" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Basic__Fill_landscape.png" alt="Fill" width="240.0" height="160.0"/>
 #### Align
-Align* operations allow to put view relatively to edges of superview. Inset value can be used to set distance to edge. Size of view usually should be set with previous operations.
+align* operations allow to put view relatively to edges of superview. Inset value can be used to set distance to edge. Size of view usually should be set with previous operations.
 ```swift
 
 
 
-blueView.lx
-    .set(width: 100, height: 100)
+blueView.lx.set(width: 100, height: 100)
     .alignLeft(5)
     .alignTop(5)
 
-greenView.lx
-    .set(width: 50, height: 120)
+greenView.lx.set(width: 50, height: 120)
     .alignLeft(10)
     .alignBottom(15)
 
-redView.lx
-    .set(width: 45, height: 100)
+redView.lx.set(width: 45, height: 100)
     .alignRight(25)
     .alignTop(25)
 ```
 <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Basic_Align_portrait.png" alt="Align" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Basic__Align_landscape.png" alt="Align" width="240.0" height="160.0"/>
 ### SizeToFit
 #### .Value
-SizeToFit operation fits view in defined box using -sizeThatFits: method. Box (width and height) can be defined using different options. .Value option sets exact value for box. Result size will be equal or less than it.
+sizeToFit operation fits view in defined box using -sizeThatFits: method. Box (width and height) can be defined using different options. .Value option sets exact value for box. Result size will be equal or less than it.
 ```swift
 
 
-icon.lx
-    .sizeToFit(width: .Value(100), height: .Value(100))
+icon.lx.sizeToFit(width: .Value(100), height: .Value(100))
     .alignTop(10)
     .hcenter()
 
-label.lx
-    .sizeToFit(width: .Value(100), height: .Value(100))
+label.lx.sizeToFit(width: .Value(100), height: .Value(100))
     .center()
 
 title.lx.sizeToFit(width: .Value(100), height: .Value(100))
@@ -101,7 +88,7 @@ title.lx.sizeToFit(width: .Value(100), height: .Value(100))
 ```
 <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/SizeToFit_.Value_portrait.png" alt=".Value" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/SizeToFit__.Value_landscape.png" alt=".Value" width="240.0" height="160.0"/>
 #### .Max
-.Max option sets infinite value for fitting box. Result size will be most comfortable for view to display content. WARNING: multiline labels are comfortable with single line, don't use .Max for them
+.Max option sets infinite value for fitting box. Result size will be most comfortable for view to display content. WARNING: multiline labels are comfortable with single line, don't use .Max for width
 ```swift
 
 
@@ -158,12 +145,11 @@ title.lx.hfill(leftInset: 20, rightInset: 20)
 ```
 <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/SizeToFit_.KeepCurrent_portrait.png" alt=".KeepCurrent" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/SizeToFit__.KeepCurrent_landscape.png" alt=".KeepCurrent" width="240.0" height="160.0"/>
 #### Min/Max constraints
-SizeToFit operation also can have min, max or both constraints to limit resulted width/height. 
+sizeToFit operation also can have min, max or both constraints to limit resulted width/height. 
 ```swift
 
 
-label.lx
-    .sizeToFitMax(widthConstraint: .Max(100), heightConstraint: .Min(300))
+label.lx.sizeToFitMax(widthConstraint: .Max(100), heightConstraint: .Min(300))
     .center()
 ```
 <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/SizeToFit_Min-Max constraints_portrait.png" alt="Min/Max constraints" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/SizeToFit__Min-Max constraints_landscape.png" alt="Min/Max constraints" width="240.0" height="160.0"/>
@@ -174,7 +160,7 @@ Follow operation makes one view's anchor to be the same with others view anchor.
 
 
 blueView.lx.set(x: 10, y: 10)
-blueView.lx.set(width: 100, height: 100)
+    .set(width: 100, height: 100)
 
 greenView.lx.set(width: 50, height: 190)
 greenView.lx.leftAnchor.follow(blueView.lx.rightAnchor)
@@ -192,8 +178,8 @@ There are not only edge anchors, but also center anchors
 
 
 blueView.lx.set(x: 10, y: 10)
-blueView.lx.set(width: 200)
-blueView.lx.vfill(inset: 20)
+    .set(width: 200)
+    .vfill(inset: 20)
 
 greenView.lx.set(width: 50, height: 190)
 greenView.lx.leftAnchor.follow(blueView.lx.rightAnchor)
@@ -210,9 +196,8 @@ There are also size anchors
 
 
 blueView.lx.set(x: 10)
-
-blueView.lx.set(width: 50)
-blueView.lx.vfill(inset: 100)
+    .set(width: 50)
+    .vfill(inset: 100)
 
 greenView.lx.heightAnchor.follow(blueView.lx.widthAnchor)
 greenView.lx.widthAnchor.follow(blueView.lx.heightAnchor)
@@ -221,19 +206,19 @@ greenView.lx.topAnchor.follow(blueView.lx.bottomAnchor)
 ```
 <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Follow_Size_portrait.png" alt="Size" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Follow__Size_landscape.png" alt="Size" width="240.0" height="160.0"/>
 #### Baseline
-Baseline anchor is special. Only Baselinable views have it. For the moment only UILabel is conforming this protocol. Baseline anchor can be first or last (belongs to line first or last line of text).
+firstBaselineAnchor/lastBaselineAnchor anchors are special. Only Baselinable views have it. For the moment only UILabel is conforming this protocol
 ```swift
 
 
 label.lx.hfill(inset: 20)
-label.lx.sizeToFit(width: .KeepCurrent, height: .Max)
-label.lx.center()
+    .sizeToFit(width: .KeepCurrent, height: .Max)
+    .center()
 
 blueView.lx.set(height: 30)
-greenView.lx.set(height: 30)
+    .hfill(inset: 20)
 
-blueView.lx.hfill(inset: 20)
-greenView.lx.hfill(inset: 20)
+greenView.lx.set(height: 30)
+    .hfill(inset: 20)
 
 blueView.lx.bottomAnchor.follow(label.lx.firstBaselineAnchor)
 greenView.lx.topAnchor.follow(label.lx.lastBaselineAnchor)
@@ -241,7 +226,7 @@ greenView.lx.topAnchor.follow(label.lx.lastBaselineAnchor)
 <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Follow_Baseline_portrait.png" alt="Baseline" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Follow__Baseline_landscape.png" alt="Baseline" width="240.0" height="160.0"/>
 ### Put
 #### Fix
-view_to_replace.lx.hput and view_to_replace.lx.vput operations successively layout views in superview in horizontal or vertical direction using intentions. Fix intention means that view size will take exact value, either directly defined or current one
+hput and vput operations successively layout views in superview in horizontal or vertical direction using intentions. Fix intention means that view size will take exact value, either directly defined or current one
 ```swift
 
 
@@ -263,7 +248,7 @@ self.lx.vput(
 ```
 <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Put_Fix_portrait.png" alt="Fix" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Put__Fix_landscape.png" alt="Fix" width="240.0" height="160.0"/>
 #### Flex
-view_to_replace.lx.hput and view_to_replace.lx.vput operations successively layout views in superview in horizontal or vertical direction using intentions. Flex intention means that view size will take value based weight of flex value. Flex operates only with free space left after Fix intentions
+hput and vput operations successively layout views in superview in horizontal or vertical direction using intentions. Flex intention means that view size will take value based weight of flex value. Flex operates only with free space left after Fix intentions
 ```swift
 
 
@@ -323,7 +308,7 @@ redView.lx.vfill(inset: 40)
 ```
 <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Put_Fix+Flex center many views_portrait.png" alt="Fix+Flex center many views" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Put__Fix+Flex center many views_landscape.png" alt="Fix+Flex center many views" width="240.0" height="160.0"/>
 #### Multi
-Single intention can be defined for several views, all calculations are doing for first one, and others use its result as is
+Single intention can be defined for several views, all calculations are doing for first one, and others use this result as is
 ```swift
 
 
@@ -345,7 +330,7 @@ self.lx.vput(
 ```
 <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Put_Multi_portrait.png" alt="Multi" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Put__Multi_landscape.png" alt="Multi" width="240.0" height="160.0"/>
 #### Fix+Flex grid
-Elegant way to layout views in grid using just one view_to_replace.lx.hput and one view_to_replace.lx.vput
+Elegant way to layout views in grid using just one hput and one vput
 ```swift
 
 
@@ -382,7 +367,7 @@ putRows()
 ```
 <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Put_Fix+Flex grid_portrait.png" alt="Fix+Flex grid" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Put__Fix+Flex grid_landscape.png" alt="Fix+Flex grid" width="240.0" height="160.0"/>
 #### Put labels
-HFillVFit is used to fill width and size to fit height for both labels. view_to_replace.lx.vput is used to center group of labels
+hfillvfit is used to fill width and size to fit height for both labels. vput is used to center group of labels
 ```swift
 
 
@@ -400,12 +385,13 @@ self.lx.vput(
 <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Put_Put labels_portrait.png" alt="Put labels" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Put__Put labels_landscape.png" alt="Put labels" width="240.0" height="160.0"/>
 ### Viewport
 #### Demo
-Combine operation is not only for grouping other operations, but it also defines viewport for them. Viewport can be defined using anchors of any childview, or nil anchor if using superview edges
+Viewport can be defined using anchors of any childview, or nil anchor if using superview edges
 ```swift
 
 
 
 blueView.lx.hfill(inset: 20)
+
 self.lx.vput(
     Fix(20),
     Fix(blueView, 20),
@@ -413,8 +399,9 @@ self.lx.vput(
     Flex(greenView),
     Fix(20)
 )
+
 greenView.lx.alignLeft(20)
-greenView.lx.set(width: 20)
+    .set(width: 20)
 
 self.lx.inViewport(topAnchor: blueView.lx.bottomAnchor, leftAnchor: greenView.lx.rightAnchor) {
     redView.lx.fill(inset: 5)
