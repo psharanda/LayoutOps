@@ -77,7 +77,7 @@ public struct Viewport {
 
 extension Layouting where Base: Layoutable {
     
-    public func inViewport(insets: UIEdgeInsets, block:()->Void) -> Layouting<Base> {
+    public func inViewport(insets insets: UIEdgeInsets, block:()->Void) -> Layouting<Base> {
         let oldFrame = base.frame
         base.frame = UIEdgeInsetsInsetRect(oldFrame, insets)
         block()
@@ -85,8 +85,8 @@ extension Layouting where Base: Layoutable {
         return self
     }
     
-    public func inViewport(top: VAnchor? = nil, left: HAnchor? = nil, bottom: VAnchor? = nil, right: HAnchor? = nil, block:()->Void) -> Layouting<Base> {
+    public func inViewport(top top: VAnchor? = nil, left: HAnchor? = nil, bottom: VAnchor? = nil, right: HAnchor? = nil, block:()->Void) -> Layouting<Base> {
         let insets = UIEdgeInsets()
-        return inViewport(insets, block: block)
+        return inViewport(insets: insets, block: block)
     }
 }

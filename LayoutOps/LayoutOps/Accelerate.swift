@@ -27,17 +27,22 @@ public func SetHeightAsLineHeight(label: LayoutableWithFont) -> LayoutOperation 
 /*[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]*/
 /************************************************************************************/
 
-public enum LX {
-    public func alignFittedLabelsUsingFirstBaseline<T: LayoutingCompatible where T.CompatibleType: LayoutableWithFont>(label1: T, _ label2: T) {
-        label2.lx.topAnchor.insettedBy(label2.lx.base.font?.ascender ?? 0).follow(label1.lx.topAnchor.insettedBy(label1.lx.base.font?.ascender ?? 0))
+
+extension Layouting where Base: Layoutable, Base: LayoutableWithFont {
+    
+    public func alignToFirstBaseline<T: LayoutingCompatible where T: LayoutableWithFont>(ofSingleLineFittedLabel label: T) -> Layouting<Base> {
+        topAnchor.insettedBy(base.font?.ascender ?? 0).follow(label.lx.topAnchor.insettedBy(label.lx.base.font?.ascender ?? 0))
+        return self
     }
     
-    public func alignFittedLabelsUsingLastBaseline<T: LayoutingCompatible where T.CompatibleType: LayoutableWithFont>(label1: T, _ label2: T) {
+    public func alignToLastBaseline<T: LayoutingCompatible where T.CompatibleType: LayoutableWithFont>(ofSingleLineFittedLabel label: T) -> Layouting<Base> {
         
-        label2.lx.bottomAnchor.insettedBy(label2.lx.base.font?.descender ?? 0).follow(label1.lx.bottomAnchor.insettedBy(label1.lx.base.font?.descender ?? 0))
+        bottomAnchor.insettedBy(base.font?.descender ?? 0).follow(label.lx.topAnchor.insettedBy(label.lx.base.font?.descender ?? 0))
+        return self
     }
     
-    public func setHeightAsLineHeight<T: LayoutingCompatible where T.CompatibleType: LayoutableWithFont>(label: T) {
-        label.lx.setHeight(label.lx.base.font?.lineHeight ?? 0)
+    public func setHeightAsLineHeight() -> Layouting<Base>  {
+        return set(height: base.font?.lineHeight ?? 0)
     }
+    
 }

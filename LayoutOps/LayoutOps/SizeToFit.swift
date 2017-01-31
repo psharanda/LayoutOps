@@ -175,7 +175,7 @@ public enum SizeConstraint {
 
 extension Layouting where Base: Layoutable {
     
-    public func sizeToFit(width: SizeToFitIntention = .Current, height: SizeToFitIntention = .Current, widthConstraint: SizeConstraint = .Default, heightConstraint: SizeConstraint = .Default) -> Layouting<Base> {
+    public func sizeToFit(width width: SizeToFitIntention = .Current, height: SizeToFitIntention = .Current, widthConstraint: SizeConstraint = .Default, heightConstraint: SizeConstraint = .Default) -> Layouting<Base> {
         
         
         let fr = base.frame
@@ -232,7 +232,7 @@ extension Layouting where Base: Layoutable {
         sz.width = min(max(widthConstraint.minValue, sz.width), widthConstraint.maxValue)
         sz.height = min(max(heightConstraint.minValue, sz.height), heightConstraint.maxValue)
         
-        return setSize(sz.width, height: sz.height)
+        return set(width: sz.width, height: sz.height)
         
     }
     
@@ -240,14 +240,14 @@ extension Layouting where Base: Layoutable {
      same as SizeToFit(view, width: .Max, height: .Max)
      */
     public func sizeToFitMax(widthConstraint: SizeConstraint = .Default, heightConstraint: SizeConstraint = .Default) -> Layouting<Base> {
-        return sizeToFit(.Max, height: .Max, widthConstraint: widthConstraint, heightConstraint: heightConstraint)
+        return sizeToFit(width: .Max, height: .Max, widthConstraint: widthConstraint, heightConstraint: heightConstraint)
     }
     
-    public func hfillvfit(leftInset: CGFloat = 0, rightInset: CGFloat = 0) -> Layouting<Base> {
-        return hfill(leftInset, rightInset: rightInset).sizeToFit(.KeepCurrent, height: .Max)
+    public func hfillvfit(leftInset leftInset: CGFloat = 0, rightInset: CGFloat = 0) -> Layouting<Base> {
+        return hfill(leftInset: leftInset, rightInset: rightInset).sizeToFit(width: .KeepCurrent, height: .Max)
     }
     
-    public func hfillvfit(view: Layoutable, inset: CGFloat) -> Layouting<Base> {
-        return hfillvfit(inset, rightInset: inset)
+    public func hfillvfit(inset inset: CGFloat) -> Layouting<Base> {
+        return hfillvfit(leftInset: inset, rightInset: inset)
     }
 }

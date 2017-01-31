@@ -263,104 +263,76 @@ private struct BoxHeight: BoxDimension {
     }
 }
 
-private func putOperation<T: BoxDimension>(intentions: [PutIntention], dimension: T) {
+private func putOperation<T: BoxDimension>(superview: Layoutable, intentions: [PutIntention], dimension: T) {
+    var totalWeight: CGFloat = 0.0
     
-    var superview: Layoutable? = nil
+    var bounds = superview.bounds
     
-    //search for superview first
+    var totalSizeForFlexs: CGFloat = T.getDimension(bounds).size
+    
     for i in intentions {
-        
-        var view: Layoutable? = nil
         switch (i) {
-        case .FlexIntention(let views, _):
-            view = views?.first
-        case .FixIntention(let views, _):
-            view = views?.first
-        }
-        
-        if let v = view?.parent {
-            
-            if !(superview == nil || v === superview) {
-                print("[LayoutOps:WARNING] Put operation will produce undefined results for views with different superview")
-                print("Correct Superview: \(superview)")
-                print("Wrong Superview: \(v)")
+        case .FlexIntention(_, let weight):
+            totalWeight += weight
+            break
+        case .FixIntention(let views, let value):
+            if let value = value {
+                totalSizeForFlexs -= value
+            } else {
+                if let firstView = views?.first {
+                    totalSizeForFlexs -= T.getDimension(firstView.frame).size
+                }
             }
-            superview = v;
+            break
         }
     }
     
-    if let superview = superview {
-        
-        var totalWeight: CGFloat = 0.0
-        
-        var bounds = superview.bounds
-        
-        var totalSizeForFlexs: CGFloat = T.getDimension(bounds).size
-        
-        for i in intentions {
-            switch (i) {
-            case .FlexIntention(_, let weight):
-                totalWeight += weight
-                break
-            case .FixIntention(let views, let value):
-                if let value = value {
-                    totalSizeForFlexs -= value
-                } else {
-                    if let firstView = views?.first {
-                        totalSizeForFlexs -= T.getDimension(firstView.frame).size
-                    }
+    let unoSize = totalSizeForFlexs/totalWeight
+    
+    var start:CGFloat = T.getDimension(bounds).origin
+    for i in intentions {
+        switch (i) {
+        case .FlexIntention(let views, let weight):
+            
+            let newSize = weight * unoSize
+            
+            if let views = views {
+                views.forEach {view in
+                    let fr = view.frame
+                    view.updateFrame(T.setDimension(Dimension(origin: start, size: newSize), inRect: fr))
                 }
-                break
+                
+                start += newSize
+            } else {
+                start += newSize
             }
-        }
-        
-        let unoSize = totalSizeForFlexs/totalWeight
-        
-        var start:CGFloat = T.getDimension(bounds).origin
-        for i in intentions {
-            switch (i) {
-            case .FlexIntention(let views, let weight):
-                
-                let newSize = weight * unoSize
-                
+            
+            totalWeight += weight
+            break
+        case .FixIntention(let views, let value):
+            if let value = value {
                 if let views = views {
                     views.forEach {view in
                         let fr = view.frame
-                        view.updateFrame(T.setDimension(Dimension(origin: start, size: newSize), inRect: fr))
+                        view.updateFrame(T.setDimension(Dimension(origin: start, size: value), inRect: fr))
                     }
+                    start += value
+                } else {
+                    start += value
+                }
+            } else {
+                if let views = views, let firstView = views.first {
                     
-                    start += newSize
-                } else {
-                    start += newSize
-                }
-                
-                totalWeight += weight
-                break
-            case .FixIntention(let views, let value):
-                if let value = value {
-                    if let views = views {
-                        views.forEach {view in
-                            let fr = view.frame
-                            view.updateFrame(T.setDimension(Dimension(origin: start, size: value), inRect: fr))
-                        }
-                        start += value
-                    } else {
-                        start += value
+                    let size = T.getDimension(firstView.frame).size
+                    
+                    views.forEach {view in
+                        let fr = view.frame
+                        view.updateFrame(T.setDimension(Dimension(origin: start, size: size), inRect: fr))
                     }
-                } else {
-                    if let views = views, let firstView = views.first {
-                        
-                        let size = T.getDimension(firstView.frame).size
-                        
-                        views.forEach {view in
-                            let fr = view.frame
-                            view.updateFrame(T.setDimension(Dimension(origin: start, size: size), inRect: fr))
-                        }
-                        start += size
-                    }
+                    start += size
                 }
-                break
             }
+            break
         }
     }
 }
@@ -369,24 +341,24 @@ extension Layouting where Base: Layoutable {
     //MARK: - HPut
     
     public func hput(intentions: [PutIntention]) -> Layouting<Base> {
-        putOperation(intentions, dimension: BoxWidth())
+        putOperation(base, intentions: intentions, dimension: BoxWidth())
         return self
     }
     
     public func hput(intentions: PutIntention...) -> Layouting<Base> {
-        putOperation(intentions, dimension: BoxWidth())
+        putOperation(base, intentions: intentions, dimension: BoxWidth())
         return self
     }
     
     //MARK: - VPut
     
     public func vput(intentions: [PutIntention]) -> Layouting<Base> {
-        putOperation(intentions, dimension: BoxHeight())
+        putOperation(base, intentions: intentions, dimension: BoxHeight())
         return self
     }
     
     public func vput(intentions: PutIntention...) -> Layouting<Base> {
-        putOperation(intentions, dimension: BoxHeight())
+        putOperation(base, intentions: intentions, dimension: BoxHeight())
         return self
     }
 }

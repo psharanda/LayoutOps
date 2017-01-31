@@ -308,7 +308,7 @@ extension Layouting where Base: Layoutable {
         return self
     }
     
-    public func center(insets: UIEdgeInsets = UIEdgeInsets()) -> Layouting<Base> {
+    public func center(insets insets: UIEdgeInsets = UIEdgeInsets()) -> Layouting<Base> {
         return processInParent { frame, superviewFrame in
             return CGRect(x: centerStart(frame.width, superValue: superviewFrame.width, start: insets.left, finish: insets.right),
                           y: centerStart(frame.height, superValue: superviewFrame.height, start: insets.top, finish: insets.bottom),
@@ -317,7 +317,11 @@ extension Layouting where Base: Layoutable {
         }
     }
     
-    public func hcenter(leftInset: CGFloat = 0, rightInset: CGFloat = 0) -> Layouting<Base> {
+    public func center(top top: CGFloat, left: CGFloat, bottom: CGFloat, right: CGFloat) -> Layouting<Base> {
+        return center(insets: UIEdgeInsets(top: top, left: left, bottom: bottom, right: right))
+    }
+    
+    public func hcenter(leftInset leftInset: CGFloat = 0, rightInset: CGFloat = 0) -> Layouting<Base> {
         return processInParent { frame, superviewFrame in
             return CGRect(x: centerStart(frame.width, superValue: superviewFrame.width, start: leftInset, finish: rightInset),
                           y: frame.origin.y,
@@ -326,7 +330,7 @@ extension Layouting where Base: Layoutable {
         }
     }
     
-    public func vcenter(topInset: CGFloat = 0, bottomInset: CGFloat = 0) -> Layouting<Base> {
+    public func vcenter(topInset topInset: CGFloat = 0, bottomInset: CGFloat = 0) -> Layouting<Base> {
         return processInParent { frame, superviewFrame in
             return CGRect(x: frame.origin.x,
                           y: centerStart(frame.height, superValue: superviewFrame.height, start: topInset, finish: bottomInset),
@@ -335,17 +339,21 @@ extension Layouting where Base: Layoutable {
         }
     }
     
-    public func fill(insets: UIEdgeInsets) -> Layouting<Base> {
+    public func fill(insets insets: UIEdgeInsets) -> Layouting<Base> {
         return processInParent { frame, superviewFrame in
             return UIEdgeInsetsInsetRect(superviewFrame, insets)
         }
     }
     
-    public func fill(inset: CGFloat = 0) -> Layouting<Base> {
-        return fill(UIEdgeInsets(top: inset, left: inset, bottom: inset, right: inset))
+    public func fill(inset inset: CGFloat = 0) -> Layouting<Base> {
+        return fill(insets: UIEdgeInsets(top: inset, left: inset, bottom: inset, right: inset))
     }
     
-    public func hfill(leftInset: CGFloat, rightInset: CGFloat) -> Layouting<Base> {
+    public func fill(top top: CGFloat, left: CGFloat, bottom: CGFloat, right: CGFloat) -> Layouting<Base> {
+        return fill(insets: UIEdgeInsets(top: top, left: left, bottom: bottom, right: right))
+    }
+    
+    public func hfill(leftInset leftInset: CGFloat, rightInset: CGFloat) -> Layouting<Base> {
         return processInParent { frame, superviewFrame in
             return CGRect(x: leftInset,
                           y: frame.origin.y,
@@ -354,11 +362,11 @@ extension Layouting where Base: Layoutable {
         }
     }
     
-    public func hfill(inset: CGFloat = 0) -> Layouting<Base> {
-        return hfill(inset, rightInset: inset)
+    public func hfill(inset inset: CGFloat = 0) -> Layouting<Base> {
+        return hfill(leftInset: inset, rightInset: inset)
     }
     
-    public func vfill(topInset: CGFloat, bottomInset: CGFloat) -> Layouting<Base> {
+    public func vfill(topInset topInset: CGFloat, bottomInset: CGFloat) -> Layouting<Base> {
         return processInParent { frame, superviewFrame in
             return CGRect(x: frame.origin.x,
                           y: topInset,
@@ -367,39 +375,39 @@ extension Layouting where Base: Layoutable {
         }
     }
     
-    public func vfill(inset: CGFloat = 0) -> Layouting<Base> {
-        return vfill(inset, bottomInset: inset)
+    public func vfill(inset inset: CGFloat = 0) -> Layouting<Base> {
+        return vfill(topInset: inset, bottomInset: inset)
     }
     
-    public func alignTop(inset: CGFloat = 0) -> Layouting<Base> {
+    public func align(top top: CGFloat = 0) -> Layouting<Base> {
         return processInParent { frame, superviewFrame in
             return CGRect(x: frame.origin.x,
-                          y: inset,
+                          y: top,
                           width: frame.width,
                           height: frame.height)
         }
     }
     
-    public func alignLeft(inset: CGFloat = 0) -> Layouting<Base> {
+    public func align(left left: CGFloat = 0) -> Layouting<Base> {
         return processInParent { frame, superviewFrame in
-            return CGRect(x: inset,
+            return CGRect(x: left,
                           y: frame.origin.y,
                           width: frame.width,
                           height: frame.height)
         }
     }
     
-    public func alignBottom(inset: CGFloat = 0) -> Layouting<Base> {
+    public func align(bottom bottom: CGFloat = 0) -> Layouting<Base> {
         return processInParent { frame, superviewFrame in
             return CGRect(x: frame.origin.x,
-                          y: superviewFrame.height - frame.height - inset,
+                          y: superviewFrame.height - frame.height - bottom,
                           width: frame.width, height: frame.height)
         }
     }
     
-    public func alignRight(inset: CGFloat = 0) -> Layouting<Base> {
+    public func align(right right: CGFloat = 0) -> Layouting<Base> {
         return processInParent { frame, superviewFrame in
-            return CGRect(x: superviewFrame.width - frame.width - inset,
+            return CGRect(x: superviewFrame.width - frame.width - right,
                           y: frame.origin.y,
                           width: frame.width,
                           height: frame.height)
@@ -416,100 +424,100 @@ extension Layouting where Base: Layoutable {
     }
     
     
-    public func setX(value: CGFloat) -> Layouting<Base> {
+    public func set(x x: CGFloat) -> Layouting<Base> {
         return processForSet {frame in
-            return CGRect(x: value, y: frame.origin.y, width: frame.size.width, height: frame.size.height)
+            return CGRect(x: x, y: frame.origin.y, width: frame.size.width, height: frame.size.height)
         }
     }
     
-    public func setY(value: CGFloat) -> Layouting<Base> {
+    public func set(y y: CGFloat) -> Layouting<Base> {
         return processForSet {frame in
-            return CGRect(x: frame.origin.x, y: value, width: frame.size.width, height: frame.size.height)
+            return CGRect(x: frame.origin.x, y: y, width: frame.size.width, height: frame.size.height)
         }
     }
     
-    public func setWidth(value: CGFloat) -> Layouting<Base> {
+    public func set(width width: CGFloat) -> Layouting<Base> {
         return processForSet {frame in
-            return CGRect(x: frame.origin.x, y: frame.origin.y, width: value, height: frame.size.height)
+            return CGRect(x: frame.origin.x, y: frame.origin.y, width: width, height: frame.size.height)
         }
     }
     
-    public func setHeight(value: CGFloat) -> Layouting<Base> {
+    public func set(height height: CGFloat) -> Layouting<Base> {
         return processForSet {frame in
-            return CGRect(x: frame.origin.x, y: frame.origin.y, width: frame.size.width, height: value)
+            return CGRect(x: frame.origin.x, y: frame.origin.y, width: frame.size.width, height: height)
         }
     }
     
-    public func setLeft(value: CGFloat) -> Layouting<Base> {
-        return setX(value)
+    public func set(left left: CGFloat) -> Layouting<Base> {
+        return set(x: left)
     }
     
-    public func setTop(value: CGFloat) -> Layouting<Base> {
-        return setY(value)
+    public func set(top top: CGFloat) -> Layouting<Base> {
+        return set(y: top)
     }
     
-    public func setRight(value: CGFloat) -> Layouting<Base> {
+    public func set(right right: CGFloat) -> Layouting<Base> {
         return processForSet {frame in
-            return CGRect(x: value - frame.width, y: frame.origin.y, width: frame.width, height: frame.height)
+            return CGRect(x: right - frame.width, y: frame.origin.y, width: frame.width, height: frame.height)
         }
     }
     
-    public func setBottom(value: CGFloat) -> Layouting<Base> {
+    public func set(bottom bottom: CGFloat) -> Layouting<Base> {
         return processForSet {frame in
-            return CGRect(x: frame.origin.x, y: value - frame.height, width: frame.width, height: frame.height)
+            return CGRect(x: frame.origin.x, y: bottom - frame.height, width: frame.width, height: frame.height)
         }
     }
     
-    public func setCenterX(value: CGFloat) -> Layouting<Base> {
+    public func set(centerX centerX: CGFloat) -> Layouting<Base> {
         return processForSet {frame in
-            return CGRect(x: value - frame.width/2, y: frame.height, width: frame.width, height: frame.height)
+            return CGRect(x: centerX - frame.width/2, y: frame.height, width: frame.width, height: frame.height)
         }
     }
     
-    public func setCenterY(value: CGFloat) -> Layouting<Base> {
+    public func set(centerY centerY: CGFloat) -> Layouting<Base> {
         return processForSet {frame in
-            return CGRect(x: frame.origin.x, y: value - frame.height/2, width: frame.width, height: frame.height)
+            return CGRect(x: frame.origin.x, y: centerY - frame.height/2, width: frame.width, height: frame.height)
         }
     }
     
-    public func setOrigin(value: CGPoint) -> Layouting<Base> {
+    public func set(origin origin: CGPoint) -> Layouting<Base> {
         return processForSet {frame in
-            return CGRect(origin: value, size: frame.size)
+            return CGRect(origin: origin, size: frame.size)
         }
     }
     
-    public func setOrigin(x: CGFloat, y: CGFloat) -> Layouting<Base> {
-        return setOrigin(CGPoint(x: x, y: y))
+    public func set(x x: CGFloat, y: CGFloat) -> Layouting<Base> {
+        return set(origin: CGPoint(x: x, y: y))
     }
     
-    public func setCenter(value: CGPoint) -> Layouting<Base> {
+    public func set(center center: CGPoint) -> Layouting<Base> {
         return processForSet {frame in
-            return CGRect(x: value.x - frame.width/2, y: value.y - frame.height/2, width: frame.width, height: frame.height)
+            return CGRect(x: center.x - frame.width/2, y: center.y - frame.height/2, width: frame.width, height: frame.height)
         }
     }
     
-    public func setCenter(x: CGFloat, y: CGFloat) -> Layouting<Base> {
-        return setCenter(CGPoint(x: x, y: y))
+    public func set(centerX: CGFloat, centerY: CGFloat) -> Layouting<Base> {
+        return set(center: CGPoint(x: centerX, y: centerY))
     }
     
-    public func setSize(value: CGSize) -> Layouting<Base> {
+    public func set(size size: CGSize) -> Layouting<Base> {
         return processForSet {frame in
-            return CGRect(origin: frame.origin, size: value)
+            return CGRect(origin: frame.origin, size: size)
         }
     }
     
-    public func setSize(width: CGFloat, height: CGFloat) -> Layouting<Base> {
-        return setSize(CGSize(width: width, height: height))
+    public func set(width width: CGFloat, height: CGFloat) -> Layouting<Base> {
+        return set(size: CGSize(width: width, height: height))
     }
     
-    public func setFrame(value: CGRect) -> Layouting<Base> {
+    public func set(frame frame: CGRect) -> Layouting<Base> {
         return processForSet {frame in
-            return value
+            return frame
         }
     }
     
-    public func setFrame(x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat) -> Layouting<Base> {
-        return setFrame(CGRect(x: x, y: y, width: width, height: height))
+    public func set(x x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat) -> Layouting<Base> {
+        return set(frame: CGRect(x: x, y: y, width: width, height: height))
     }
 }
 

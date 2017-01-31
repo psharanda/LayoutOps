@@ -42,17 +42,17 @@ class BasicDemo_Set: UIView, DemoViewProtocol {
         super.layoutSubviews()
         
         blueView.lx
-            .setOrigin(10, y: 10)
-            .setSize(100, height: 100)
+            .set(x: 10, y: 10)
+            .set(width: 100, height: 100)
         
         greenView.lx
-            .setFrame(120, y: 20, width: 50, height: 190)
+            .set(x: 120, y: 20, width: 50, height: 190)
         
         redView.lx
-            .setX(5)
-            .setY(120)
-            .setWidth(45)
-            .setHeight(100)
+            .set(x: 5)
+            .set(y: 120)
+            .set(width: 45)
+            .set(height: 100)
     }
   
     static let title = "Set*"
