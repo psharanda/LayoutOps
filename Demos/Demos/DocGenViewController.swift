@@ -132,8 +132,10 @@ private func extractLayoutSourceCode(codebase: String, view: UIView) -> String {
 
     if scanner.scanUpToString("class \(className)") != nil {
         if scanner.scanUpToString("super.layoutSubviews()") != nil {
-            if let code = scanner.scanUpToString(".layout()") {
-                let almostResult = code + ".layout()"
+            if let code = scanner.scanUpToString("static") {
+                var almostResult = code.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+                almostResult = almostResult.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: "}"))
+                almostResult = almostResult.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
                 
                 return (almostResult as NSString).stringByReplacingOccurrencesOfString("super.layoutSubviews()", withString: "").stringByReplacingOccurrencesOfString("\n        ", withString: "\n")
             }

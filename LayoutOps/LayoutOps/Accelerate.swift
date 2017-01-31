@@ -22,3 +22,22 @@ public func AlignFittedLabelsUsingLastBaseline(label1: LayoutableWithFont, _ lab
 public func SetHeightAsLineHeight(label: LayoutableWithFont) -> LayoutOperation {
     return SetHeight(label, value: label.font?.lineHeight ?? 0)
 }
+
+/************************************************************************************/
+/*[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]*/
+/************************************************************************************/
+
+public enum LX {
+    public func alignFittedLabelsUsingFirstBaseline<T: LayoutingCompatible where T.CompatibleType: LayoutableWithFont>(label1: T, _ label2: T) {
+        label2.lx.topAnchor.insettedBy(label2.lx.base.font?.ascender ?? 0).follow(label1.lx.topAnchor.insettedBy(label1.lx.base.font?.ascender ?? 0))
+    }
+    
+    public func alignFittedLabelsUsingLastBaseline<T: LayoutingCompatible where T.CompatibleType: LayoutableWithFont>(label1: T, _ label2: T) {
+        
+        label2.lx.bottomAnchor.insettedBy(label2.lx.base.font?.descender ?? 0).follow(label1.lx.bottomAnchor.insettedBy(label1.lx.base.font?.descender ?? 0))
+    }
+    
+    public func setHeightAsLineHeight<T: LayoutingCompatible where T.CompatibleType: LayoutableWithFont>(label: T) {
+        label.lx.setHeight(label.lx.base.font?.lineHeight ?? 0)
+    }
+}

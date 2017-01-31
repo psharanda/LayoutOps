@@ -6,29 +6,7 @@
 
 import UIKit
 
-struct UIScreenCache {
-    static let scale = UIScreen.mainScreen().scale;
-}
 
-extension CGFloat {
-
-    var pixelPerfect: CGFloat {
-        let scale = UIScreenCache.scale
-        return round(self * scale)/scale;
-    }
-    
-    var ceilPixelPerfect: CGFloat {
-        let scale = UIScreenCache.scale
-        return ceil(self * scale)/scale;
-    }
-}
-
-public protocol Layoutable: class {
-    var parent: Layoutable? {get}
-    var bounds: CGRect {get}
-    var frame: CGRect {get set}
-    func sizeThatFits(size: CGSize) -> CGSize
-}
 
 extension Layoutable {
     private var addressHash: Int { return unsafeAddressOf(self).hashValue }

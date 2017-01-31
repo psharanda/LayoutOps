@@ -69,3 +69,24 @@ public struct Viewport {
         }
     }
 }
+
+/************************************************************************************/
+/*[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]*/
+/************************************************************************************/
+
+
+extension Layouting where Base: Layoutable {
+    
+    public func inViewport(insets: UIEdgeInsets, block:()->Void) -> Layouting<Base> {
+        let oldFrame = base.frame
+        base.frame = UIEdgeInsetsInsetRect(oldFrame, insets)
+        block()
+        base.frame = oldFrame
+        return self
+    }
+    
+    public func inViewport(top: VAnchor? = nil, left: HAnchor? = nil, bottom: VAnchor? = nil, right: HAnchor? = nil, block:()->Void) -> Layouting<Base> {
+        let insets = UIEdgeInsets()
+        return inViewport(insets, block: block)
+    }
+}

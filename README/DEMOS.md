@@ -4,17 +4,18 @@ Set* operations directly put frame values
 ```swift
 
 
-Combine(
-    SetOrigin(blueView, x: 10, y: 10),
-    SetSize(blueView, width: 100, height: 100),
-    
-    SetFrame(greenView, x: 120, y: 20, width: 50, height: 190),
-    
-    SetX(redView, value: 5),
-    SetY(redView, value: 120),
-    SetWidth(redView, value: 45),
-    SetHeight(redView, value: 100)
-).layout()
+blueView.lx
+    .setOrigin(10, y: 10)
+    .setSize(100, height: 100)
+
+greenView.lx
+    .setFrame(120, y: 20, width: 50, height: 190)
+
+redView.lx
+    .setX(5)
+    .setY(120)
+    .setWidth(45)
+    .setHeight(100)
 ```
 <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Basic_Set-_portrait.png" alt="Set*" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/Basic__Set-_landscape.png" alt="Set*" width="240.0" height="160.0"/>
 #### Center
@@ -372,7 +373,7 @@ func putCols() -> LayoutOperation {
     var r = [PutIntention]()
     for i in 0..<8 {
         
-        var row = [UIView]()
+        var row = [Layoutable]()
         for j in 0..<8 {
             row.append(views[i*8 + j])
         }
@@ -386,7 +387,7 @@ func putRows() -> LayoutOperation {
     
     for i in 0..<8 {
         
-        var col = [UIView]()
+        var col = [Layoutable]()
         for j in 0..<8 {
             col.append(views[i + j*8])
         }

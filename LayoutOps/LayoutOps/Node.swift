@@ -164,9 +164,10 @@ public class Node<T: UIView>: AnyNode {
         super.init(tag: tag, subnodes: subnodes) { (view: T?) -> T in            
             return initializer(view)
         }
-    }
-    
+    }    
 }
+
+extension AnyNode: LayoutingCompatible { }
 
 
 

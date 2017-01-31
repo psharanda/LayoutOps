@@ -25,20 +25,34 @@ class BasicDemo_Set: UIView, DemoViewProtocol {
         fatalError("init(coder:) has not been implemented")
     }
     
+    //        Combine(
+    //            SetOrigin(blueView, x: 10, y: 10),
+    //            SetSize(blueView, width: 100, height: 100),
+    //
+    //            SetFrame(greenView, x: 120, y: 20, width: 50, height: 190),
+    //
+    //            SetX(redView, value: 5),
+    //            SetY(redView, value: 120),
+    //            SetWidth(redView, value: 45),
+    //            SetHeight(redView, value: 100)
+    //        ).layout()
+
+    
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        Combine(
-            SetOrigin(blueView, x: 10, y: 10),
-            SetSize(blueView, width: 100, height: 100),
-            
-            SetFrame(greenView, x: 120, y: 20, width: 50, height: 190),
-            
-            SetX(redView, value: 5),
-            SetY(redView, value: 120),
-            SetWidth(redView, value: 45),
-            SetHeight(redView, value: 100)
-        ).layout()
+        blueView.lx
+            .setOrigin(10, y: 10)
+            .setSize(100, height: 100)
+        
+        greenView.lx
+            .setFrame(120, y: 20, width: 50, height: 190)
+        
+        redView.lx
+            .setX(5)
+            .setY(120)
+            .setWidth(45)
+            .setHeight(100)
     }
   
     static let title = "Set*"

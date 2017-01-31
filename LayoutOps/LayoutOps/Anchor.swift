@@ -8,10 +8,16 @@
 
 import Foundation
 
+/************************************************************************************/
+/*[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]*/
+/************************************************************************************/
+
 public protocol Anchor {
     func valueForRect(rect: CGRect) -> CGFloat
-    func setValueForRect(value: CGFloat, rect: CGRect) -> CGRect    
+    func setValueForRect(value: CGFloat, rect: CGRect) -> CGRect
     var view: Layoutable {get}
+    
+    func insettedBy(value: CGFloat) -> Self
 }
 
 extension Anchor {
@@ -27,7 +33,7 @@ public protocol HAnchor: Anchor {
 }
 
 private enum HAnchorType : HAnchor {
-
+    
     case Left(Layoutable, CGFloat)
     case Center(Layoutable, CGFloat)
     case Right(Layoutable, CGFloat)
@@ -65,6 +71,17 @@ private enum HAnchorType : HAnchor {
             return v
         case .Center(let v, _):
             return v
+        }
+    }
+    
+    private func insettedBy(value: CGFloat) -> HAnchorType {
+        switch self {
+        case .Left(let view, let inset):
+            return .Left(view, inset + value)
+        case .Right(let view, let inset):
+            return .Right(view, inset + value)
+        case .Center(let view, let inset):
+            return .Center(view, inset + value)
         }
     }
 }
@@ -155,6 +172,19 @@ private enum VAnchorType : VAnchor {
             return v
         }
     }
+    
+    private func insettedBy(value: CGFloat) -> VAnchorType {
+        switch self {
+        case .Top(let view, let inset):
+            return .Top(view, inset + value)
+        case .Bottom(let view, let inset):
+            return .Bottom(view, inset + value)
+        case .Center(let view, let inset):
+            return .Center(view, inset + value)
+        case .Baseline(let view, let baselinable, let baselineType, let inset):
+            return .Baseline(view, baselinable, baselineType, inset + value)
+        }
+    }
 }
 
 public func TopAnchor(view: Layoutable, inset: CGFloat) -> VAnchor {
@@ -220,6 +250,11 @@ struct WidthAnchorType: SizeAnchor {
         result.size.width = value - inset
         return result
     }
+    
+    func insettedBy(value: CGFloat) -> WidthAnchorType {
+        return WidthAnchorType(view: view, inset: inset + value)
+    }
+    
 }
 
 public func WidthAnchor(view: Layoutable, inset: CGFloat) -> SizeAnchor {
@@ -247,6 +282,10 @@ struct HeightAnchorType: SizeAnchor {
         result.size.height = value - inset
         return result
     }
+    
+    func insettedBy(value: CGFloat) -> HeightAnchorType {
+        return HeightAnchorType(view: view, inset: inset + value)
+    }
 }
 
 public func HeightAnchor(view: Layoutable, inset: CGFloat) -> SizeAnchor {
@@ -255,6 +294,52 @@ public func HeightAnchor(view: Layoutable, inset: CGFloat) -> SizeAnchor {
 
 public func HeightAnchor(view: Layoutable) -> SizeAnchor {
     return HeightAnchorType(view: view, inset: 0)
+}
+
+extension Layouting where Base: Layoutable {
+    
+    public var topAnchor: VAnchor {
+        return TopAnchor(base)
+    }
+    
+    public var vcenterAnchor: VAnchor {
+        return VCenterAnchor(base)
+    }
+    
+    public var bottomAnchor: VAnchor {
+        return BottomAnchor(base)
+    }
+    
+    public var leftAnchor: HAnchor {
+        return LeftAnchor(base)
+    }
+    
+    public var hcenterAnchor: HAnchor {
+        return HCenterAnchor(base)
+    }
+    
+    public var rightAnchor: HAnchor {
+        return RightAnchor(base)
+    }
+    
+    public var widthAnchor: SizeAnchor {
+        return WidthAnchor(base)
+    }
+    
+    public var heightAnchor: SizeAnchor {
+        return HeightAnchor(base)
+    }
+}
+
+extension Layouting where Base: Layoutable, Base: Baselinable {
+    
+    var firstBaselineAnchor: VAnchor {
+        return BaselineAnchor(base, type: .First)
+    }
+    
+    var lastBaselineAnchor: VAnchor {
+        return BaselineAnchor(base, type: .Last)
+    }
 }
 
 

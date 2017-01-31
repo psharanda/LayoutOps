@@ -5,55 +5,6 @@
 
 import UIKit
 
-public enum SizeToFitIntention {
-    /**
-     Use defined value
-     */
-    case Value(CGFloat)
-    /**
-     Use max value to fully fit content
-     */
-    case Max
-    /**
-     Use current frame value to fit content in it
-     */
-    case Current
-    /**
-     Use current frame value for fit calculation, but keep it as value for frame
-     */
-    case KeepCurrent
-}
-
-public enum SizeConstraint {
-    case Default
-    case Min(CGFloat)
-    case Max(CGFloat)
-    case MinMax(CGFloat, CGFloat)
-    
-    
-    public var minValue: CGFloat {
-        switch self {
-        case .Default, .Max:
-            return CGFloat.min
-        case .Min(let min):
-            return min
-        case .MinMax(let min, _):
-            return min
-        }
-    }
-    
-    public var maxValue: CGFloat {
-        switch self {
-        case .Default, .Min:
-            return CGFloat.max
-        case .Max(let max):
-            return max
-        case .MinMax(_, let max):
-            return max
-        }
-    }
-}
-
 private struct SizeToFitOperation: LayoutOperation {
     let view: Layoutable
     let width: SizeToFitIntention
@@ -167,4 +118,136 @@ public func HFillVFit(view: Layoutable, inset: CGFloat) -> LayoutOperation {
 
 public func HFillVFit(view: Layoutable) -> LayoutOperation {
     return HFillVFit(view, leftInset: 0, rightInset: 0)
+}
+
+/************************************************************************************/
+/*[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]*/
+/************************************************************************************/
+
+public enum SizeToFitIntention {
+    /**
+     Use defined value
+     */
+    case Value(CGFloat)
+    /**
+     Use max value to fully fit content
+     */
+    case Max
+    /**
+     Use current frame value to fit content in it
+     */
+    case Current
+    /**
+     Use current frame value for fit calculation, but keep it as value for frame
+     */
+    case KeepCurrent
+}
+
+public enum SizeConstraint {
+    case Default
+    case Min(CGFloat)
+    case Max(CGFloat)
+    case MinMax(CGFloat, CGFloat)
+    
+    
+    public var minValue: CGFloat {
+        switch self {
+        case .Default, .Max:
+            return CGFloat.min
+        case .Min(let min):
+            return min
+        case .MinMax(let min, _):
+            return min
+        }
+    }
+    
+    public var maxValue: CGFloat {
+        switch self {
+        case .Default, .Min:
+            return CGFloat.max
+        case .Max(let max):
+            return max
+        case .MinMax(_, let max):
+            return max
+        }
+    }
+}
+
+extension Layouting where Base: Layoutable {
+    
+    public func sizeToFit(width: SizeToFitIntention = .Current, height: SizeToFitIntention = .Current, widthConstraint: SizeConstraint = .Default, heightConstraint: SizeConstraint = .Default) -> Layouting<Base> {
+        
+        
+        let fr = base.frame
+        
+        var w: CGFloat = 0
+        switch width {
+        case .Value(let val):
+            w = val
+        case .Max:
+            w = CGFloat.max
+        case .Current:
+            w = fr.width
+        case .KeepCurrent:
+            w = fr.width
+        }
+        
+        var h: CGFloat = 0
+        switch height {
+        case .Value(let val):
+            h = val
+        case .Max:
+            h = CGFloat.max
+        case .Current:
+            h = fr.height
+        case .KeepCurrent:
+            h = fr.height
+        }
+        
+        var sz = base.sizeThatFits(CGSizeMake(w, h))
+        
+        
+        switch width {
+        case .Value(let val):
+            sz.width = min(val, sz.width)
+        case .Max:
+            break
+        case .Current:
+            break
+        case .KeepCurrent:
+            sz.width = fr.width
+        }
+        
+        switch height {
+        case .Value(let val):
+            sz.height = min(val, sz.height)
+        case .Max:
+            break
+        case .Current:
+            break
+        case .KeepCurrent:
+            sz.height = fr.height
+        }
+        
+        sz.width = min(max(widthConstraint.minValue, sz.width), widthConstraint.maxValue)
+        sz.height = min(max(heightConstraint.minValue, sz.height), heightConstraint.maxValue)
+        
+        return setSize(sz.width, height: sz.height)
+        
+    }
+    
+    /**
+     same as SizeToFit(view, width: .Max, height: .Max)
+     */
+    public func sizeToFitMax(widthConstraint: SizeConstraint = .Default, heightConstraint: SizeConstraint = .Default) -> Layouting<Base> {
+        return sizeToFit(.Max, height: .Max, widthConstraint: widthConstraint, heightConstraint: heightConstraint)
+    }
+    
+    public func hfillvfit(leftInset: CGFloat = 0, rightInset: CGFloat = 0) -> Layouting<Base> {
+        return hfill(leftInset, rightInset: rightInset).sizeToFit(.KeepCurrent, height: .Max)
+    }
+    
+    public func hfillvfit(view: Layoutable, inset: CGFloat) -> Layouting<Base> {
+        return hfillvfit(inset, rightInset: inset)
+    }
 }

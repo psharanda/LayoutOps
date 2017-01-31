@@ -11,6 +11,8 @@ extension UIView: Layoutable {
     }
 }
 
+extension UIView: LayoutingCompatible { }
+
 extension UILabel: Baselinable {
     public func baselineValueOfType(type: BaselineType, size: CGSize) -> CGFloat {
         let sz = sizeThatFits(size)
@@ -37,6 +39,8 @@ extension CALayer: Layoutable {
         return CGSize()
     }
 }
+
+extension CALayer: LayoutingCompatible { }
 
 
 
