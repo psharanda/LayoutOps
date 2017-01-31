@@ -333,11 +333,11 @@ extension Layouting where Base: Layoutable {
 
 extension Layouting where Base: Layoutable, Base: Baselinable {
     
-    var firstBaselineAnchor: VAnchor {
+    public var firstBaselineAnchor: VAnchor {
         return BaselineAnchor(base, type: .First)
     }
     
-    var lastBaselineAnchor: VAnchor {
+    public var lastBaselineAnchor: VAnchor {
         return BaselineAnchor(base, type: .Last)
     }
 }

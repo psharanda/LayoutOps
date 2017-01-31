@@ -60,7 +60,7 @@ class ViewController: UIViewController {
                 Row<FollowDemo_CornerAnchors>(),
                 Row<FollowDemo_CenterAnchors>(),
                 Row<FollowDemo_SizeAnchors>(),
-                Row<FollowDemo_BaselineAnchors>()
+                Row<FollowDemo_firstBaselineAnchors>()
             ]
         ),
         Section(title: "Put", rows:

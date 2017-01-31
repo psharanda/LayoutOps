@@ -27,19 +27,17 @@ class FollowDemo_CornerAnchors: UIView, DemoViewProtocol {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        Combine(
-            SetOrigin(blueView, x: 10, y: 10),
-            SetSize(blueView, width: 100, height: 100),            
-            
-            SetSize(greenView, width: 50, height: 190),
-            Follow(RightAnchor(blueView), withAnchor: LeftAnchor(greenView)),
-            Follow(BottomAnchor(blueView), withAnchor: TopAnchor(greenView)),
-            
-            SetSize(redView, width: 30, height: 30),
-            Follow(LeftAnchor(blueView), withAnchor: LeftAnchor(redView)),
-            Follow(BottomAnchor(greenView), withAnchor: BottomAnchor(redView))
-            
-        ).layout()
+        blueView.lx.set(x: 10, y: 10)
+        blueView.lx.set(width: 100, height: 100)
+        
+        greenView.lx.set(width: 50, height: 190)
+        greenView.lx.leftAnchor.follow(blueView.lx.rightAnchor)
+        greenView.lx.topAnchor.follow(blueView.lx.bottomAnchor)
+        
+        redView.lx.set(width: 30, height: 30)
+        redView.lx.leftAnchor.follow(blueView.lx.leftAnchor)
+        redView.lx.bottomAnchor.follow(greenView.lx.bottomAnchor)
+                
     }
     
     static let title = "Corners"
@@ -68,20 +66,19 @@ class FollowDemo_CenterAnchors: UIView, DemoViewProtocol {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        Combine(
-            SetOrigin(blueView, x: 10, y: 10),
-            SetWidth(blueView, value: 200),
-            VFill(blueView, inset: 20),
-            
-            SetSize(greenView, width: 50, height: 190),
-            Follow(RightAnchor(blueView), withAnchor: LeftAnchor(greenView)),
-            Follow(VCenterAnchor(blueView), withAnchor: VCenterAnchor(greenView)),
-            
-            SetSize(redView, width: 30, height: 30),
-            Follow(HCenterAnchor(greenView), withAnchor: HCenterAnchor(redView)),
-            Follow(VCenterAnchor(greenView), withAnchor: VCenterAnchor(redView))
-            
-        ).layout()
+        
+        blueView.lx.set(x: 10, y: 10)
+        blueView.lx.set(width: 200)
+        blueView.lx.vfill(inset: 20)
+        
+        greenView.lx.set(width: 50, height: 190)
+        greenView.lx.leftAnchor.follow(blueView.lx.rightAnchor)
+        greenView.lx.vcenterAnchor.follow(blueView.lx.vcenterAnchor)
+        
+        redView.lx.set(width: 30, height: 30)
+        redView.lx.hcenterAnchor.follow(greenView.lx.hcenterAnchor)
+        redView.lx.vcenterAnchor.follow(greenView.lx.vcenterAnchor)
+        
     }
     
     static let title = "Center"
@@ -107,25 +104,23 @@ class FollowDemo_SizeAnchors: UIView, DemoViewProtocol {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        Combine(
-            SetX(blueView, value: 10),
-            
-            SetWidth(blueView, value: 50),
-            VFill(blueView, inset: 100),
-            
-            Follow(WidthAnchor(blueView), withAnchor: HeightAnchor(greenView)),
-            Follow(HeightAnchor(blueView), withAnchor: WidthAnchor(greenView)),
-            Follow(RightAnchor(blueView), withAnchor: LeftAnchor(greenView)),
-            Follow(BottomAnchor(blueView), withAnchor: TopAnchor(greenView))
-            
-        ).layout()
+        blueView.lx.set(x: 10)
+        
+        blueView.lx.set(width: 50)
+        blueView.lx.vfill(inset: 100)
+        
+        greenView.lx.heightAnchor.follow(blueView.lx.widthAnchor)
+        greenView.lx.widthAnchor.follow(blueView.lx.heightAnchor)
+        greenView.lx.leftAnchor.follow(blueView.lx.rightAnchor)
+        greenView.lx.topAnchor.follow(blueView.lx.bottomAnchor)
+        
     }
     
     static let title = "Size"
     static let comments = "There are also size anchors"
 }
 
-class FollowDemo_BaselineAnchors: UIView, DemoViewProtocol {
+class FollowDemo_firstBaselineAnchors: UIView, DemoViewProtocol {
     
     let blueView = makeBlueView()
     let greenView = makeGreenView()
@@ -133,7 +128,7 @@ class FollowDemo_BaselineAnchors: UIView, DemoViewProtocol {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-
+        
         addSubview(label)
         addSubview(blueView)
         addSubview(greenView)
@@ -146,21 +141,19 @@ class FollowDemo_BaselineAnchors: UIView, DemoViewProtocol {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        Combine(
-            
-            HFill(label, inset: 20),
-            SizeToFit(label, width: .KeepCurrent, height: .Max),
-            Center(label),
-            
-            SetHeight(blueView, value: 30),
-            SetHeight(greenView, value: 30),
-            
-            HFill(blueView, inset: 20),
-            HFill(greenView, inset: 20),
-            
-            Follow(BaselineAnchor(label, type: .First), withAnchor: BottomAnchor(blueView)),
-            Follow(BaselineAnchor(label, type: .Last), withAnchor: TopAnchor(greenView))
-        ).layout()
+        label.lx.hfill(inset: 20)
+        label.lx.sizeToFit(width: .KeepCurrent, height: .Max)
+        label.lx.center()
+        
+        blueView.lx.set(height: 30)
+        greenView.lx.set(height: 30)
+        
+        blueView.lx.hfill(inset: 20)
+        greenView.lx.hfill(inset: 20)
+        
+        blueView.lx.bottomAnchor.follow(label.lx.firstBaselineAnchor)
+        greenView.lx.topAnchor.follow(label.lx.lastBaselineAnchor)
+        
     }
     
     static let title = "Baseline"

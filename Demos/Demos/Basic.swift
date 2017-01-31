@@ -24,18 +24,6 @@ class BasicDemo_Set: UIView, DemoViewProtocol {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    //        Combine(
-    //            SetOrigin(blueView, x: 10, y: 10),
-    //            SetSize(blueView, width: 100, height: 100),
-    //
-    //            SetFrame(greenView, x: 120, y: 20, width: 50, height: 190),
-    //
-    //            SetX(redView, value: 5),
-    //            SetY(redView, value: 120),
-    //            SetWidth(redView, value: 45),
-    //            SetHeight(redView, value: 100)
-    //        ).layout()
 
     
     override func layoutSubviews() {
@@ -79,18 +67,21 @@ class BasicDemo_Center: UIView, DemoViewProtocol {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        Combine(
-            SetY(blueView, value: 5),
-            SetSize(blueView, width: 100, height: 100),
-            HCenter(blueView),
-            
-            SetX(greenView, value: 5),
-            SetSize(greenView, width: 50, height: 120),
-            VCenter(greenView, topInset: 0, bottomInset: 100),
-            
-            SetSize(redView, width: 45, height: 100),
-            Center(redView)
-        ).layout()
+        
+        blueView.lx
+            .set(y: 5)
+            .set(width: 100, height: 100)
+            .hcenter()
+        
+        greenView
+            .lx.set(x: 5)
+            .set(width: 50, height: 120)
+            .vcenter(topInset: 0, bottomInset: 100)
+        
+        redView.lx
+            .set(width: 45, height: 100)
+            .center()
+        
     }
     
     static let title = "Center"
@@ -119,18 +110,19 @@ class BasicDemo_Fill: UIView, DemoViewProtocol {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        Combine(
-            Fill(redView, inset: 5),
-            
-            SetY(blueView, value: 20),
-            SetHeight(blueView, value: 50),
-            HFill(blueView, inset: 10),
-            
-            SetX(greenView, value: 25),
-            SetWidth(greenView, value: 50),
-            VFill(greenView, topInset: 100, bottomInset: 15)
-            
-        ).layout()
+        
+        redView.lx.fill(inset: 5)
+        
+        blueView.lx
+            .set(y: 20)
+            .set(height: 50)
+            .hfill(inset: 10)
+        
+        greenView.lx
+            .set(x: 25)
+            .set(width: 50)
+            .vfill(topInset: 100, bottomInset: 15)
+        
     }
     
     static let title = "Fill"
@@ -157,19 +149,22 @@ class BasicDemo_Align: UIView, DemoViewProtocol {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        Combine(            
-            SetSize(blueView, width: 100, height: 100),
-            AlignLeft(blueView, inset: 5),
-            AlignTop(blueView, inset: 5),
-            
-            SetSize(greenView, width: 50, height: 120),
-            AlignLeft(greenView, inset: 10),
-            AlignBottom(greenView, inset: 15),
-            
-            SetSize(redView, width: 45, height: 100),
-            AlignRight(redView, inset: 25),
-            AlignTop(redView, inset: 25)
-        ).layout()
+        
+        blueView.lx
+            .set(width: 100, height: 100)
+            .alignLeft(5)
+            .alignTop(5)
+        
+        greenView.lx
+            .set(width: 50, height: 120)
+            .alignLeft(10)
+            .alignBottom(15)
+        
+        redView.lx
+            .set(width: 45, height: 100)
+            .alignRight(25)
+            .alignTop(25)
+        
     }
     
     static let title = "Align"

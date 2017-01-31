@@ -56,18 +56,19 @@ class DemoViewController: UIViewController {
         let nc = navigationController?.navigationBar
         let realTopLayoutGuideLength = nc.map { $0.convertRect($0.bounds, toView: view).maxY } ?? 0
         
-        Combine(
+        
             
-            HFillVFit(descLabel, inset: 10),
-            AlignBottom(descLabel, inset: 10),
+            descLabel.lx.hfillvfit(inset: 10)
+            descLabel.lx.alignBottom(10)
             
-            HFill(descBackground),
-            Follow(TopAnchor(descLabel, inset: -10), withAnchor: TopAnchor(descBackground, inset: 0)),
-            Follow(HeightAnchor(descLabel, inset: 20), withAnchor: HeightAnchor(descBackground)),
-            
-            Combine(Viewport( bottomAnchor: TopAnchor(descBackground)), operations:
-                Fill(demoView, insets: UIEdgeInsetsMake(realTopLayoutGuideLength + 20, 20, 20, 20))
-            )
-        ).layout()
+            descBackground.lx.hfill()
+            descBackground.lx.topAnchor.follow(descLabel.lx.topAnchor.insettedBy(-10))
+            descBackground.lx.heightAnchor.follow(descLabel.lx.heightAnchor.insettedBy(20))
+        
+        
+        view.lx.inViewport(bottomAnchor: descBackground.lx.topAnchor) {
+            demoView.lx.fill(insets: UIEdgeInsetsMake(realTopLayoutGuideLength + 20, 20, 20, 20))
+        }
+        
     }
 }

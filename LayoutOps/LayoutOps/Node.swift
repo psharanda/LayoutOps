@@ -67,7 +67,9 @@ public class AnyNode: Layoutable {
         return CGRect(x: 0, y: 0, width: frame.width, height: frame.height)
     }
     
-    public var frame: CGRect = CGRect()
+    public var frame = CGRect()
+    
+    public var viewportInsets = UIEdgeInsets()
     
     public func sizeThatFits(size: CGSize) -> CGSize {
         return CGSize()

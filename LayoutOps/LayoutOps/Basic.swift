@@ -303,7 +303,7 @@ extension Layouting where Base: Layoutable {
             return self
         }
         
-        base.updateFrame(block(base.frame, parent.frame))
+        base.updateFrame(block(base.frame, parent.boundsInViewPort))
         
         return self
     }
@@ -379,35 +379,35 @@ extension Layouting where Base: Layoutable {
         return vfill(topInset: inset, bottomInset: inset)
     }
     
-    public func align(top top: CGFloat = 0) -> Layouting<Base> {
+    public func alignTop(inset: CGFloat = 0) -> Layouting<Base> {
         return processInParent { frame, superviewFrame in
             return CGRect(x: frame.origin.x,
-                          y: top,
+                          y: inset,
                           width: frame.width,
                           height: frame.height)
         }
     }
     
-    public func align(left left: CGFloat = 0) -> Layouting<Base> {
+    public func alignLeft(inset: CGFloat = 0) -> Layouting<Base> {
         return processInParent { frame, superviewFrame in
-            return CGRect(x: left,
+            return CGRect(x: inset,
                           y: frame.origin.y,
                           width: frame.width,
                           height: frame.height)
         }
     }
     
-    public func align(bottom bottom: CGFloat = 0) -> Layouting<Base> {
+    public func alignBottom(inset: CGFloat = 0) -> Layouting<Base> {
         return processInParent { frame, superviewFrame in
             return CGRect(x: frame.origin.x,
-                          y: superviewFrame.height - frame.height - bottom,
+                          y: superviewFrame.height - frame.height - inset,
                           width: frame.width, height: frame.height)
         }
     }
     
-    public func align(right right: CGFloat = 0) -> Layouting<Base> {
+    public func alignRight(inset: CGFloat = 0) -> Layouting<Base> {
         return processInParent { frame, superviewFrame in
-            return CGRect(x: superviewFrame.width - frame.width - right,
+            return CGRect(x: superviewFrame.width - frame.width - inset,
                           y: frame.origin.y,
                           width: frame.width,
                           height: frame.height)
@@ -510,9 +510,9 @@ extension Layouting where Base: Layoutable {
         return set(size: CGSize(width: width, height: height))
     }
     
-    public func set(frame frame: CGRect) -> Layouting<Base> {
+    public func set(frame f: CGRect) -> Layouting<Base> {
         return processForSet {frame in
-            return frame
+            return f
         }
     }
     

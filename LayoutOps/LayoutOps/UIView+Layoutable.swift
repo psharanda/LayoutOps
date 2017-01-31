@@ -5,9 +5,20 @@
 
 import Foundation
 
+private var viewPortInsetsKey: UInt8 = 0
+
 extension UIView: Layoutable {
     public var parent: Layoutable? {
         return superview
+    }
+    
+    public var viewportInsets: UIEdgeInsets {
+        set {
+            objc_setAssociatedObject(self, &viewPortInsetsKey, NSValue(UIEdgeInsets: newValue), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+        get {
+            return (objc_getAssociatedObject(self, &viewPortInsetsKey) as? NSValue)?.UIEdgeInsetsValue() ?? UIEdgeInsets()
+        }
     }
 }
 
@@ -37,6 +48,15 @@ extension CALayer: Layoutable {
     
     public func sizeThatFits(size: CGSize) -> CGSize {
         return CGSize()
+    }
+    
+    public var viewportInsets: UIEdgeInsets {
+        set {
+            objc_setAssociatedObject(self, &viewPortInsetsKey, NSValue(UIEdgeInsets: newValue), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+        get {
+            return (objc_getAssociatedObject(self, &viewPortInsetsKey) as? NSValue)?.UIEdgeInsetsValue() ?? UIEdgeInsets()
+        }
     }
 }
 

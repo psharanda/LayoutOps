@@ -77,16 +77,21 @@ public struct Viewport {
 
 extension Layouting where Base: Layoutable {
     
-    public func inViewport(insets insets: UIEdgeInsets, block:()->Void) -> Layouting<Base> {
-        let oldFrame = base.frame
-        base.frame = UIEdgeInsetsInsetRect(oldFrame, insets)
+    public func inViewport(insets insets: UIEdgeInsets, @noescape block:()->Void) -> Layouting<Base> {
+        let oldInsets = base.viewportInsets
+        base.viewportInsets = insets
         block()
-        base.frame = oldFrame
+        base.viewportInsets = oldInsets
         return self
     }
     
-    public func inViewport(top top: VAnchor? = nil, left: HAnchor? = nil, bottom: VAnchor? = nil, right: HAnchor? = nil, block:()->Void) -> Layouting<Base> {
-        let insets = UIEdgeInsets()
-        return inViewport(insets: insets, block: block)
+    public func inViewport(topAnchor topAnchor: VAnchor? = nil, leftAnchor: HAnchor? = nil, bottomAnchor: VAnchor? = nil, rightAnchor: HAnchor? = nil, @noescape block:()->Void) -> Layouting<Base> {
+        
+        let left = leftAnchor.flatMap { $0.valueForRect($0.view.frame)} ?? base.bounds.origin.x
+        let top = topAnchor.flatMap { $0.valueForRect($0.view.frame)} ?? base.bounds.origin.y
+        let right = rightAnchor.flatMap { $0.valueForRect($0.view.frame) } ?? base.bounds.maxX
+        let bottom = bottomAnchor.flatMap { $0.valueForRect($0.view.frame) } ?? base.bounds.maxY                        
+        
+        return inViewport(insets: UIEdgeInsets(top: top, left: left, bottom: base.bounds.height - bottom, right: base.bounds.width - right), block: block)
     }
 }

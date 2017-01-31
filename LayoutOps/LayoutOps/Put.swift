@@ -266,7 +266,7 @@ private struct BoxHeight: BoxDimension {
 private func putOperation<T: BoxDimension>(superview: Layoutable, intentions: [PutIntention], dimension: T) {
     var totalWeight: CGFloat = 0.0
     
-    var bounds = superview.bounds
+    var bounds = superview.boundsInViewPort
     
     var totalSizeForFlexs: CGFloat = T.getDimension(bounds).size
     

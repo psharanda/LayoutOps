@@ -227,7 +227,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd Demos\n\ncat *.swift >> Codebase.generated.txt\n";
+			shellScript = "cd Demos\n\nrm -rf Codebase.generated.txt\ncat *.swift >> Codebase.generated.txt\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

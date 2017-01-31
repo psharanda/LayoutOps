@@ -28,26 +28,26 @@ class PutDemo_Fix: UIView, DemoViewProtocol {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        Combine(
-            HPut(
-                Fix(50),
-                Fix(blueView, 120),
-                Fix(greenView, 40),
-                Fix(10),
-                Fix(redView, 60)
-            ),
-            VPut(
-                Fix(50),
-                Fix(blueView, 120),
-                Fix(greenView, 40),
-                Fix(10),
-                Fix(redView, 60)
-            )
-        ).layout()
+        
+        self.lx.hput(
+            Fix(50),
+            Fix(blueView, 120),
+            Fix(greenView, 40),
+            Fix(10),
+            Fix(redView, 60)
+        )
+        self.lx.vput(
+            Fix(50),
+            Fix(blueView, 120),
+            Fix(greenView, 40),
+            Fix(10),
+            Fix(redView, 60)
+        )
+        
     }
     
     static let title = "Fix"
-    static let comments = "HPut and VPut operations successively layout views in superview in horizontal or vertical direction using intentions. Fix intention means that view size will take exact value, either directly defined or current one"
+    static let comments = "view_to_replace.lx.hput and view_to_replace.lx.vput operations successively layout views in superview in horizontal or vertical direction using intentions. Fix intention means that view size will take exact value, either directly defined or current one"
 }
 
 class PutDemo_Flex: UIView, DemoViewProtocol {
@@ -71,24 +71,24 @@ class PutDemo_Flex: UIView, DemoViewProtocol {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        Combine(
-            HPut(
-                Flex(blueView, 0.5),
-                Flex(greenView, 1.0),
-                Flex(redView, 0.5)
-            ),
-            VPut(
-                Flex(),
-                Flex(blueView),
-                Flex(greenView),
-                Flex(redView),
-                Flex()
-            )
-        ).layout()
+        
+        self.lx.hput(
+            Flex(blueView, 0.5),
+            Flex(greenView, 1.0),
+            Flex(redView, 0.5)
+        )
+        self.lx.vput(
+            Flex(),
+            Flex(blueView),
+            Flex(greenView),
+            Flex(redView),
+            Flex()
+        )
+        
     }
     
     static let title = "Flex"
-    static let comments = "HPut and VPut operations successively layout views in superview in horizontal or vertical direction using intentions. Flex intention means that view size will take value based weight of flex value. Flex operates only with free space left after Fix intentions"
+    static let comments = "view_to_replace.lx.hput and view_to_replace.lx.vput operations successively layout views in superview in horizontal or vertical direction using intentions. Flex intention means that view size will take value based weight of flex value. Flex operates only with free space left after Fix intentions"
 }
 
 class PutDemo_FixFlex: UIView, DemoViewProtocol {
@@ -112,20 +112,20 @@ class PutDemo_FixFlex: UIView, DemoViewProtocol {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        Combine(
-            HPut(
-                Fix(20),
-                Fix(blueView, 100),
-                Fix(20),
-                Flex(greenView),
-                Fix(20),
-                Fix(redView, 100),
-                Fix(20)
-            ),
-            VFill(blueView, inset: 40),
-            VFill(greenView, inset: 40),
-            VFill(redView, inset: 40)
-        ).layout()
+        
+        self.lx.hput(
+            Fix(20),
+            Fix(blueView, 100),
+            Fix(20),
+            Flex(greenView),
+            Fix(20),
+            Fix(redView, 100),
+            Fix(20)
+        )
+        blueView.lx.vfill(inset: 40)
+        greenView.lx.vfill(inset: 40)
+        redView.lx.vfill(inset: 40)
+        
     }
     
     static let title = "Fix+Flex"
@@ -153,20 +153,20 @@ class PutDemo_FixFlexCenter: UIView, DemoViewProtocol {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        Combine(
-            HPut(
-                Flex(),
-                Fix(blueView, 70),
-                Fix(10),
-                Fix(greenView, 40),
-                Fix(20),
-                Fix(redView, 20),
-                Flex()
-            ),
-            VFill(blueView, inset: 40),
-            VFill(greenView, inset: 40),
-            VFill(redView, inset: 40)
-        ).layout()
+        
+        self.lx.hput(
+            Flex(),
+            Fix(blueView, 70),
+            Fix(10),
+            Fix(greenView, 40),
+            Fix(20),
+            Fix(redView, 20),
+            Flex()
+        )
+        blueView.lx.vfill(inset: 40)
+        greenView.lx.vfill(inset: 40)
+        redView.lx.vfill(inset: 40)
+        
     }
     
     static let title = "Fix+Flex center many views"
@@ -196,22 +196,22 @@ class PutDemo_Multi: UIView, DemoViewProtocol {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        Combine(
-            HPut(
-                Flex(),
-                Fix(blueView, 70),
-                Fix(10),
-                Fix(greenView, 40),
-                Fix(20),
-                Fix(redView, 20),
-                Flex()
-            ),
-            VPut(
-                Fix(40),
-                Flex([blueView, greenView, redView]),
-                Fix(40)
-            )
-        ).layout()
+        
+        self.lx.hput(
+            Flex(),
+            Fix(blueView, 70),
+            Fix(10),
+            Fix(greenView, 40),
+            Fix(20),
+            Fix(redView, 20),
+            Flex()
+        )
+        self.lx.vput(
+            Fix(40),
+            Flex([blueView, greenView, redView]),
+            Fix(40)
+        )
+        
     }
     
     static let title = "Multi"
@@ -238,21 +238,21 @@ class PutDemo_Labels: UIView, DemoViewProtocol {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        Combine(
-            HFillVFit(titleLabel, inset: 20),
-            HFillVFit(detailsLabel, inset: 20),
-            VPut(
-                Flex(),
-                Fix(titleLabel),
-                Fix(20),
-                Fix(detailsLabel),
-                Flex()
-            )
-        ).layout()
+        
+        titleLabel.lx.hfillvfit(inset: 20)
+        detailsLabel.lx.hfillvfit(inset: 20)
+        self.lx.vput(
+            Flex(),
+            Fix(titleLabel),
+            Fix(20),
+            Fix(detailsLabel),
+            Flex()
+        )
+        
     }
     
     static let title = "Put labels"
-    static let comments = "HFillVFit is used to fill width and size to fit height for both labels. VPut is used to center group of labels"
+    static let comments = "HFillVFit is used to fill width and size to fit height for both labels. view_to_replace.lx.vput is used to center group of labels"
     
 }
 
@@ -287,7 +287,7 @@ class PutDemo_FixFlexGrid: UIView, DemoViewProtocol {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        func putCols() -> LayoutOperation {
+        func putCols() {
             var r = [PutIntention]()
             for i in 0..<8 {
                 
@@ -297,10 +297,10 @@ class PutDemo_FixFlexGrid: UIView, DemoViewProtocol {
                 }
                 r.append(Flex(row))
             }
-            return HPut(r)
+            self.lx.hput(r)
         }
         
-        func putRows() -> LayoutOperation {
+        func putRows() {
             var r = [PutIntention]()
             
             for i in 0..<8 {
@@ -309,17 +309,17 @@ class PutDemo_FixFlexGrid: UIView, DemoViewProtocol {
                 for j in 0..<8 {
                     col.append(views[i + j*8])
                 }
-               r.append(Flex(col))
+                r.append(Flex(col))
             }
-            return VPut(r)
+            self.lx.vput(r)
         }
         
-        Combine(
-            putCols(),
-            putRows()
-        ).layout()
+        
+        putCols()
+        putRows()
+        
     }
     
     static let title = "Fix+Flex grid"
-    static let comments = "Elegant way to layout views in grid using just one HPut and one VPut"
+    static let comments = "Elegant way to layout views in grid using just one view_to_replace.lx.hput and one view_to_replace.lx.vput"
 }

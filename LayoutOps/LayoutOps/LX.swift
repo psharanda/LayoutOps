@@ -27,12 +27,17 @@ public protocol Layoutable: class {
     var parent: Layoutable? {get}
     var bounds: CGRect {get}
     var frame: CGRect {get set}
+    var viewportInsets: UIEdgeInsets {get set}
     func sizeThatFits(size: CGSize) -> CGSize
 }
 
 extension Layoutable {
     func updateFrame(newValue: CGRect) {
         frame = CGRect(x: newValue.origin.x.pixelPerfect, y: newValue.origin.y.pixelPerfect, width: newValue.size.width.ceilPixelPerfect, height: newValue.size.height.ceilPixelPerfect)
+    }
+    
+    var boundsInViewPort: CGRect {
+        return UIEdgeInsetsInsetRect(bounds, viewportInsets)
     }
 }
 

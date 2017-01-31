@@ -239,7 +239,7 @@ extension Layouting where Base: Layoutable {
     /**
      same as SizeToFit(view, width: .Max, height: .Max)
      */
-    public func sizeToFitMax(widthConstraint: SizeConstraint = .Default, heightConstraint: SizeConstraint = .Default) -> Layouting<Base> {
+    public func sizeToFitMax(widthConstraint widthConstraint: SizeConstraint = .Default, heightConstraint: SizeConstraint = .Default) -> Layouting<Base> {
         return sizeToFit(width: .Max, height: .Max, widthConstraint: widthConstraint, heightConstraint: heightConstraint)
     }
     

@@ -74,19 +74,19 @@ private func follow_helper(anchorToFollow: Anchor, followerAnchor: Anchor) {
 }
 
 extension VAnchor {
-    func follow(anchor: VAnchor) {
+    public func follow(anchor: VAnchor) {
         follow_helper(anchor, followerAnchor: self)
     }
 }
 
 extension HAnchor {
-    func follow(anchor: HAnchor) {
+    public func follow(anchor: HAnchor) {
         follow_helper(anchor, followerAnchor: self)
     }
 }
 
 extension SizeAnchor {
-    func follow(anchor: HAnchor) {
+    public func follow(anchor: SizeAnchor) {
         follow_helper(anchor, followerAnchor: self)
     }
 }

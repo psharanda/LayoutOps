@@ -177,28 +177,28 @@ class SampleCell: UITableViewCell {
         
         let rootNode = RootNode(size: CGSize(width: width, height: 0), subnodes: [titleNode, detailsNode, h1Node, h2Node])
         
-        Combine(
-            HFillVFit(titleNode, inset: 10),
-            HFillVFit(detailsNode, inset: 10),
-            
-            HFill(h1Node, inset: 10),
-            SetHeight(h1Node, value: 20),
-            
-            HFill(h2Node, inset: 10),
-            SetHeight(h2Node, value: 20),
-            
-            VPut(
-                Fix(10),
-                Fix(titleNode),
-                Fix(10),
-                Fix(detailsNode)
-            ),
-            
-            Follow(BaselineAnchor(titleNode), withAnchor: BottomAnchor(h1Node)),
-            Follow(BaselineAnchor(detailsNode), withAnchor: BottomAnchor(h2Node)),
-            
-            Fill(bg1Node)
-        ).layout()
+        
+        titleNode.lx.hfillvfit(inset: 10)
+        detailsNode.lx.hfillvfit(inset: 10)
+        
+        h1Node.lx.hfill(inset: 10)
+        h1Node.lx.set(height: 20)
+        
+        h2Node.lx.hfill(inset: 10)
+        h2Node.lx.set(height: 20)
+        
+        rootNode.lx.vput(
+            Fix(10),
+            Fix(titleNode),
+            Fix(10),
+            Fix(detailsNode)
+        )
+        
+        h1Node.lx.bottomAnchor.follow(titleNode.lx.bottomAnchor)
+        h2Node.lx.bottomAnchor.follow(detailsNode.lx.bottomAnchor)
+        
+        bg1Node.lx.fill()
+        
         
         return Cache(height: detailsNode.frame.maxY + 10, rootNode: rootNode)
     }
