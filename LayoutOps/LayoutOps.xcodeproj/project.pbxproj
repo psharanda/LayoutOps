@@ -14,12 +14,10 @@
 		1B20DAE31DEF386600FE6643 /* SwitchNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B20DAE21DEF386600FE6643 /* SwitchNode.swift */; };
 		1B2B82981DCD1F90008B6450 /* Anchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2B82971DCD1F90008B6450 /* Anchor.swift */; };
 		1B49D7101DB8D02800823FF3 /* SizeToFit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B49D7091DB8D02800823FF3 /* SizeToFit.swift */; };
-		1B49D7111DB8D02800823FF3 /* LayoutOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B49D70A1DB8D02800823FF3 /* LayoutOperation.swift */; };
 		1B49D7121DB8D02800823FF3 /* Viewport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B49D70B1DB8D02800823FF3 /* Viewport.swift */; };
 		1B49D7131DB8D02800823FF3 /* Follow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B49D70C1DB8D02800823FF3 /* Follow.swift */; };
 		1B49D7141DB8D02800823FF3 /* Basic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B49D70D1DB8D02800823FF3 /* Basic.swift */; };
 		1B49D7151DB8D02800823FF3 /* Put.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B49D70E1DB8D02800823FF3 /* Put.swift */; };
-		1B49D7161DB8D02800823FF3 /* Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B49D70F1DB8D02800823FF3 /* Combine.swift */; };
 		1B6645E41DB8F44C0059CFC8 /* Accelerate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6645E31DB8F44C0059CFC8 /* Accelerate.swift */; };
 		1BAD4FEF1CDF54CA00692E31 /* LayoutOps.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BAD4FEE1CDF54CA00692E31 /* LayoutOps.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1BDCF03F1E3BD43800BEADEE /* LX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BDCF03E1E3BD43800BEADEE /* LX.swift */; };
@@ -33,12 +31,10 @@
 		1B20DAE21DEF386600FE6643 /* SwitchNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchNode.swift; sourceTree = "<group>"; };
 		1B2B82971DCD1F90008B6450 /* Anchor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Anchor.swift; sourceTree = "<group>"; };
 		1B49D7091DB8D02800823FF3 /* SizeToFit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SizeToFit.swift; sourceTree = "<group>"; };
-		1B49D70A1DB8D02800823FF3 /* LayoutOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LayoutOperation.swift; sourceTree = "<group>"; };
 		1B49D70B1DB8D02800823FF3 /* Viewport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Viewport.swift; sourceTree = "<group>"; };
 		1B49D70C1DB8D02800823FF3 /* Follow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Follow.swift; sourceTree = "<group>"; };
 		1B49D70D1DB8D02800823FF3 /* Basic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Basic.swift; sourceTree = "<group>"; };
 		1B49D70E1DB8D02800823FF3 /* Put.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Put.swift; sourceTree = "<group>"; };
-		1B49D70F1DB8D02800823FF3 /* Combine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Combine.swift; sourceTree = "<group>"; };
 		1B6645E31DB8F44C0059CFC8 /* Accelerate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Accelerate.swift; sourceTree = "<group>"; };
 		1BAD4FEB1CDF54CA00692E31 /* LayoutOps.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LayoutOps.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1BAD4FEE1CDF54CA00692E31 /* LayoutOps.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LayoutOps.h; sourceTree = "<group>"; };
@@ -91,9 +87,7 @@
 				1BDCF03E1E3BD43800BEADEE /* LX.swift */,
 				1B2B82971DCD1F90008B6450 /* Anchor.swift */,
 				1B49D70D1DB8D02800823FF3 /* Basic.swift */,
-				1B49D70F1DB8D02800823FF3 /* Combine.swift */,
 				1B49D70C1DB8D02800823FF3 /* Follow.swift */,
-				1B49D70A1DB8D02800823FF3 /* LayoutOperation.swift */,
 				1B49D70E1DB8D02800823FF3 /* Put.swift */,
 				1B49D7091DB8D02800823FF3 /* SizeToFit.swift */,
 				1B49D70B1DB8D02800823FF3 /* Viewport.swift */,
@@ -198,14 +192,12 @@
 				1B11ECF71DE4F915001FEBE7 /* Node.swift in Sources */,
 				1B49D7141DB8D02800823FF3 /* Basic.swift in Sources */,
 				1B6645E41DB8F44C0059CFC8 /* Accelerate.swift in Sources */,
-				1B49D7111DB8D02800823FF3 /* LayoutOperation.swift in Sources */,
 				1B49D7151DB8D02800823FF3 /* Put.swift in Sources */,
 				1B11ECFE1DE57CC6001FEBE7 /* LabelNode.swift in Sources */,
 				1BDCF03F1E3BD43800BEADEE /* LX.swift in Sources */,
 				1B11ED001DE57D03001FEBE7 /* ImageNode.swift in Sources */,
 				1B2B82981DCD1F90008B6450 /* Anchor.swift in Sources */,
 				1B11ECF51DE4F2AA001FEBE7 /* UIView+Layoutable.swift in Sources */,
-				1B49D7161DB8D02800823FF3 /* Combine.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

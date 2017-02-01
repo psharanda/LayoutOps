@@ -5,7 +5,6 @@
 
 import Foundation
 
-
 struct UIScreenCache {
     static let scale = UIScreen.mainScreen().scale;
 }

@@ -8,22 +8,12 @@
 
 import Foundation
 
-/************************************************************************************/
-/*[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]*/
-/************************************************************************************/
-
 public protocol Anchor {
     func valueForRect(rect: CGRect) -> CGFloat
     func setValueForRect(value: CGFloat, rect: CGRect) -> CGRect
     var view: Layoutable {get}
     
     func insettedBy(value: CGFloat) -> Self
-}
-
-extension Anchor {
-    func anchorValue(layouts: ViewLayoutMap) -> CGFloat? {
-        return layouts[view].flatMap {  valueForRect($0) }
-    }
 }
 
 //MARK: - hanchor
@@ -87,29 +77,34 @@ private enum HAnchorType : HAnchor {
 }
 
 
-public func LeftAnchor(view: Layoutable, inset: CGFloat) -> HAnchor {
+private func LeftAnchor(view: Layoutable, inset: CGFloat) -> HAnchor {
     return HAnchorType.Left(view, inset)
 }
 
-public func LeftAnchor(view: Layoutable) -> HAnchor {
+private func LeftAnchor(view: Layoutable) -> HAnchor {
     return LeftAnchor(view, inset: 0)
 }
 
-public func RightAnchor(view: Layoutable, inset: CGFloat) -> HAnchor {
+private func RightAnchor(view: Layoutable, inset: CGFloat) -> HAnchor {
     return HAnchorType.Right(view, inset)
 }
 
-public func RightAnchor(view: Layoutable) -> HAnchor {
+private func RightAnchor(view: Layoutable) -> HAnchor {
     return RightAnchor(view, inset: 0)
 }
 
 
-public func HCenterAnchor(view: Layoutable, inset: CGFloat) -> HAnchor {
+private func HCenterAnchor(view: Layoutable, inset: CGFloat) -> HAnchor {
     return HAnchorType.Center(view, inset)
 }
 
-public func HCenterAnchor(view: Layoutable) -> HAnchor {
+private func HCenterAnchor(view: Layoutable) -> HAnchor {
     return HCenterAnchor(view, inset: 0)
+}
+
+public enum BaselineType {
+    case First
+    case Last
 }
 
 //MARK: - Baselinable
@@ -187,45 +182,42 @@ private enum VAnchorType : VAnchor {
     }
 }
 
-public func TopAnchor(view: Layoutable, inset: CGFloat) -> VAnchor {
+private func TopAnchor(view: Layoutable, inset: CGFloat) -> VAnchor {
     return VAnchorType.Top(view, inset)
 }
 
-public func TopAnchor(view: Layoutable) -> VAnchor {
+private func TopAnchor(view: Layoutable) -> VAnchor {
     return TopAnchor(view, inset: 0)
 }
 
-public func BottomAnchor(view: Layoutable, inset: CGFloat) -> VAnchor {
+private func BottomAnchor(view: Layoutable, inset: CGFloat) -> VAnchor {
     return VAnchorType.Bottom(view, inset)
 }
 
-public func BottomAnchor(view: Layoutable) -> VAnchor {
+private func BottomAnchor(view: Layoutable) -> VAnchor {
     return BottomAnchor(view, inset: 0)
 }
 
 
-public func VCenterAnchor(view: Layoutable, inset: CGFloat) -> VAnchor {
+private func VCenterAnchor(view: Layoutable, inset: CGFloat) -> VAnchor {
     return VAnchorType.Center(view, inset)
 }
 
-public func VCenterAnchor(view: Layoutable) -> VAnchor {
+private func VCenterAnchor(view: Layoutable) -> VAnchor {
     return VCenterAnchor(view, inset: 0)
 }
 
-public enum BaselineType {
-    case First
-    case Last
-}
 
-public func BaselineAnchor<T: Layoutable where T: Baselinable>(view: T, type: BaselineType, inset: CGFloat) -> VAnchor {
+
+private func BaselineAnchor<T: Layoutable where T: Baselinable>(view: T, type: BaselineType, inset: CGFloat) -> VAnchor {
     return VAnchorType.Baseline(view, view, type, inset)
 }
 
-public func BaselineAnchor<T: Layoutable where T: Baselinable>(view: T, type: BaselineType) -> VAnchor {
+private func BaselineAnchor<T: Layoutable where T: Baselinable>(view: T, type: BaselineType) -> VAnchor {
     return VAnchorType.Baseline(view, view, type, 0)
 }
 
-public func BaselineAnchor<T: Layoutable where T: Baselinable>(view: T) -> VAnchor {
+private func BaselineAnchor<T: Layoutable where T: Baselinable>(view: T) -> VAnchor {
     return VAnchorType.Baseline(view, view, .First, 0)
 }
 
@@ -233,7 +225,7 @@ public protocol SizeAnchor: Anchor {
     
 }
 
-struct WidthAnchorType: SizeAnchor {
+private struct WidthAnchorType: SizeAnchor {
     let view: Layoutable
     let inset: CGFloat
     init(view: Layoutable, inset: CGFloat) {
@@ -257,15 +249,15 @@ struct WidthAnchorType: SizeAnchor {
     
 }
 
-public func WidthAnchor(view: Layoutable, inset: CGFloat) -> SizeAnchor {
+private func WidthAnchor(view: Layoutable, inset: CGFloat) -> SizeAnchor {
     return WidthAnchorType(view: view, inset: inset)
 }
 
-public func WidthAnchor(view: Layoutable) -> SizeAnchor {
+private func WidthAnchor(view: Layoutable) -> SizeAnchor {
     return WidthAnchorType(view: view, inset: 0)
 }
 
-struct HeightAnchorType: SizeAnchor {
+private struct HeightAnchorType: SizeAnchor {
     let view: Layoutable
     let inset: CGFloat
     init(view: Layoutable, inset: CGFloat) {
@@ -288,11 +280,11 @@ struct HeightAnchorType: SizeAnchor {
     }
 }
 
-public func HeightAnchor(view: Layoutable, inset: CGFloat) -> SizeAnchor {
+private func HeightAnchor(view: Layoutable, inset: CGFloat) -> SizeAnchor {
     return HeightAnchorType(view: view, inset: inset)
 }
 
-public func HeightAnchor(view: Layoutable) -> SizeAnchor {
+private func HeightAnchor(view: Layoutable) -> SizeAnchor {
     return HeightAnchorType(view: view, inset: 0)
 }
 
