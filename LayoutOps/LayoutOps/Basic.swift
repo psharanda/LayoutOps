@@ -17,7 +17,6 @@ extension Layouting where Base: Layoutable {
             return self
         }
         
-        let superviewFrame = lx_parent.frame
         let superviewFrameInViewPort = lx_parent.boundsOrViewPort
         let superviewBoundsInViewPort = CGRect(x: 0, y: 0, width: superviewFrameInViewPort.width, height: superviewFrameInViewPort.height)
         
