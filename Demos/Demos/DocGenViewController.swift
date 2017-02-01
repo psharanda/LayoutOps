@@ -154,7 +154,7 @@ private func imageWithView(view: UIView) -> UIImage {
     view.drawViewHierarchyInRect(view.bounds, afterScreenUpdates: false)
     let img = UIGraphicsGetImageFromCurrentImageContext()
     UIGraphicsEndImageContext()
-    return img
+    return img!
 }
 
 private func saveImageAsPngInTempFolder(image: UIImage, name: String) {
