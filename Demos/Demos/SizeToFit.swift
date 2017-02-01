@@ -28,22 +28,21 @@ class SizeToFitDemo_Value: UIView, DemoViewProtocol {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        Combine(
-            SizeToFit(icon, width: .value(100), height: .value(100)),
-            AlignTop(icon, inset: 10),
-            HCenter(icon),
-            
-            SizeToFit(label, width: .value(100), height: .value(100)),
-            Center(label),
-            
-            SizeToFit(title, width: .value(100), height: .value(100)),
-            AlignBottom(title, inset: 10),
-            HCenter(title)
-        ).layout()
+        icon.lx.sizeToFit(width: .value(100), height: .value(100))
+            .alignTop(10)
+            .hcenter()
+        
+        label.lx.sizeToFit(width: .value(100), height: .value(100))
+            .center()
+        
+        title.lx.sizeToFit(width: .value(100), height: .value(100))
+            .alignBottom(10)
+            .hcenter()
+        
     }
     
-    static let title = ".Value"
-    static let comments = "SizeToFit operation fits view in defined box using -sizeThatFits: method. Box (width and height) can be defined using different options. .Value option sets exact value for box. Result size will be equal or less than it."
+    static let title = ".value"
+    static let comments = "sizeToFit operation fits view in defined box using -sizeThatFits: method. Box (width and height) can be defined using different options. .value option sets exact value for box. Result size will be equal or less than it."
 }
 
 class SizeToFitDemo_Max: UIView, DemoViewProtocol {
@@ -68,22 +67,21 @@ class SizeToFitDemo_Max: UIView, DemoViewProtocol {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        Combine(
-            SizeToFitMax(icon),  //same as SizeToFit(view, width: .Max, height: .Max)
-            AlignTop(icon, inset: 10),
-            HCenter(icon),
-            
-            SizeToFit(label, width: .max, height: .max),
-            Center(label),
-            
-            SizeToFit(title, width: .max, height: .max),
-            AlignBottom(title, inset: 10),
-            HCenter(title)
-        ).layout()
+        icon.lx.sizeToFitMax()  //same as view.lx.sizeToFit(width: .Max, height: .Max)
+            .alignTop(10)
+            .hcenter()
+        
+        label.lx.sizeToFit(width: .max, height: .max)
+            .center()
+        
+        title.lx.sizeToFit(width: .max, height: .max)
+            .alignBottom(10)
+            .hcenter()
+        
     }
     
-    static let title = ".Max"
-    static let comments = ".Max option sets infinite value for fitting box. Result size will be most comfortable for view to display content. WARNING: multiline labels are comfortable with single line, don't use .Max for them"
+    static let title = ".max"
+    static let comments = ".max option sets infinite value for fitting box. Result size will be most comfortable for view to display content. WARNING: multiline labels are comfortable with single line, don't use .max for width"
 }
 
 class SizeToFitDemo_Current: UIView, DemoViewProtocol {
@@ -107,25 +105,24 @@ class SizeToFitDemo_Current: UIView, DemoViewProtocol {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        Combine(
-            SetSize(icon, size: CGSize(width: 200, height: 200)),
-            SizeToFit(icon, width: .current, height: .current),
-            AlignTop(icon, inset: 10),
-            HCenter(icon),
-            
-            HFill(label, leftInset: 20, rightInset: 20),
-            SizeToFit(label), //same as SizeToFit(view, width: .Current, height: .Current)
-            Center(label),
-            
-            HFill(title, leftInset: 20, rightInset: 20),
-            SizeToFit(title, width: .current, height: .current),
-            AlignBottom(title, inset: 10),
-            HCenter(title)
-        ).layout()
+        icon.lx.set(size: CGSize(width: 200, height: 200))
+            .sizeToFit(width: .current, height: .current)
+            .alignTop(10)
+            .hcenter()
+        
+        label.lx.hfill(leftInset: 20, rightInset: 20)
+            .sizeToFit() //same as view.lx.sizeToFit(width: .Current, height: .Current)
+            .center()
+        
+        title.lx.hfill(leftInset: 20, rightInset: 20)
+            .sizeToFit(width: .current, height: .current)
+            .alignBottom(10)
+            .hcenter()
+        
     }
     
-    static let title = ".Current"
-    static let comments = ".Current option sets value for box with current frame's width or height."
+    static let title = ".current"
+    static let comments = ".current option sets value for box with current frame's width or height."
 }
 
 class SizeToFitDemo_KeepCurrent: UIView, DemoViewProtocol {
@@ -149,26 +146,24 @@ class SizeToFitDemo_KeepCurrent: UIView, DemoViewProtocol {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        Combine(
-            
-            SetSize(icon, size: CGSize(width: 200, height: 200)),
-            SizeToFit(icon, width: .keepCurrent, height: .max),
-            AlignTop(icon, inset: 10),
-            HCenter(icon),
-            
-            HFill(label, leftInset: 20, rightInset: 20),
-            SizeToFit(label, width: .keepCurrent, height: .max),
-            Center(label),
-            
-            HFill(title, leftInset: 20, rightInset: 20),
-            SizeToFit(title, width: .keepCurrent, height: .max),
-            AlignBottom(title, inset: 10),
-            HCenter(title)
-        ).layout()
+        icon.lx.set(size: CGSize(width: 200, height: 200))
+            .sizeToFit(width: .keepCurrent, height: .max)
+            .alignTop(10)
+            .hcenter()
+        
+        label.lx.hfill(leftInset: 20, rightInset: 20)
+            .sizeToFit(width: .keepCurrent, height: .max)
+            .center()
+        
+        title.lx.hfill(leftInset: 20, rightInset: 20)
+            .sizeToFit(width: .keepCurrent, height: .max)
+            .alignBottom(10)
+            .hcenter()
+        
     }
     
-    static let title = ".KeepCurrent"
-    static let comments = ".KeepCurrent options sets value for box with current frame's width or height, but result size will be still equal to those original frame values. This is usefull to layout multiline labels. First you need to set somehow label width, and then call something like SizeToFit(label, width: .KeepCurrent, height: .Max)."
+    static let title = ".keepCurrent"
+    static let comments = ".keepCurrent options sets value for box with current frame's width or height, but result size will be still equal to those original frame values. This is usefull to layout multiline labels. First you need to set somehow label width, and then call something like label.lx.sizeToFit(width: .keepCurrent, height: .max)."
 }
 
 class SizeToFitDemo_MinMax: UIView, DemoViewProtocol {
@@ -188,12 +183,11 @@ class SizeToFitDemo_MinMax: UIView, DemoViewProtocol {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        Combine(
-            SizeToFitMaxWithConstraints(label, widthConstraint: .max(100), heightConstraint: .min(300)),
-            Center(label)
-        ).layout()
+        label.lx.sizeToFitMax(widthConstraint: .max(100), heightConstraint: .min(300))
+            .center()
+        
     }
     
-    static let title = "Min/Max constraints"
-    static let comments = "SizeToFit operation also can have min, max or both constraints to limit resulted width/height. "
+    static let title = "min/max constraints"
+    static let comments = "sizeToFit operation also can have min, max or both constraints to limit resulted width/height. "
 }

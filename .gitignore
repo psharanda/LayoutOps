@@ -63,3 +63,4 @@ fastlane/report.xml
 fastlane/screenshots
 
 Demos/Demos/Codebase.generated.txt
+*.DS_Store

@@ -100,8 +100,8 @@ class DocGenViewController: UIViewController {
                 saveImageAsPngInTempFolder(img2, name: f2)
                 v2.removeFromSuperview()
                 
-                markdownString += "<img src=\"https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/\(f1)\" alt=\"\(sectionRow.row.title)\" width=\"\(img1.size.width/2)\" height=\"\(img1.size.height/2)\"/> "
-                markdownString += "<img src=\"https://raw.githubusercontent.com/psharanda/LayoutOps/swift-2.3/README/\(f2)\" alt=\"\(sectionRow.row.title)\" width=\"\(img2.size.width/2)\" height=\"\(img2.size.height/2)\"/>"
+                markdownString += "<img src=\"https://raw.githubusercontent.com/psharanda/LayoutOps/master/README/\(f1)\" alt=\"\(sectionRow.row.title)\" width=\"\(img1.size.width/2)\" height=\"\(img1.size.height/2)\"/> "
+                markdownString += "<img src=\"https://raw.githubusercontent.com/psharanda/LayoutOps/master/README/\(f2)\" alt=\"\(sectionRow.row.title)\" width=\"\(img2.size.width/2)\" height=\"\(img2.size.height/2)\"/>"
                 markdownString += "\n"
                 
                 currentRowIndex += 1
@@ -132,8 +132,10 @@ private func extractLayoutSourceCode(_ codebase: String, view: UIView) -> String
 
     if scanner.scanUpToString("class \(className)") != nil {
         if scanner.scanUpToString("super.layoutSubviews()") != nil {
-            if let code = scanner.scanUpToString(".layout()") {
-                let almostResult = code + ".layout()"
+            if let code = scanner.scanUpToString("static") {
+                var almostResult = code.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+                almostResult = almostResult.trimmingCharacters(in: CharacterSet(charactersIn: "}"))
+                almostResult = almostResult.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
                 
                 return (almostResult as NSString).replacingOccurrences(of: "super.layoutSubviews()", with: "").replacingOccurrences(of: "\n        ", with: "\n")
             }

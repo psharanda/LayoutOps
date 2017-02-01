@@ -11,14 +11,24 @@ public protocol LayoutableWithFont: Layoutable {
     var font: UIFont! {get}
 }
 
-public func AlignFittedLabelsUsingFirstBaseline(_ label1: LayoutableWithFont, _ label2: LayoutableWithFont) -> LayoutOperation {
-    return Follow(TopAnchor(label1, inset: label1.font?.ascender ?? 0), withAnchor: TopAnchor(label2, inset: label2.font?.ascender ?? 0))
-}
-
-public func AlignFittedLabelsUsingLastBaseline(_ label1: LayoutableWithFont, _ label2: LayoutableWithFont) -> LayoutOperation {
-    return Follow(BottomAnchor(label1, inset: label1.font?.descender ?? 0), withAnchor: BottomAnchor(label2, inset: label2.font?.descender ?? 0))
-}
-
-public func SetHeightAsLineHeight(_ label: LayoutableWithFont) -> LayoutOperation {
-    return SetHeight(label, value: label.font?.lineHeight ?? 0)
+extension Layouting where Base: Layoutable, Base: LayoutableWithFont {
+    
+    @discardableResult
+    public func alignToFirstBaseline<T: LayoutingCompatible>(ofSingleLineFittedLabel label: T) -> Layouting<Base> where T: LayoutableWithFont {
+        topAnchor.insettedBy(base.font?.ascender ?? 0).follow(label.lx.topAnchor.insettedBy(label.lx.base.font?.ascender ?? 0))
+        return self
+    }
+    
+    @discardableResult
+    public func alignToLastBaseline<T: LayoutingCompatible>(ofSingleLineFittedLabel label: T) -> Layouting<Base> where T.CompatibleType: LayoutableWithFont {
+        
+        bottomAnchor.insettedBy(base.font?.descender ?? 0).follow(label.lx.topAnchor.insettedBy(label.lx.base.font?.descender ?? 0))
+        return self
+    }
+    
+    @discardableResult
+    public func setHeightAsLineHeight() -> Layouting<Base>  {
+        return set(height: base.font?.lineHeight ?? 0)
+    }
+    
 }

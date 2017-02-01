@@ -5,67 +5,25 @@
 
 import UIKit
 
-public struct Viewport {
-    let topAnchor: VAnchor?
-    let bottomAnchor: VAnchor?
-    let leftAnchor: HAnchor?
-    let rightAnchor: HAnchor?
+extension Layouting where Base: Layoutable {
     
-    public init(topAnchor: VAnchor? = nil, leftAnchor: HAnchor? = nil, bottomAnchor: VAnchor? = nil, rightAnchor: HAnchor? = nil) {
-        self.topAnchor = topAnchor
-        self.leftAnchor = leftAnchor
-        self.bottomAnchor = bottomAnchor
-        self.rightAnchor = rightAnchor
+    @discardableResult
+    public func inViewport(rect: CGRect, block: ()->Void) -> Layouting<Base> {
+        let oldViewport = base.__lx_viewport
+        base.__lx_viewport = rect
+        block()
+        base.__lx_viewport = oldViewport
+        return self
     }
     
-    func apply(_ bounds: CGRect, layouts: ViewLayoutMap) -> CGRect {
-        let left = leftAnchor.flatMap { $0.anchorValue(layouts) } ?? bounds.origin.x
-        let top = topAnchor.flatMap { $0.anchorValue(layouts) } ?? bounds.origin.y
-        let right = rightAnchor.flatMap { $0.anchorValue(layouts) } ?? bounds.maxX
-        let bottom = bottomAnchor.flatMap { $0.anchorValue(layouts) } ?? bounds.maxY
+    @discardableResult
+    public func inViewport(topAnchor: VAnchor? = nil, leftAnchor: HAnchor? = nil, bottomAnchor: VAnchor? = nil, rightAnchor: HAnchor? = nil, block: ()->Void) -> Layouting<Base> {
         
-        return CGRect(x: left, y: top, width: right - left, height: bottom - top)
-    }
-    
-    func verify(_ superview: Layoutable) {
+        let left = leftAnchor.flatMap { $0.valueForRect($0.view.frame)} ?? base.bounds.origin.x
+        let top = topAnchor.flatMap { $0.valueForRect($0.view.frame)} ?? base.bounds.origin.y
+        let right = rightAnchor.flatMap { $0.valueForRect($0.view.frame) } ?? base.bounds.maxX
+        let bottom = bottomAnchor.flatMap { $0.valueForRect($0.view.frame) } ?? base.bounds.maxY                        
         
-        
-        var topIsWrong = false
-        var leftIsWrong = false
-        var bottomIsWrong = false
-        var rightIsWrong = false
-        
-        if let tv = topAnchor?.view, tv.parent !== superview {
-            topIsWrong = true
-        }
-        
-        if let lv = leftAnchor?.view, lv.parent  !== superview {
-            leftIsWrong = true
-        }
-        
-        if let bv = bottomAnchor?.view, bv.parent  !== superview {
-            bottomIsWrong = true
-        }
-        
-        if let rv = rightAnchor?.view, rv.parent  !== superview {
-            rightIsWrong = true
-        }
-        
-        if topIsWrong || leftIsWrong || bottomIsWrong || rightIsWrong {
-            
-            print("[LayoutOps:WARNING] Viewport anchor views have different superviews")
-            if topIsWrong {
-                print("Top Anchor is Wrong: \(topAnchor?.view)")
-            }
-            if leftIsWrong {
-                print("Left Anchor is Wrong: \(leftAnchor?.view)")
-            }
-            if bottomIsWrong {
-                print("Bottom Anchor is Wrong: \(bottomAnchor?.view)")
-            }
-            if rightIsWrong {
-                print("Right Anchor is Wrong: \(rightAnchor?.view)")
-            }
-        }
+        return inViewport(rect: CGRect(x: left, y: top, width: right - left, height: bottom - top), block: block)
     }
 }

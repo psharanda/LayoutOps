@@ -54,16 +54,13 @@ public enum SizeConstraint {
     }
 }
 
-private struct SizeToFitOperation: LayoutOperation {
-    let view: Layoutable
-    let width: SizeToFitIntention
-    let height: SizeToFitIntention
-    let widthSizeConstraint: SizeConstraint
-    let heightSizeConstraint: SizeConstraint
+extension Layouting where Base: Layoutable {
     
-    func calculateLayouts(_ layouts: inout ViewLayoutMap, viewport: Viewport) {
+    @discardableResult
+    public func sizeToFit(width: SizeToFitIntention = .current, height: SizeToFitIntention = .current, widthConstraint: SizeConstraint = .default, heightConstraint: SizeConstraint = .default) -> Layouting<Base> {
         
-        let fr = frameForView(view, layouts: &layouts)
+        
+        let fr = base.frame
         
         var w: CGFloat = 0
         switch width {
@@ -89,7 +86,7 @@ private struct SizeToFitOperation: LayoutOperation {
             h = fr.height
         }
         
-        var sz = view.sizeThatFits(CGSize(width: w, height: h))
+        var sz = base.sizeThatFits(CGSize(width: w, height: h))
         
         
         switch width {
@@ -114,57 +111,28 @@ private struct SizeToFitOperation: LayoutOperation {
             sz.height = fr.height
         }
         
-        sz.width = min(max(widthSizeConstraint.minValue, sz.width), widthSizeConstraint.maxValue)
-        sz.height = min(max(heightSizeConstraint.minValue, sz.height), heightSizeConstraint.maxValue)
+        sz.width = min(max(widthConstraint.minValue, sz.width), widthConstraint.maxValue)
+        sz.height = min(max(heightConstraint.minValue, sz.height), heightConstraint.maxValue)
         
-        SetSize(view, width: sz.width, height: sz.height).calculateLayouts(&layouts, viewport: viewport)
+        return set(width: sz.width, height: sz.height)
+        
     }
-}
-
-public func SizeToFit(_ view: Layoutable, width: SizeToFitIntention, height: SizeToFitIntention, widthConstraint: SizeConstraint = .default, heightConstraint: SizeConstraint = .default) -> LayoutOperation {
-    return SizeToFitOperation(view: view, width: width, height: height, widthSizeConstraint: widthConstraint, heightSizeConstraint:  heightConstraint)
-}
-
-/**
- same as SizeToFit(view, width: .Max, height: .Max)
- */
-public func SizeToFitMax(_ view: Layoutable) -> LayoutOperation {
-    return SizeToFit(view, width: .max, height: .max)
-}
-
-/**
- same as SizeToFit(view, width: .Current, height: .Current)
- */
-public func SizeToFit(_ view: Layoutable) -> LayoutOperation {
-    return SizeToFit(view, width: .current, height: .current)
-}
-
-/**
- same as SizeToFit(view, width: .Max, height: .Max)
- */
-public func SizeToFitMaxWithConstraints(_ view: Layoutable, widthConstraint: SizeConstraint, heightConstraint: SizeConstraint) -> LayoutOperation {
-    return SizeToFit(view, width: .max, height: .max, widthConstraint: widthConstraint, heightConstraint: heightConstraint)
-}
-
-//MARK: - fit height fill width
-
-/**
- Combine(
-    HFill(view, leftInset: leftInset, rightInset: rightInset),
-    SizeToFit(view, width: .KeepCurrent, height: .Max),
- )
-*/
-public func HFillVFit(_ view: Layoutable, leftInset: CGFloat, rightInset: CGFloat) -> LayoutOperation {
-    return Combine([
-        HFill(view, leftInset: leftInset, rightInset: rightInset),
-        SizeToFit(view, width: .keepCurrent, height: .max),
-    ])
-}
-
-public func HFillVFit(_ view: Layoutable, inset: CGFloat) -> LayoutOperation {
-    return HFillVFit(view, leftInset: inset, rightInset: inset)
-}
-
-public func HFillVFit(_ view: Layoutable) -> LayoutOperation {
-    return HFillVFit(view, leftInset: 0, rightInset: 0)
+    
+    /**
+     same as SizeToFit(view, width: .Max, height: .Max)
+     */
+    @discardableResult
+    public func sizeToFitMax(widthConstraint: SizeConstraint = .default, heightConstraint: SizeConstraint = .default) -> Layouting<Base> {
+        return sizeToFit(width: .max, height: .max, widthConstraint: widthConstraint, heightConstraint: heightConstraint)
+    }
+    
+    @discardableResult
+    public func hfillvfit(leftInset: CGFloat = 0, rightInset: CGFloat = 0) -> Layouting<Base> {
+        return hfill(leftInset: leftInset, rightInset: rightInset).sizeToFit(width: .keepCurrent, height: .max)
+    }
+    
+    @discardableResult
+    public func hfillvfit(inset: CGFloat) -> Layouting<Base> {
+        return hfillvfit(leftInset: inset, rightInset: inset)
+    }
 }

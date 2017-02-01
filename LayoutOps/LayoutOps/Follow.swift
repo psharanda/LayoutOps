@@ -5,48 +5,38 @@
 
 import UIKit
 
-
-//MARK: - follow
-
-private struct FollowOperation: LayoutOperation {
+private func follow_helper(_ anchorToFollow: Anchor, followerAnchor: Anchor) {
+    let toFollowView = anchorToFollow.view
+    let followerView = followerAnchor.view
     
-    let anchorToFollow: Anchor
-    let followerAnchor: Anchor
-    
-    func calculateLayouts(_ layouts: inout ViewLayoutMap, viewport: Viewport) {
-        
-        let toFollowView = anchorToFollow.view
-        let followerView = followerAnchor.view
-        
-        if(toFollowView.parent !== followerView.parent) {
-            print("[LayoutOps:WARNING] Follow operation will produce undefined results for views with different superview")
-            print("View to follow: \(toFollowView)")
-            print("Follower view: \(followerView)")
-        }
-        
-        let anchorToFollowFrame = frameForView(toFollowView, layouts: &layouts)
-        let followerAnchorFrame = frameForView(followerView, layouts: &layouts)
-        
-        layouts[followerView] = followerAnchor.setValueForRect(anchorToFollow.valueForRect(anchorToFollowFrame), rect: followerAnchorFrame)
+    if(toFollowView.__lx_parent !== followerView.__lx_parent) {
+        print("[LayoutOps:WARNING] Follow operation will produce undefined results for views with different superview")
+        print("View to follow: \(toFollowView)")
+        print("Follower view: \(followerView)")
     }
     
-    init(anchorToFollow: Anchor, followerAnchor: Anchor) {
-        self.anchorToFollow = anchorToFollow
-        self.followerAnchor = followerAnchor
-    }
+    let anchorToFollowFrame = toFollowView.frame
+    let followerAnchorFrame = followerView.frame
     
+    let result = followerAnchor.setValueForRect(anchorToFollow.valueForRect(anchorToFollowFrame), rect: followerAnchorFrame)
+    
+    followerView.updateFrame(result)
 }
 
-// anchor.value + inset = withAnchor.value + inset
-
-public func Follow(_ anchor: HAnchor, withAnchor: HAnchor) -> LayoutOperation {
-    return FollowOperation(anchorToFollow: anchor, followerAnchor: withAnchor)
+extension VAnchor {
+    public func follow(_ anchor: VAnchor) {
+        follow_helper(anchor, followerAnchor: self)
+    }
 }
 
-public func Follow(_ anchor: VAnchor, withAnchor: VAnchor) -> LayoutOperation {
-    return FollowOperation(anchorToFollow: anchor, followerAnchor: withAnchor)
+extension HAnchor {
+    public func follow(_ anchor: HAnchor) {
+        follow_helper(anchor, followerAnchor: self)
+    }
 }
 
-public func Follow(_ anchor: SizeAnchor, withAnchor: SizeAnchor) -> LayoutOperation {
-    return FollowOperation(anchorToFollow: anchor, followerAnchor: withAnchor)
+extension SizeAnchor {
+    public func follow(_ anchor: SizeAnchor) {
+        follow_helper(anchor, followerAnchor: self)
+    }
 }

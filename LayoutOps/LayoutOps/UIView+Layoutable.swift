@@ -5,11 +5,24 @@
 
 import Foundation
 
+private var viewPortInsetsKey: UInt8 = 0
+
 extension UIView: Layoutable {
-    public var parent: Layoutable? {
+    public var __lx_parent: Layoutable? {
         return superview
     }
+    
+    public var __lx_viewport: CGRect? {
+        set {
+            objc_setAssociatedObject(self, &viewPortInsetsKey, newValue.map { NSValue(cgRect: $0) }, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+        get {
+            return (objc_getAssociatedObject(self, &viewPortInsetsKey) as? NSValue)?.cgRectValue
+        }
+    }
 }
+
+extension UIView: LayoutingCompatible { }
 
 extension UILabel: Baselinable {
     public func baselineValueOfType(_ type: BaselineType, size: CGSize) -> CGFloat {
@@ -29,14 +42,25 @@ extension UILabel: LayoutableWithFont {
 }
 
 extension CALayer: Layoutable {
-    public var parent: Layoutable? {
+    public var __lx_parent: Layoutable? {
         return superlayer
     }
     
     public func sizeThatFits(_ size: CGSize) -> CGSize {
         return CGSize()
     }
+    
+    public var __lx_viewport: CGRect? {
+        set {
+            objc_setAssociatedObject(self, &viewPortInsetsKey, newValue.map { NSValue(cgRect: $0) }, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+        get {
+            return (objc_getAssociatedObject(self, &viewPortInsetsKey) as? NSValue)?.cgRectValue
+        }
+    }
 }
+
+extension CALayer: LayoutingCompatible { }
 
 
 

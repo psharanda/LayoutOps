@@ -28,24 +28,25 @@ class ViewPortDemo: UIView, DemoViewProtocol {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        Combine(
-            HFill(blueView, inset: 20),
-            VPut(
-                Fix(20),
-                Fix(blueView, 20),
-                Fix(20),
-                Flex(greenView),
-                Fix(20)
-            ),
-            AlignLeft(greenView, inset: 20),
-            SetWidth(greenView, value: 20),
-            
-            Combine(Viewport(topAnchor: BottomAnchor(blueView), leftAnchor: RightAnchor(greenView)), operations:
-                Fill(redView, inset: 5)
-            )
-        ).layout()
+        
+        blueView.lx.hfill(inset: 20)
+        
+        self.lx.vput(
+            Fix(20),
+            Fix(blueView, 20),
+            Fix(20),
+            Flex(greenView),
+            Fix(20)
+        )
+        
+        greenView.lx.alignLeft(20)
+            .set(width: 20)
+        
+        self.lx.inViewport(topAnchor: blueView.lx.bottomAnchor, leftAnchor: greenView.lx.rightAnchor) {
+            redView.lx.fill(inset: 5)
+        }
     }
     
     static let title = "Demo"
-    static let comments = "Combine operation is not only for grouping other operations, but it also defines viewport for them. Viewport can be defined using anchors of any childview, or nil anchor if using superview edges"
+    static let comments = "Viewport can be defined using anchors of any childview, or nil anchor if using superview edges"
 }

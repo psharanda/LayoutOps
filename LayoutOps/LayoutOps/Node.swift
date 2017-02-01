@@ -67,7 +67,9 @@ open class AnyNode: Layoutable {
         return CGRect(x: 0, y: 0, width: frame.width, height: frame.height)
     }
     
-    open var frame: CGRect = CGRect()
+    open var frame = CGRect()
+    
+    open var __lx_viewport: CGRect?
     
     open func sizeThatFits(_ size: CGSize) -> CGSize {
         return CGSize()
@@ -76,7 +78,7 @@ open class AnyNode: Layoutable {
     fileprivate var subnodes: [AnyNode]
     fileprivate var supernode: AnyNode?
     
-    open weak var parent: Layoutable? {
+    open weak var __lx_parent: Layoutable? {
         return supernode
     }
     
@@ -164,9 +166,10 @@ open class Node<T: UIView>: AnyNode {
         super.init(tag: tag, subnodes: subnodes) { (view: T?) -> T in            
             return initializer(view)
         }
-    }
-    
+    }    
 }
+
+extension AnyNode: LayoutingCompatible { }
 
 
 

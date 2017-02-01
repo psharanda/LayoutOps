@@ -228,7 +228,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd Demos\n\ncat *.swift >> Codebase.generated.txt\n";
+			shellScript = "cd Demos\n\nrm -rf Codebase.generated.txt\ncat *.swift >> Codebase.generated.txt\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -358,7 +358,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Demos/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.psharanda.Demos;
@@ -371,7 +370,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Demos/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.psharanda.Demos;
