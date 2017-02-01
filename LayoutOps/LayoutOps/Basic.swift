@@ -10,15 +10,24 @@ private func centerStart(value: CGFloat, superValue: CGFloat, start: CGFloat, fi
 }
 
 extension Layouting where Base: Layoutable {
-    
-    
+
     private func processInParent(block: (CGRect, CGRect)->CGRect) -> Layouting<Base> {
         
         guard let lx_parent = base.lx_parent else {
             return self
         }
         
-        base.updateFrame(block(base.frame, lx_parent.boundsOrViewPort))
+        let superviewFrame = lx_parent.frame
+        let superviewFrameInViewPort = lx_parent.boundsOrViewPort
+        let superviewBoundsInViewPort = CGRect(x: 0, y: 0, width: superviewFrameInViewPort.width, height: superviewFrameInViewPort.height)
+        
+        let frame = base.frame
+        
+        let frameInViewPort = CGRect(x: frame.origin.x - superviewFrameInViewPort.origin.x, y: frame.origin.y - superviewFrameInViewPort.origin.y, width: frame.width, height: frame.height)
+        
+        let rectInViewport = block(frameInViewPort, superviewBoundsInViewPort)
+        
+        base.updateFrame(CGRect(x: superviewFrameInViewPort.origin.x + rectInViewport.origin.x, y: superviewFrameInViewPort.origin.y + rectInViewport.origin.y, width: rectInViewport.width, height: rectInViewport.height))
         
         return self
     }
