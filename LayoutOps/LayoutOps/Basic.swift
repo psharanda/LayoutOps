@@ -14,11 +14,11 @@ extension Layouting where Base: Layoutable {
     
     private func processInParent(block: (CGRect, CGRect)->CGRect) -> Layouting<Base> {
         
-        guard let parent = base.parent else {
+        guard let lx_parent = base.lx_parent else {
             return self
         }
         
-        base.updateFrame(block(base.frame, parent.boundsInViewPort))
+        base.updateFrame(block(base.frame, lx_parent.boundsOrViewPort))
         
         return self
     }

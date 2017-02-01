@@ -8,16 +8,16 @@ import Foundation
 private var viewPortInsetsKey: UInt8 = 0
 
 extension UIView: Layoutable {
-    public var parent: Layoutable? {
+    public var lx_parent: Layoutable? {
         return superview
     }
     
-    public var viewportInsets: UIEdgeInsets {
+    public var lx_viewport: CGRect? {
         set {
-            objc_setAssociatedObject(self, &viewPortInsetsKey, NSValue(UIEdgeInsets: newValue), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject(self, &viewPortInsetsKey, newValue.map { NSValue(CGRect: $0) }, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
         get {
-            return (objc_getAssociatedObject(self, &viewPortInsetsKey) as? NSValue)?.UIEdgeInsetsValue() ?? UIEdgeInsets()
+            return (objc_getAssociatedObject(self, &viewPortInsetsKey) as? NSValue)?.CGRectValue()
         }
     }
 }
@@ -42,7 +42,7 @@ extension UILabel: LayoutableWithFont {
 }
 
 extension CALayer: Layoutable {
-    public var parent: Layoutable? {
+    public var lx_parent: Layoutable? {
         return superlayer
     }
     
@@ -50,12 +50,12 @@ extension CALayer: Layoutable {
         return CGSize()
     }
     
-    public var viewportInsets: UIEdgeInsets {
+    public var lx_viewport: CGRect? {
         set {
-            objc_setAssociatedObject(self, &viewPortInsetsKey, NSValue(UIEdgeInsets: newValue), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject(self, &viewPortInsetsKey, newValue.map { NSValue(CGRect: $0) }, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
         get {
-            return (objc_getAssociatedObject(self, &viewPortInsetsKey) as? NSValue)?.UIEdgeInsetsValue() ?? UIEdgeInsets()
+            return (objc_getAssociatedObject(self, &viewPortInsetsKey) as? NSValue)?.CGRectValue()
         }
     }
 }

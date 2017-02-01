@@ -7,11 +7,11 @@ import UIKit
 
 extension Layouting where Base: Layoutable {
     
-    public func inViewport(insets insets: UIEdgeInsets, @noescape block:()->Void) -> Layouting<Base> {
-        let oldInsets = base.viewportInsets
-        base.viewportInsets = insets
+    public func inViewport(rect rect: CGRect, @noescape block:()->Void) -> Layouting<Base> {
+        let oldViewport = base.lx_viewport
+        base.lx_viewport = rect
         block()
-        base.viewportInsets = oldInsets
+        base.lx_viewport = oldViewport
         return self
     }
     
@@ -22,6 +22,6 @@ extension Layouting where Base: Layoutable {
         let right = rightAnchor.flatMap { $0.valueForRect($0.view.frame) } ?? base.bounds.maxX
         let bottom = bottomAnchor.flatMap { $0.valueForRect($0.view.frame) } ?? base.bounds.maxY                        
         
-        return inViewport(insets: UIEdgeInsets(top: top, left: left, bottom: base.bounds.height - bottom, right: base.bounds.width - right), block: block)
+        return inViewport(rect: CGRect(x: left, y: top, width: right - left, height: bottom - top), block: block)
     }
 }
