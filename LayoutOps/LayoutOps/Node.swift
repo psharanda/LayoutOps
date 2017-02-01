@@ -69,7 +69,7 @@ public class AnyNode: Layoutable {
     
     public var frame = CGRect()
     
-    public var lx_viewport: CGRect?
+    public var __lx_viewport: CGRect?
     
     public func sizeThatFits(size: CGSize) -> CGSize {
         return CGSize()
@@ -78,7 +78,7 @@ public class AnyNode: Layoutable {
     private var subnodes: [AnyNode]
     private var supernode: AnyNode?
     
-    public weak var lx_parent: Layoutable? {
+    public weak var __lx_parent: Layoutable? {
         return supernode
     }
     

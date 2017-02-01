@@ -9,7 +9,7 @@ private func follow_helper(anchorToFollow: Anchor, followerAnchor: Anchor) {
     let toFollowView = anchorToFollow.view
     let followerView = followerAnchor.view
     
-    if(toFollowView.lx_parent !== followerView.lx_parent) {
+    if(toFollowView.__lx_parent !== followerView.__lx_parent) {
         print("[LayoutOps:WARNING] Follow operation will produce undefined results for views with different superview")
         print("View to follow: \(toFollowView)")
         print("Follower view: \(followerView)")

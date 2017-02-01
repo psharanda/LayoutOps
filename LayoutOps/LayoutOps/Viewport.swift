@@ -8,10 +8,10 @@ import UIKit
 extension Layouting where Base: Layoutable {
     
     public func inViewport(rect rect: CGRect, @noescape block:()->Void) -> Layouting<Base> {
-        let oldViewport = base.lx_viewport
-        base.lx_viewport = rect
+        let oldViewport = base.__lx_viewport
+        base.__lx_viewport = rect
         block()
-        base.lx_viewport = oldViewport
+        base.__lx_viewport = oldViewport
         return self
     }
     

@@ -13,11 +13,11 @@ extension Layouting where Base: Layoutable {
 
     private func processInParent(block: (CGRect, CGRect)->CGRect) -> Layouting<Base> {
         
-        guard let lx_parent = base.lx_parent else {
+        guard let __lx_parent = base.__lx_parent else {
             return self
         }
         
-        let superviewFrameInViewPort = lx_parent.boundsOrViewPort
+        let superviewFrameInViewPort = __lx_parent.boundsOrViewPort
         let superviewBoundsInViewPort = CGRect(x: 0, y: 0, width: superviewFrameInViewPort.width, height: superviewFrameInViewPort.height)
         
         let frame = base.frame
@@ -219,7 +219,7 @@ extension Layouting where Base: Layoutable {
         }
     }
     
-    public func set(centerX: CGFloat, centerY: CGFloat) -> Layouting<Base> {
+    public func set(centerX centerX: CGFloat, centerY: CGFloat) -> Layouting<Base> {
         return set(center: CGPoint(x: centerX, y: centerY))
     }
     

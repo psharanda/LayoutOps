@@ -8,11 +8,11 @@ import Foundation
 private var viewPortInsetsKey: UInt8 = 0
 
 extension UIView: Layoutable {
-    public var lx_parent: Layoutable? {
+    public var __lx_parent: Layoutable? {
         return superview
     }
     
-    public var lx_viewport: CGRect? {
+    public var __lx_viewport: CGRect? {
         set {
             objc_setAssociatedObject(self, &viewPortInsetsKey, newValue.map { NSValue(CGRect: $0) }, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
@@ -42,7 +42,7 @@ extension UILabel: LayoutableWithFont {
 }
 
 extension CALayer: Layoutable {
-    public var lx_parent: Layoutable? {
+    public var __lx_parent: Layoutable? {
         return superlayer
     }
     
@@ -50,7 +50,7 @@ extension CALayer: Layoutable {
         return CGSize()
     }
     
-    public var lx_viewport: CGRect? {
+    public var __lx_viewport: CGRect? {
         set {
             objc_setAssociatedObject(self, &viewPortInsetsKey, newValue.map { NSValue(CGRect: $0) }, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }

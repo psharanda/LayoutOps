@@ -23,10 +23,10 @@ extension CGFloat {
 }
 
 public protocol Layoutable: class {
-    var lx_parent: Layoutable? {get}
+    var __lx_parent: Layoutable? {get}
     var bounds: CGRect {get}
     var frame: CGRect {get set}
-    var lx_viewport: CGRect? {get set}
+    var __lx_viewport: CGRect? {get set}
     func sizeThatFits(size: CGSize) -> CGSize
 }
 
@@ -36,7 +36,7 @@ extension Layoutable {
     }
     
     var boundsOrViewPort: CGRect {
-        return lx_viewport ?? bounds
+        return __lx_viewport ?? bounds
     }
 }
 
