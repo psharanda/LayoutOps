@@ -13,7 +13,7 @@ extension CGFloat {
     
     var pixelPerfect: CGFloat {
         let scale = UIScreenCache.scale
-        return ((self * scale)/scale).rounded();
+        return (self * scale).rounded()/scale;
     }
     
     var ceilPixelPerfect: CGFloat {
