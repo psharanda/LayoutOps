@@ -125,11 +125,9 @@ private struct BoxHeight: BoxDimension {
 private func putOperation<T: BoxDimension>(_ superview: Layoutable, intentions: [PutIntention], dimension: T) {
     var totalWeight: CGFloat = 0.0
     
-    let b = superview.boundsOrViewPort
+    let bounds = superview.boundsOrViewPort
     
-    let bounds = CGRect(x: 0, y: 0, width: b.width, height: b.height)
-    
-    var totalSizeForFlexs: CGFloat = T.getDimension(bounds).size
+    var totalSizeForFlexs = T.getDimension(bounds).size
     
     for i in intentions {
         switch (i) {
@@ -150,7 +148,7 @@ private func putOperation<T: BoxDimension>(_ superview: Layoutable, intentions: 
     
     let unoSize = totalSizeForFlexs/totalWeight
     
-    var start:CGFloat = T.getDimension(bounds).origin
+    var start = T.getDimension(bounds).origin
     for i in intentions {
         switch (i) {
         case .flexIntention(let views, let weight):
