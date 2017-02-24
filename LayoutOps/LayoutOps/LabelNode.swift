@@ -34,23 +34,23 @@ open class LabelNode: AnyNode {
     
     open override func sizeThatFits(_ size: CGSize) -> CGSize {
         
-        struct Cache {
-            static let label = UILabel()
+        let label = Thread.current.cachedObject(for: "LabelNode.label") {
+            return UILabel()
         }
         
-        Cache.label.attributedText = nil
-        Cache.label.text = nil
-        Cache.label.font = nil
-        Cache.label.numberOfLines = numberOfLines
+        label.attributedText = nil
+        label.text = nil
+        label.font = nil
+        label.numberOfLines = numberOfLines
         
         switch text {
         case .attributed(let attrString):
-            Cache.label.attributedText = attrString
-            return Cache.label.sizeThatFits(size)
+            label.attributedText = attrString
+            return label.sizeThatFits(size)
         case .regular(let string, let font):
-            Cache.label.text = string
-            Cache.label.font = font
-            return Cache.label.sizeThatFits(size)
+            label.text = string
+            label.font = font
+            return label.sizeThatFits(size)
         }
     }
 }

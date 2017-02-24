@@ -17,10 +17,10 @@ open class SwitchNode: AnyNode {
     
     open override func sizeThatFits(_ size: CGSize) -> CGSize {
         
-        struct Cache {
-            static let switchView = UISwitch()
+        let switchView = Thread.current.cachedObject(for: "SwitchNode.switchView") {
+            return UISwitch()
         }
         
-        return Cache.switchView.sizeThatFits(size)
+        return switchView.sizeThatFits(size)
     }
 }

@@ -19,10 +19,11 @@ open class ImageNode: AnyNode {
     
     open override func sizeThatFits(_ size: CGSize) -> CGSize {
         
-        struct Cache {
-            static let imageView = UIImageView()
+        let imageView = Thread.current.cachedObject(for: "ImageNode.imageView") {
+            return UIImageView()
         }
-        Cache.imageView.image = image
-        return Cache.imageView.sizeThatFits(size)
+        
+        imageView.image = image
+        return imageView.sizeThatFits(size)
     }
 }
