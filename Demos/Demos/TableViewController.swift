@@ -58,7 +58,7 @@ extension TweetModel {
             tweet: "Just discovered LayoutOps... silly name, great framework #yatusabes",
             thumbnail: #imageLiteral(resourceName: "thumb-nacho")
         )
-        return (0...20).map { _ in  [tweetFelix, tweetEloy, tweetJavi, tweetNacho] }.flatMap { $0 }
+        return (0..<500).map { _ in  [tweetFelix, tweetEloy, tweetJavi, tweetNacho] }.flatMap { $0 }
     }
     
 }
@@ -73,11 +73,8 @@ class TableViewController: UIViewController {
         return tableView
     }()
     
-    var cellNodes: [RootNode] = [] {
-        didSet {
-            tableView.reloadData()
-        }
-    }
+    fileprivate var nodeModels: [(TweetModel, RootNode)] = []
+    private var referenceWidth: CGFloat = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -85,29 +82,41 @@ class TableViewController: UIViewController {
         title = "Table Demo"
         view.addSubview(tableView)
         
-        // precache cell nodes, this can be moved to background queue
-        let width = view.frame.width
-        
-        //kind of background fetching and caching
-        DispatchQueue.global(qos: .background).async {
-            let nodes = TweetModel.stubData().map { TweetCell.buildRootNode($0, width: width)}
-            DispatchQueue.main.async {[weak self] in
-                self?.cellNodes = nodes
-            }
-        }
-        
+        nodeModels = TweetModel.stubData().map { ($0, RootNode(size: CGSize.zero, subnodes: []))}
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.lx.fill()
+        
+        let width = tableView.frame.width
+        
+        if width != referenceWidth {
+            referenceWidth = width
+            
+            let models = nodeModels.map { $0.0 }
+            DispatchQueue.global(qos: .background).async {
+                let nodeModels = models.map { ($0, TweetCell.buildRootNode($0, width: width))}
+                DispatchQueue.main.async {[weak self] in
+                    self?.didLoad(nodeModels: nodeModels, width: width)
+                }
+            }
+        }
+    }
+    
+    private func didLoad(nodeModels: [(TweetModel, RootNode)], width: CGFloat) {
+        print("did cache")
+        if width == referenceWidth {
+            self.nodeModels = nodeModels
+            tableView.reloadData()
+        }
     }
 }
 
 extension TableViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return cellNodes.count
+        return nodeModels.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -121,33 +130,41 @@ extension TableViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        (cell as? TweetCell)?.rootNode = cellNodes[indexPath.row]
+        (cell as? TweetCell)?.rootNode = nodeModels[indexPath.row].1
     }
-    
+
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 100
+        
+        let (_, rootNode) = nodeModels[indexPath.row]
+        
+        if rootNode.frame.width == tableView.frame.width {
+            return rootNode.frame.height
+        }else {
+            return 100
+        }
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
-        return cellNodes[indexPath.row].frame.height
-    }
-}
-
-class MyView: UIView {
-    
-    var color: UIColor? {
-        set {
-            backgroundColor = newValue
+        let (model, rootNode) = nodeModels[indexPath.row]
+        
+        if rootNode.frame.width != tableView.frame.width {
+            let newRootNode = TweetCell.buildRootNode(model, width: tableView.frame.width)
+            nodeModels[indexPath.row] = (model, newRootNode)
+            
+            if let cell = tableView.cellForRow(at: indexPath) {
+                if let cell = cell as? TweetCell {
+                    cell.rootNode = newRootNode
+                }
+            }
         }
-        get {
-            return backgroundColor
-        }
+        
+        return nodeModels[indexPath.row].1.frame.height
     }
 }
 
 class TweetCell: UITableViewCell {
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
         rootNode?.installInRootView(contentView)
