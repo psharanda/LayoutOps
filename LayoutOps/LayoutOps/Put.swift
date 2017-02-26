@@ -123,6 +123,26 @@ private struct BoxHeight: BoxDimension {
 }
 
 private func putOperation<T: BoxDimension>(_ superview: Layoutable, intentions: [PutIntention], dimension: T) {
+    
+    func testView(view: Layoutable) {
+        if view.__lx_parent == nil {
+            print("[WARNING:LayoutOps:put] nil parent for \(view)")
+        } else if view.__lx_parent !== superview {
+            print("[WARNING:LayoutOps:put] wrong parent \(view)")
+        }
+    }
+    
+    for i in intentions {
+        switch (i) {
+        case .flexIntention(let views, _):
+            views?.forEach(testView)
+            break
+        case .fixIntention(let views, _):
+            views?.forEach(testView)
+            break
+        }
+    }
+    
     var totalWeight: CGFloat = 0.0
     
     let bounds = superview.boundsOrViewPort
