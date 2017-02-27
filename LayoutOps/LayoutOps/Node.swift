@@ -149,6 +149,10 @@ open class RootNode: AnyNode {
         super.init(rs: size, subnodes: subnodes)
     }
     
+    public init() {
+        super.init(rs: CGSize(), subnodes: [])
+    }
+    
     open override func sizeThatFits(_ size: CGSize) -> CGSize {
         fatalError("RootNode is not intended to respond sizeThatFits")
     }

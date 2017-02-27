@@ -25,6 +25,13 @@ struct TweetModel {
         self.thumbnail = thumbnail
     }
     
+    init() {
+        self.name = ""
+        self.username = ""
+        self.displayableDate = ""
+        self.tweet = ""
+        self.thumbnail = nil
+    }
 }
 
 extension TweetModel {
@@ -82,7 +89,7 @@ class TableViewController: UIViewController {
         title = "Table Demo"
         view.addSubview(tableView)
         
-        nodeModels = TweetModel.stubData().map { ($0, RootNode(size: CGSize.zero, subnodes: []))}
+        nodeModels = TweetModel.stubData().map { ($0, RootNode())}
     }
     
     override func viewDidLayoutSubviews() {
@@ -94,18 +101,21 @@ class TableViewController: UIViewController {
         if width != referenceWidth {
             referenceWidth = width
             
+            let dateStart = Date()
             let models = nodeModels.map { $0.0 }
             DispatchQueue.global(qos: .background).async {
-                let nodeModels = models.map { ($0, TweetCell.buildRootNode($0, width: width))}
-                DispatchQueue.main.async {[weak self] in
-                    self?.didLoad(nodeModels: nodeModels, width: width)
+                models.parallelMap(striding: 2, filler: (TweetModel(), RootNode()), f:  {
+                    ($0, TweetCell.buildRootNode($0, width: width))
+                }) {[weak self] in
+                    print("did cache in \(Date().timeIntervalSince(dateStart))s")
+                    self?.didLoad(nodeModels: $0, width: width)
                 }
             }
         }
     }
     
     private func didLoad(nodeModels: [(TweetModel, RootNode)], width: CGFloat) {
-        print("did cache")
+        
         if width == referenceWidth {
             self.nodeModels = nodeModels
             tableView.reloadData()
@@ -327,4 +337,28 @@ extension String {
         return matches.map { $0.range }
     }
     
+}
+
+extension Array {
+    func parallelMap<R>(striding n: Int, filler: R, f: @escaping (Element) -> R, completion: @escaping ([R]) -> ()) {
+        let N = self.count
+        
+        var finalResult = Array<R>(repeating: filler, count: N)
+        
+        finalResult.withUnsafeMutableBufferPointer { res in
+            DispatchQueue.concurrentPerform(iterations: N/n) { k in
+                for i in (k * n)..<((k + 1) * n) {
+                    res[i] = f(self[i])
+                }
+            }
+        }
+        
+        for i in (N - (N % n))..<N {
+            finalResult[i] = f(self[i])
+        }
+        
+        DispatchQueue.main.async {
+            completion(finalResult)
+        }
+    }
 }
