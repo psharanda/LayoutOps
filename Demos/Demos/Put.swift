@@ -323,3 +323,171 @@ class PutDemo_FixFlexGrid: UIView, DemoViewProtocol {
     static let title = "Fix+Flex grid"
     static let comments = "Elegant way to layout views in grid using just one hput and one vput"
 }
+
+class PutDemo_DigiMax: UIView, DemoViewProtocol {
+    
+    let topView1 = makeViewWithColor(.red)
+    let topView2 = makeViewWithColor(.blue)
+    let topView3 = makeViewWithColor(.cyan)
+    let cardView1 = makeViewWithColor(.green)
+    let cardView2 = makeViewWithColor(.orange)
+    let cardView3 = makeViewWithColor(.brown)
+    let cardView4 = makeViewWithColor(.purple)
+    
+    let bottomView = makeViewWithColor(.gray)
+    
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        addSubview(topView1)
+        addSubview(topView2)
+        addSubview(topView3)
+        addSubview(cardView1)
+        addSubview(cardView2)
+        addSubview(cardView3)
+        addSubview(cardView4)
+        
+        addSubview(bottomView)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        let topSize = CGSize(width: 60, height: 60)
+        let topPadding: CGFloat = 10
+        
+        let topLeftRightPadding: CGFloat = 20
+        
+        topView1.lx.set(size: topSize)
+            .alignTop(topPadding)
+        topView2.lx.set(size: topSize)
+            .alignTop(topPadding)
+        topView3.lx.set(size: topSize)
+            .alignTop(topPadding)
+        
+        lx.hput(
+            Fix(topLeftRightPadding),
+            Fix(topView1),
+            Flex(),
+            Fix(topView2),
+            Flex(),
+            Fix(topView3),
+            Fix(topLeftRightPadding)
+        )
+        
+        let cardSize = bounds.width < bounds.height ? CGSize(width: 80, height: 120) : CGSize(width: 60, height: 90)
+        let cardLeftRightPadding: CGFloat = 25
+        
+        cardView1.lx.set(size: cardSize)
+        cardView2.lx.set(size: cardSize)
+        cardView3.lx.set(size: cardSize)
+        cardView4.lx.set(size: cardSize)
+        
+        
+        if bounds.width < bounds.height {
+            cardView1.lx.vcenter()
+            cardView2.lx.vcenter()
+            
+            lx.hput(
+                Fix(cardLeftRightPadding),
+                Fix(cardView1),
+                Flex(),
+                Fix(cardView2),
+                Fix(cardLeftRightPadding)
+            )
+            
+            cardView3.lx.hcenter()
+            cardView4.lx.hcenter()
+            
+            lx.vput(
+                Flex(),
+                Fix(cardView3),
+                Fix(60),
+                Fix(cardView4),
+                Flex()
+            )
+        } else {
+            cardView1.lx.vcenter()
+            cardView2.lx.vcenter()
+            cardView3.lx.vcenter()
+            cardView4.lx.vcenter()
+            
+            lx.hput(
+                Fix(cardLeftRightPadding),
+                Fix(cardView1),
+                Flex(),
+                Fix(cardView3),
+                Flex(),
+                Fix(cardView4),
+                Flex(),
+                Fix(cardView2),
+                Fix(cardLeftRightPadding)
+            )
+        }
+        
+        
+        bottomView.lx.set(height: 40)
+            .hfill(inset: 100)
+            .alignBottom(15)
+    }
+    
+    static let title = "Digimax"
+    static let comments = "AL Battle"
+}
+
+class PutDemo_Wrap: UIView, DemoViewProtocol {
+    
+    let container = makeGreenView()
+    let title = makeTitleLabel()
+    let details = makeDetailsLabel()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        addSubview(container)
+        container.addSubview(title)
+        container.addSubview(details)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        let maxLabelsWidth: CGFloat = 250
+        
+        title.lx.sizeToFit(width: .value(maxLabelsWidth), height: .max)
+        details.lx.sizeToFit(width: .value(maxLabelsWidth), height: .max)
+
+        container.lx.hwrap(
+            Fix(10),
+            Fix([title, details], .max), //fixing for view with greatest width
+            Fix(10)
+        )
+        
+        container.lx.vwrap(
+            Fix(10),
+            Fix(title),
+            Fix(10),
+            Fix(details),
+            Fix(10)
+        )
+        
+        container.lx.center()
+    }
+
+    
+    static let title = "Wrap"
+    static let comments = "Derivative from put operation. Accepts only Fix. Modifies parent frame to wrap childs. Method to perform selfsizing."
+}
+
+

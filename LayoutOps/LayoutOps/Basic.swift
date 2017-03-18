@@ -3,7 +3,7 @@
 //  Copyright © 2016 Pavel Sharanda. All rights reserved.
 //
 
-import UIKit
+import Foundation
 
 private func centerStart(_ value: CGFloat, superValue: CGFloat, start: CGFloat, finish: CGFloat) -> CGFloat {
     return start + (superValue - start - finish - value)/2

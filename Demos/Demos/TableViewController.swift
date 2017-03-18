@@ -118,7 +118,6 @@ class TableViewController: UIViewController {
         
         if width == referenceWidth {
             self.nodeModels = nodeModels
-            tableView.reloadData()
         }
     }
 }
@@ -144,14 +143,7 @@ extension TableViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        
-        let (_, rootNode) = nodeModels[indexPath.row]
-        
-        if rootNode.frame.width == tableView.frame.width {
-            return rootNode.frame.height
-        }else {
-            return 100
-        }
+        return 100
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

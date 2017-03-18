@@ -383,6 +383,116 @@ self.lx.vput(
 )
 ```
 <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/master/README/Put_Put labels_portrait.png" alt="Put labels" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/master/README/Put__Put labels_landscape.png" alt="Put labels" width="240.0" height="160.0"/>
+#### Digimax
+AL Battle
+```swift
+
+
+let topSize = CGSize(width: 60, height: 60)
+let topPadding: CGFloat = 10
+
+let topLeftRightPadding: CGFloat = 20
+
+topView1.lx.set(size: topSize)
+    .alignTop(topPadding)
+topView2.lx.set(size: topSize)
+    .alignTop(topPadding)
+topView3.lx.set(size: topSize)
+    .alignTop(topPadding)
+
+lx.hput(
+    Fix(topLeftRightPadding),
+    Fix(topView1),
+    Flex(),
+    Fix(topView2),
+    Flex(),
+    Fix(topView3),
+    Fix(topLeftRightPadding)
+)
+
+let cardSize = bounds.width < bounds.height ? CGSize(width: 80, height: 120) : CGSize(width: 60, height: 90)
+let cardLeftRightPadding: CGFloat = 25
+
+cardView1.lx.set(size: cardSize)
+cardView2.lx.set(size: cardSize)
+cardView3.lx.set(size: cardSize)
+cardView4.lx.set(size: cardSize)
+
+
+if bounds.width < bounds.height {
+    cardView1.lx.vcenter()
+    cardView2.lx.vcenter()
+    
+    lx.hput(
+        Fix(cardLeftRightPadding),
+        Fix(cardView1),
+        Flex(),
+        Fix(cardView2),
+        Fix(cardLeftRightPadding)
+    )
+    
+    cardView3.lx.hcenter()
+    cardView4.lx.hcenter()
+    
+    lx.vput(
+        Flex(),
+        Fix(cardView3),
+        Fix(60),
+        Fix(cardView4),
+        Flex()
+    )
+} else {
+    cardView1.lx.vcenter()
+    cardView2.lx.vcenter()
+    cardView3.lx.vcenter()
+    cardView4.lx.vcenter()
+    
+    lx.hput(
+        Fix(cardLeftRightPadding),
+        Fix(cardView1),
+        Flex(),
+        Fix(cardView3),
+        Flex(),
+        Fix(cardView4),
+        Flex(),
+        Fix(cardView2),
+        Fix(cardLeftRightPadding)
+    )
+}
+
+
+bottomView.lx.set(height: 40)
+    .hfill(inset: 100)
+    .alignBottom(15)
+```
+<img src="https://raw.githubusercontent.com/psharanda/LayoutOps/master/README/Put_Digimax_portrait.png" alt="Digimax" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/master/README/Put__Digimax_landscape.png" alt="Digimax" width="240.0" height="160.0"/>
+#### Wrap
+Derivative from put operation. Accepts only Fix. Modifies parent frame to wrap childs. Method to perform selfsizing.
+```swift
+
+
+let maxLabelsWidth: CGFloat = 250
+
+title.lx.sizeToFit(width: .value(maxLabelsWidth), height: .max)
+details.lx.sizeToFit(width: .value(maxLabelsWidth), height: .max)
+
+container.lx.hwrap(
+    Fix(10),
+    Fix([title, details], .max), //fixing for view with greatest width
+    Fix(10)
+)
+
+container.lx.vwrap(
+    Fix(10),
+    Fix(title),
+    Fix(10),
+    Fix(details),
+    Fix(10)
+)
+
+container.lx.center()
+```
+<img src="https://raw.githubusercontent.com/psharanda/LayoutOps/master/README/Put_Wrap_portrait.png" alt="Wrap" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/master/README/Put__Wrap_landscape.png" alt="Wrap" width="240.0" height="160.0"/>
 ### Viewport
 #### Demo
 Viewport can be defined using anchors of any childview, or nil anchor if using superview edges

@@ -71,15 +71,16 @@ class ViewController: UIViewController {
                 Row<PutDemo_FixFlexCenter>(),
                 Row<PutDemo_Multi>(),
                 Row<PutDemo_FixFlexGrid>(),
-                Row<PutDemo_Labels>()
+                Row<PutDemo_Labels>(),
+                Row<PutDemo_DigiMax>(),
+                Row<PutDemo_Wrap>()
             ]
         ),
         Section(title: "Viewport", rows:
             [
                 Row<ViewPortDemo>()
             ]
-        ),
-        
+        )
     ]
     
     override func viewDidLoad() {

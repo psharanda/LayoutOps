@@ -3,7 +3,7 @@
 //  Copyright © 2016 Pavel Sharanda. All rights reserved.
 //
 
-import UIKit
+import Foundation
 
 private func follow_helper(_ anchorToFollow: Anchor, followerAnchor: Anchor) {
     let toFollowView = anchorToFollow.view
