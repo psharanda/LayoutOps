@@ -166,7 +166,7 @@ open class RootNode: AnyNode {
 
 open class Node<T: UIView>: AnyNode {
     
-    public override init(tag: Taggable, subnodes: [AnyNode] = [], initializer: @escaping (T?)->T) {
+    public init(tag: Taggable, subnodes: [AnyNode] = [], initializer: @escaping (T?)->T) {
         super.init(tag: tag, subnodes: subnodes) { (view: T?) -> T in            
             return initializer(view)
         }
