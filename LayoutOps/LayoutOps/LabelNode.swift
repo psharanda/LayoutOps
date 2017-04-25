@@ -8,14 +8,12 @@ import UIKit
 public struct LabelNodeEstimation {
     public let length: Int
     public let font: UIFont
-    public let numberOfLines: Int
     public let lineSpacing: CGFloat
     public let lineHeightMultiple: CGFloat
     
     public init(length: Int, font: UIFont, numberOfLines: Int = 1, lineSpacing: CGFloat = 0, lineHeightMultiple: CGFloat = 1.2) {
         self.length = length
         self.font = font
-        self.numberOfLines = numberOfLines
         self.lineSpacing = lineSpacing
         self.lineHeightMultiple = lineHeightMultiple
     }
@@ -91,12 +89,12 @@ open class LabelNode: AnyNode {
     }
     
     
-    func estimatedHeightWithFont(estimation: LabelNodeEstimation, width: CGFloat) -> CGFloat {
+    private func estimatedHeightWithFont(estimation: LabelNodeEstimation, width: CGFloat) -> CGFloat {
         
         let numberOfLettersPerLine = width/font.xHeight
         let numberOfLines = Int(round(CGFloat(estimation.length)/numberOfLettersPerLine))
         
-        let finalNumberOfLines = min(numberOfLines, (estimation.numberOfLines == 0) ? Int.max : estimation.numberOfLines)
+        let finalNumberOfLines = min(numberOfLines, (numberOfLines == 0) ? Int.max : numberOfLines)
         
         return CGFloat(finalNumberOfLines)*font.lineHeight*estimation.lineHeightMultiple + CGFloat(finalNumberOfLines - 1)*estimation.lineSpacing
         
