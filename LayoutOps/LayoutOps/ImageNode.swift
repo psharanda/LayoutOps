@@ -7,7 +7,8 @@ import UIKit
 
 open class ImageNode: AnyNode {
     
-    fileprivate let image: UIImage?
+    private let image: UIImage?
+    
     public init<T: UIImageView>(tag: Taggable, image: UIImage?, subnodes: [AnyNode] = [], initializer: @escaping (T?)->T) {
         self.image = image
         super.init(tag: tag, subnodes: subnodes) { (imageView: T?) -> T in

@@ -24,7 +24,7 @@ extension String: Taggable {
 private var key: UInt8 = 0
 
 extension UIView {
-    fileprivate func viewWithStringTag(_ stringTag: String) -> UIView? {
+    fileprivate func subviewWithStringTag(_ stringTag: String) -> UIView? {
         for v in subviews {
             if v.stringTag == stringTag {
                 return v
@@ -63,104 +63,103 @@ extension UIView {
 
 open class AnyNode: Layoutable {
     
-    open var bounds: CGRect {
+    //MARK: - layoutable
+    public var bounds: CGRect {
         return CGRect(x: 0, y: 0, width: frame.width, height: frame.height)
     }
     
-    open var frame = CGRect()
+    public var frame = CGRect()
     
-    open var __lx_viewport: CGRect?
+    public var __lx_viewport: CGRect?
     
-    open func sizeThatFits(_ size: CGSize) -> CGSize {
+    public func sizeThatFits(_ size: CGSize) -> CGSize {
         return CGSize()
     }
     
-    fileprivate var subnodes: [AnyNode]
-    fileprivate var supernode: AnyNode?
+    public weak var __lx_parent: Layoutable?
     
-    open weak var __lx_parent: Layoutable? {
-        return supernode
-    }
+    //MARK: - state
+    private var subnodes: [AnyNode]
     
-    fileprivate let initializer: ((UIView?)->UIView)?
+    private let initializer: ((UIView?)->UIView)
     
-    fileprivate enum Tag {
-        case root
-        case tagged(Taggable)
-    }
-    
-    fileprivate let tag: Tag
+    private let tag: Taggable
     
     public init<T: UIView>(tag: Taggable, subnodes: [AnyNode] = [], initializer: @escaping (T?)->T) {
         
-        self.tag = .tagged(tag)
+        self.tag = tag
         self.initializer = {
             initializer(($0 as? T))
         }
         self.subnodes = subnodes
         
         subnodes.forEach {
-            $0.supernode = self
+            $0.__lx_parent = self
         }
     }
     
-    fileprivate init(rs: CGSize, subnodes: [AnyNode]) {
+    fileprivate func install(in view: UIView) {
+        let realTag = tag.tag
         
-        self.tag = .root
+        let viewWithTag = view.subviewWithStringTag(realTag)
         
-        self.initializer = nil
-        self.subnodes = subnodes
+        let nodeView = initializer(viewWithTag)
+        nodeView.stringTag = realTag
         
-        self.frame = CGRect(x: 0, y: 0, width: rs.width, height: rs.height)
+        if nodeView.superview == nil {
+            view.addSubview(nodeView)
+        }
+        nodeView.frame = frame
         
         subnodes.forEach {
-            $0.supernode = self
-        }
-    }
-    
-    open func installInRootView(_ rootView: UIView) {
-        
-        switch tag {
-        case .root:
-            fatalError("RootNode can't be child")
-        case .tagged(let tag):
-            let realTag = tag.tag
-            
-            let viewWithTag = rootView.viewWithStringTag(realTag)
-            
-            let view = initializer!(viewWithTag)
-            view.stringTag = realTag
-            
-            if view.superview == nil {
-                rootView.addSubview(view)
-            }
-            
-            view.frame = frame
-            subnodes.forEach {
-                $0.installInRootView(view)
-            }
+            $0.install(in: nodeView)
         }
     }
 }
 
-open class RootNode: AnyNode {
+public final class RootNode: Layoutable {
 
-    public init(size: CGSize, subnodes: [AnyNode]) {
-        super.init(rs: size, subnodes: subnodes)
+    public var bounds: CGRect {
+        return CGRect(x: 0, y: 0, width: frame.width, height: frame.height)
     }
     
-    public init() {
-        super.init(rs: CGSize(), subnodes: [])
+    public var frame = CGRect()
+    
+    public var __lx_viewport: CGRect?
+    
+    public func sizeThatFits(_ size: CGSize) -> CGSize {
+        return CGSize()
     }
     
-    open override func sizeThatFits(_ size: CGSize) -> CGSize {
-        fatalError("RootNode is not intended to respond sizeThatFits")
+    public weak var __lx_parent: Layoutable? {
+        return nil
     }
     
-    open override func installInRootView(_ rootView: UIView) {
+    private var subnodes: [AnyNode]
+    
+    private let layout: (RootNode)->Void
+
+    public init(subnodes: [AnyNode] = [], layout: @escaping (RootNode)->Void) {
+        self.subnodes = subnodes        
+        self.layout = layout
+        
         subnodes.forEach {
-            $0.installInRootView(rootView)
+            $0.__lx_parent = self
         }
+    }
+    
+    public func install(in view: UIView) {
+        if view.bounds.size != bounds.size {
+            layout(for: view.bounds.size)
+        }
+        subnodes.forEach {
+            $0.install(in: view)
+        }
+    }
+    
+    public func layout(for size: CGSize) {
+        frame = CGRect(x: 0, y: 0, width: size.width, height: size.height)
+        layout(self)
     }
 }
 
@@ -174,6 +173,8 @@ open class Node<T: UIView>: AnyNode {
 }
 
 extension AnyNode: LayoutingCompatible { }
+
+extension RootNode: LayoutingCompatible { }
 
 
 

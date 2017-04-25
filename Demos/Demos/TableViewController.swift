@@ -44,6 +44,7 @@ extension TweetModel {
             tweet: "With Fastlane nobody has to deal with xcodebuild anymore. Say goodbye to autolayout thanks to LayoutOps 🚀",
             thumbnail: #imageLiteral(resourceName: "thumb-felix")
         )
+        
         let tweetEloy = TweetModel(
             name: "Eloy Durán",
             username: "@alloy",
@@ -70,6 +71,102 @@ extension TweetModel {
     
 }
 
+//class TableViewController: UIViewController {
+//    
+//    fileprivate lazy var tableView: UITableView = {
+//        let tableView = UITableView(frame: CGRect(), style: .plain)
+//        
+//        tableView.delegate = self
+//        tableView.dataSource = self
+//        tableView.separatorStyle = .none
+//        return tableView
+//    }()
+//    
+//    fileprivate var nodeModels: [(TweetModel, RootNode)] = []
+//    private var referenceWidth: CGFloat = 0
+//    
+//    override func viewDidLoad() {
+//        super.viewDidLoad()
+//        
+//        title = "Table Demo"
+//        view.addSubview(tableView)
+//        
+//        nodeModels = TweetModel.stubData().map { ($0, RootNode())}
+//    }
+//    
+//    override func viewDidLayoutSubviews() {
+//        super.viewDidLayoutSubviews()
+//        tableView.lx.fill()
+//        
+//        let width = tableView.frame.width
+//        
+//        if width != referenceWidth {
+//            referenceWidth = width
+//            
+//            let dateStart = Date()
+//            let models = nodeModels.map { $0.0 }
+//            DispatchQueue.global(qos: .background).async {
+//                models.parallelMap(striding: 2, filler: (TweetModel(), RootNode()), f:  {
+//                    ($0, TweetCell.buildRootNode($0, width: width))
+//                }) {[weak self] in
+//                    print("did cache in \(Date().timeIntervalSince(dateStart))s")
+//                    self?.didLoad(nodeModels: $0, width: width)
+//                }
+//            }
+//        }
+//    }
+//    
+//    private func didLoad(nodeModels: [(TweetModel, RootNode)], width: CGFloat) {
+//        
+//        if width == referenceWidth {
+//            self.nodeModels = nodeModels
+//        }
+//    }
+//}
+//
+//extension TableViewController: UITableViewDelegate, UITableViewDataSource {
+//
+//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        return nodeModels.count
+//    }
+//    
+//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        let cellId = "CellId"
+//        let cell = (tableView.dequeueReusableCell(withIdentifier: cellId) as? TweetCell) ?? TweetCell(style: .default, reuseIdentifier: cellId)
+//        return cell
+//    }
+//    
+//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        tableView.deselectRow(at: indexPath, animated: true)
+//    }
+//    
+//    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+//        (cell as? TweetCell)?.rootNode = nodeModels[indexPath.row].1
+//    }
+//
+//    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+//        return 100
+//    }
+//    
+//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+//        
+//        let (model, rootNode) = nodeModels[indexPath.row]
+//        
+//        if rootNode.frame.width != tableView.frame.width {
+//            let newRootNode = TweetCell.buildRootNode(model, width: tableView.frame.width)
+//            nodeModels[indexPath.row] = (model, newRootNode)
+//            
+//            if let cell = tableView.cellForRow(at: indexPath) {
+//                if let cell = cell as? TweetCell {
+//                    cell.rootNode = newRootNode
+//                }
+//            }
+//        }
+//        
+//        return nodeModels[indexPath.row].1.frame.height
+//    }
+//}
+
 class TableViewController: UIViewController {
     
     fileprivate lazy var tableView: UITableView = {
@@ -77,10 +174,12 @@ class TableViewController: UIViewController {
         
         tableView.delegate = self
         tableView.dataSource = self
+
         return tableView
     }()
     
-    fileprivate var nodeModels: [(TweetModel, RootNode)] = []
+    fileprivate var tweets: [TweetModel] = TweetModel.stubData()
+    
     private var referenceWidth: CGFloat = 0
     
     override func viewDidLoad() {
@@ -88,50 +187,28 @@ class TableViewController: UIViewController {
         
         title = "Table Demo"
         view.addSubview(tableView)
-        
-        nodeModels = TweetModel.stubData().map { ($0, RootNode())}
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.lx.fill()
-        
-        let width = tableView.frame.width
-        
-        if width != referenceWidth {
-            referenceWidth = width
-            
-            let dateStart = Date()
-            let models = nodeModels.map { $0.0 }
-            DispatchQueue.global(qos: .background).async {
-                models.parallelMap(striding: 2, filler: (TweetModel(), RootNode()), f:  {
-                    ($0, TweetCell.buildRootNode($0, width: width))
-                }) {[weak self] in
-                    print("did cache in \(Date().timeIntervalSince(dateStart))s")
-                    self?.didLoad(nodeModels: $0, width: width)
-                }
-            }
-        }
     }
     
-    private func didLoad(nodeModels: [(TweetModel, RootNode)], width: CGFloat) {
-        
-        if width == referenceWidth {
-            self.nodeModels = nodeModels
+    fileprivate lazy var adapter: TableViewAdapter = { [unowned self] in
+        return TableViewAdapter { indexPath, estimated in
+            return TweetCell.buildRootNode(self.tweets[indexPath.row], estimated: estimated)
         }
-    }
+    }()
 }
 
 extension TableViewController: UITableViewDelegate, UITableViewDataSource {
-
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return nodeModels.count
+        return tweets.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cellId = "CellId"
-        let cell = (tableView.dequeueReusableCell(withIdentifier: cellId) as? TweetCell) ?? TweetCell(style: .default, reuseIdentifier: cellId)
-        return cell
+        return adapter.tableView(tableView, cellForRowAt: indexPath)
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -139,38 +216,19 @@ extension TableViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        (cell as? TweetCell)?.rootNode = nodeModels[indexPath.row].1
+        adapter.tableView(tableView, willDisplay: cell, forRowAt: indexPath)
     }
-
+    
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 100
+        return adapter.tableView(tableView, estimatedHeightForRowAt: indexPath)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        
-        let (model, rootNode) = nodeModels[indexPath.row]
-        
-        if rootNode.frame.width != tableView.frame.width {
-            let newRootNode = TweetCell.buildRootNode(model, width: tableView.frame.width)
-            nodeModels[indexPath.row] = (model, newRootNode)
-            
-            if let cell = tableView.cellForRow(at: indexPath) {
-                if let cell = cell as? TweetCell {
-                    cell.rootNode = newRootNode
-                }
-            }
-        }
-        
-        return nodeModels[indexPath.row].1.frame.height
+        return adapter.tableView(tableView, heightForRowAt: indexPath)
     }
 }
 
-class TweetCell: UITableViewCell {
-
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        rootNode?.installInRootView(contentView)
-    }
+class TweetCell: NodeTableViewCell {
     
     enum Tags: String, Taggable {
         case user
@@ -178,14 +236,47 @@ class TweetCell: UITableViewCell {
         case avatar
         case timestamp
     }
-    var rootNode: RootNode?
     
-    static func buildRootNode(_ model: TweetModel, width: CGFloat) -> RootNode {
+    static func labelNodeText_userInfo(model: TweetModel, estimated: Bool) -> LabelNodeString {
+        if estimated {
+            let e = LabelNodeEstimation(length: model.name.characters.count + model.username.characters.count + 1, font: .boldSystemFont(ofSize: 12.0))
+            return .estimated(e)
+        } else {
+            return .attributed(TweetCell.attributedStringWithName(model.name, username: model.username))
+        }
+    }
+    
+    static func labelNodeText_displayableDate(model: TweetModel, estimated: Bool) -> LabelNodeString {
+        if estimated {
+            let e = LabelNodeEstimation(length: 10, font: .systemFont(ofSize: 14.0))
+            return .estimated(e)
+        } else {
+            return .attributed(TweetCell.attributedStringWithDisplayableDate(model.displayableDate))
+        }
+    }
+    
+    static func labelNodeText_tweet(model: TweetModel, estimated: Bool) -> LabelNodeString {
+        if estimated {
+            let e = LabelNodeEstimation(length: model.tweet.characters.count, font: .systemFont(ofSize: 15.0), numberOfLines: Int.max, lineHeightMultiple: 1.2)
+            return .estimated(e)
+        } else {
+            return .attributed(TweetCell.attributedStringWithTweet(model.tweet))
+        }
+    }
+    
+    static func buildRootNode(_ model: TweetModel, estimated: Bool) -> RootNode {
         
+    
+        if estimated {
+            return RootNode { rootNode in
+                rootNode.frame.size.height = 100
+            }
+        }
+
         //prepare attributed strings
-        let userInfo = TweetCell.attributedStringWithName(model.name, username: model.username)
-        let displayableDate = TweetCell.attributedStringWithDisplayableDate(model.displayableDate)
-        let tweet = TweetCell.attributedStringWithTweet(model.tweet)
+        let userInfo = labelNodeText_userInfo(model: model, estimated: estimated)
+        let displayableDate = labelNodeText_displayableDate(model: model, estimated: estimated)
+        let tweet = labelNodeText_tweet(model: model, estimated: estimated)
         
         //setup hierarchy
         let avatarNode = ImageNode(tag: Tags.avatar, image: model.thumbnail) {
@@ -196,57 +287,57 @@ class TweetCell: UITableViewCell {
             return imageView
         }
         
-        let userNode = LabelNode(tag: Tags.user, text: .attributed(userInfo)) {
+        let userNode = LabelNode(tag: Tags.user, text: userInfo) {
             return $0 ?? UILabel()
         }
         
-        let tweetNode = LabelNode(tag: Tags.tweet, text: .attributed(tweet), numberOfLines: 0) {
+        let tweetNode = LabelNode(tag: Tags.tweet, text: tweet, numberOfLines: 0) {
             return $0 ?? UILabel()
         }
         
-        let timeStampNode = LabelNode(tag: Tags.timestamp, text: .attributed(displayableDate)) {
+        let timeStampNode = LabelNode(tag: Tags.timestamp, text: displayableDate) {
             return $0 ?? UILabel()
         }
         
-        let rootNode = RootNode(size: CGSize(width: width, height: 0), subnodes: [avatarNode, userNode, tweetNode, timeStampNode])
-        
-        let pad: CGFloat = 12
-        
-        //layout
-        avatarNode.lx.set(x: pad, y: pad, width: 52, height: 52)
-        
-        timeStampNode.lx.sizeToFitMax(widthConstraint: .max(40))
-        
-        rootNode.lx.inViewport(leftAnchor: avatarNode.lx.rightAnchor) {
-            rootNode.lx.hput(
+        let rootNode = RootNode(subnodes: [avatarNode, userNode, tweetNode, timeStampNode]) { rootNode in
+            let pad: CGFloat = 12
+            
+            //layout
+            avatarNode.lx.set(x: pad, y: pad, width: 52, height: 52)
+            
+            timeStampNode.lx.sizeToFitMax(widthConstraint: .max(40))
+            
+            rootNode.lx.inViewport(leftAnchor: avatarNode.lx.rightAnchor) {
+                rootNode.lx.hput(
+                    Fix(pad),
+                    Flex(userNode),
+                    Fix(pad),
+                    Fix(timeStampNode),
+                    Fix(pad)
+                )
+                
+                rootNode.lx.hput(
+                    Fix(pad),
+                    Flex(tweetNode),
+                    Fix(pad)
+                )
+            }
+            
+            userNode.lx.setHeightAsLineHeight()
+            
+            tweetNode.lx.sizeToFit(width: .keepCurrent, height: .max, heightConstraint: .min(20))
+            
+            rootNode.lx.vput(
                 Fix(pad),
-                Flex(userNode),
-                Fix(pad),
-                Fix(timeStampNode),
-                Fix(pad)
+                Fix(userNode),
+                Fix(tweetNode)
             )
             
-            rootNode.lx.hput(
-                Fix(pad),
-                Flex(tweetNode),
-                Fix(pad)
-            )
+            timeStampNode.lx.firstBaselineAnchor.follow(userNode.lx.firstBaselineAnchor)
+            
+            //calculate final cell height
+            rootNode.frame.size.height = max(tweetNode.frame.maxY + pad, avatarNode.frame.maxY + pad)
         }
-        
-        userNode.lx.setHeightAsLineHeight()
-        
-        tweetNode.lx.sizeToFit(width: .keepCurrent, height: .max, heightConstraint: .min(20))
-        
-        rootNode.lx.vput(
-            Fix(pad),
-            Fix(userNode),
-            Fix(tweetNode)
-        )
-        
-        timeStampNode.lx.firstBaselineAnchor.follow(userNode.lx.firstBaselineAnchor)
-
-        //calculate final cell height
-        rootNode.frame.size.height = max(tweetNode.frame.maxY + pad, avatarNode.frame.maxY + pad)
         
         return rootNode
     }
@@ -352,5 +443,11 @@ extension Array {
         DispatchQueue.main.async {
             completion(finalResult)
         }
+    }
+}
+
+extension RootNode {
+    convenience init() {
+        self.init(subnodes: [], layout: { _ in })
     }
 }
