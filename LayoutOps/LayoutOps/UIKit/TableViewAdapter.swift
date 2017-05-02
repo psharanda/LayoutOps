@@ -31,12 +31,13 @@ public final class TableViewAdapter {
     }
     
     public func tableView<T: NodeTableViewCell>(_ tableView: UITableView, cellForRowAt indexPath: IndexPath, reuseIdentifier: String  = String(describing: T.self)) -> T {
-        return tableView.dequeueReusableCell(withIdentifier: reuseIdentifier) as? T  ?? T(reuseIdentifier: reuseIdentifier)
+        return (tableView.dequeueReusableCell(withIdentifier: reuseIdentifier) as? T)  ?? T(reuseIdentifier: reuseIdentifier)
     }
     
     public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if let c = cell as? NodeTableViewCell {
             c.rootNode = nodesCache[indexPath]
+            nodesCache[indexPath] = nil
         } else {
             print("[WARNING:LayoutOps:installNode] \(cell) is not subclass of NodeTableViewCell")
         }

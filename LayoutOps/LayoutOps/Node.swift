@@ -115,6 +115,19 @@ open class AnyNode: Layoutable {
             $0.install(in: nodeView)
         }
     }
+    
+    public var prepareForReuse: ((UIView)->Void)?
+    
+    fileprivate func doPrepareForReuse(in view: UIView) {
+        
+        if let viewWithTag = view.subviewWithStringTag(tag.tag) {
+            prepareForReuse?(viewWithTag)
+            
+            subnodes.forEach {
+                $0.doPrepareForReuse(in: viewWithTag)
+            }
+        }
+    }
 }
 
 public final class RootNode: Layoutable {
@@ -148,6 +161,24 @@ public final class RootNode: Layoutable {
         }
     }
     
+    public convenience init(estimatedWidth: CGFloat) {
+        self.init { rootNode in
+            rootNode.frame.size.width = estimatedWidth
+        }
+    }
+    
+    public convenience init(estimatedHeight: CGFloat) {
+        self.init { rootNode in
+            rootNode.frame.size.height = estimatedHeight
+        }
+    }
+    
+    public convenience init(estimatedSize: CGSize) {
+        self.init { rootNode in
+            rootNode.frame.size = estimatedSize
+        }
+    }
+    
     public func install(in view: UIView) {
         if view.bounds.size != bounds.size {
             layout(for: view.bounds.size)
@@ -160,6 +191,12 @@ public final class RootNode: Layoutable {
     public func layout(for size: CGSize) {
         frame = CGRect(x: 0, y: 0, width: size.width, height: size.height)
         layout(self)
+    }
+    
+    public func prepareForReuse(in view: UIView) {
+        subnodes.forEach {
+            $0.doPrepareForReuse(in: view)
+        }
     }
 }
 

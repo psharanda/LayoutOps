@@ -265,12 +265,9 @@ class TweetCell: NodeTableViewCell {
     }
     
     static func buildRootNode(_ model: TweetModel, estimated: Bool) -> RootNode {
-        
     
         if estimated {
-            return RootNode { rootNode in
-                rootNode.frame.size.height = 100
-            }
+            return RootNode(estimatedHeight: 100)
         }
 
         //prepare attributed strings

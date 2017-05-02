@@ -19,6 +19,12 @@ open class NodeTableViewCell: UITableViewCell {
         super.layoutSubviews()
         rootNode?.install(in: contentView)
     }
+    
+    open override func prepareForReuse() {
+        super.prepareForReuse()
+        rootNode?.prepareForReuse(in: contentView)
+    }
+    
     public var rootNode: RootNode?
 }
 
