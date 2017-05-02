@@ -12,11 +12,14 @@ class FollowDemo_CornerAnchors: UIView, DemoViewProtocol {
     let greenView = makeGreenView()
     let redView = makeRedView()
     
+    let heartView = makeHeartView()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         addSubview(blueView)
         addSubview(greenView)
+        greenView.addSubview(heartView)
         addSubview(redView)
     }
     
@@ -37,11 +40,13 @@ class FollowDemo_CornerAnchors: UIView, DemoViewProtocol {
         redView.lx.set(width: 30, height: 30)
         redView.lx.leftAnchor.follow(blueView.lx.leftAnchor)
         redView.lx.bottomAnchor.follow(greenView.lx.bottomAnchor)
-                
+        
+        heartView.lx.topAnchor.follow(greenView.lx.bottomAnchor)
+        heartView.lx.rightAnchor.follow(greenView.lx.rightAnchor)
     }
     
     static let title = "Corners"
-    static let comments = "Follow operation makes one view's anchor to be the same with others view anchor. Anchors can be horizontal and vertical, and can be followed only with anchors of the same type"
+    static let comments = "Follow operation makes one view's anchor to be the same with others view anchor (+/- inset). Anchors can be horizontal or vertical, and can be followed only with the anchors of same type. Anchor can follow anchors of other views at the same level of hierarchy, or parent anchors"
 }
 
 class FollowDemo_CenterAnchors: UIView, DemoViewProtocol {

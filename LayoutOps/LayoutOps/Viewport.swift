@@ -19,10 +19,10 @@ extension Layouting where Base: Layoutable {
     @discardableResult
     public func inViewport(topAnchor: VAnchor? = nil, leftAnchor: HAnchor? = nil, bottomAnchor: VAnchor? = nil, rightAnchor: HAnchor? = nil, block: ()->Void) -> Layouting<Base> {
         
-        let left = leftAnchor.flatMap { $0.valueForRect($0.view.frame)} ?? base.bounds.origin.x
-        let top = topAnchor.flatMap { $0.valueForRect($0.view.frame)} ?? base.bounds.origin.y
-        let right = rightAnchor.flatMap { $0.valueForRect($0.view.frame) } ?? base.bounds.maxX
-        let bottom = bottomAnchor.flatMap { $0.valueForRect($0.view.frame) } ?? base.bounds.maxY                        
+        let left = leftAnchor.map { $0.valueForRect($0.view === base ? base.bounds : $0.view.frame)} ?? base.bounds.origin.x
+        let top = topAnchor.map { $0.valueForRect($0.view === base ? base.bounds : $0.view.frame)} ?? base.bounds.origin.y
+        let right = rightAnchor.map { $0.valueForRect($0.view === base ? base.bounds : $0.view.frame) } ?? base.bounds.maxX
+        let bottom = bottomAnchor.map { $0.valueForRect($0.view === base ? base.bounds : $0.view.frame) } ?? base.bounds.maxY
         
         return inViewport(rect: CGRect(x: left, y: top, width: right - left, height: bottom - top), block: block)
     }

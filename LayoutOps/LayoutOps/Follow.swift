@@ -9,19 +9,23 @@ private func follow_helper(_ anchorToFollow: Anchor, followerAnchor: Anchor) {
     let toFollowView = anchorToFollow.view
     let followerView = followerAnchor.view
     
-    if(toFollowView.lx_parent == nil) {
-        print("[WARNING:LayoutOps:follow] nil parent \(toFollowView)")
-    } else if(followerView.lx_parent == nil) {
-        print("[WARNING:LayoutOps:follow] nil parent \(followerView)")
-    } else if(toFollowView.lx_parent !== followerView.lx_parent) {
-        print("[WARNING:LayoutOps:follow] different parents for \(toFollowView) and \(followerView)")
-    }
-    
-    let anchorToFollowFrame = toFollowView.frame
     let followerAnchorFrame = followerView.frame
     
-    let result = followerAnchor.setValueForRect(anchorToFollow.valueForRect(anchorToFollowFrame), rect: followerAnchorFrame)
+    var isParent = false
+    if let parent = followerView.lx_parent, parent === toFollowView {
+        isParent = true
+    } else {
+        if(toFollowView.lx_parent == nil) {
+            print("[WARNING:LayoutOps:follow] nil parent \(toFollowView)")
+        } else if(followerView.lx_parent == nil) {
+            print("[WARNING:LayoutOps:follow] nil parent \(followerView)")
+        } else if(toFollowView.lx_parent !== followerView.lx_parent) {
+            print("[WARNING:LayoutOps:follow] different parents for \(toFollowView) and \(followerView)")
+        }
+    }
     
+    let anchorToFollowFrame = isParent ? toFollowView.boundsOrViewPort : toFollowView.frame
+    let result = followerAnchor.setValueForRect(anchorToFollow.valueForRect(anchorToFollowFrame), rect: followerAnchorFrame)    
     followerView.updateFrame(result)
 }
 

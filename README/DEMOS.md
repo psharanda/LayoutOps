@@ -155,7 +155,7 @@ label.lx.sizeToFitMax(widthConstraint: .max(100), heightConstraint: .min(300))
 <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/master/README/SizeToFit_min-max constraints_portrait.png" alt="min/max constraints" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/master/README/SizeToFit__min-max constraints_landscape.png" alt="min/max constraints" width="240.0" height="160.0"/>
 ### Follow
 #### Corners
-Follow operation makes one view's anchor to be the same with others view anchor. Anchors can be horizontal and vertical, and can be followed only with anchors of the same type
+Follow operation makes one view's anchor to be the same with others view anchor (+/- inset). Anchors can be horizontal or vertical, and can be followed only with the anchors of same type. Anchor can follow anchors of other views at the same level of hierarchy, or parent anchors
 ```swift
 
 
@@ -169,6 +169,9 @@ greenView.lx.topAnchor.follow(blueView.lx.bottomAnchor)
 redView.lx.set(width: 30, height: 30)
 redView.lx.leftAnchor.follow(blueView.lx.leftAnchor)
 redView.lx.bottomAnchor.follow(greenView.lx.bottomAnchor)
+
+heartView.lx.topAnchor.follow(greenView.lx.bottomAnchor)
+heartView.lx.rightAnchor.follow(greenView.lx.rightAnchor)
 ```
 <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/master/README/Follow_Corners_portrait.png" alt="Corners" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/master/README/Follow__Corners_landscape.png" alt="Corners" width="240.0" height="160.0"/>
 #### Center
@@ -513,8 +516,10 @@ self.lx.vput(
 greenView.lx.alignLeft(20)
     .set(width: 20)
 
-self.lx.inViewport(topAnchor: blueView.lx.bottomAnchor, leftAnchor: greenView.lx.rightAnchor) {
-    redView.lx.fill(inset: 5)
+self.lx.inViewport(topAnchor: blueView.lx.bottomAnchor.insettedBy(5), leftAnchor: greenView.lx.rightAnchor.insettedBy(5), bottomAnchor: self.lx.bottomAnchor.insettedBy(-5), rightAnchor: self.lx.rightAnchor.insettedBy(-5)) {
+    redView.lx.fill()
+    heartView.lx.bottomAnchor.follow(self.lx.bottomAnchor)
+    heartView.lx.rightAnchor.follow(self.lx.rightAnchor)
 }
 ```
 <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/master/README/Viewport_Demo_portrait.png" alt="Demo" width="160.0" height="240.0"/> <img src="https://raw.githubusercontent.com/psharanda/LayoutOps/master/README/Viewport__Demo_landscape.png" alt="Demo" width="240.0" height="160.0"/>

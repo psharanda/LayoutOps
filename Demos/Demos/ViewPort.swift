@@ -12,6 +12,7 @@ class ViewPortDemo: UIView, DemoViewProtocol {
     let blueView = makeBlueView()
     let greenView = makeGreenView()
     let redView = makeRedView()
+    let heartView = makeHeartView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -19,6 +20,7 @@ class ViewPortDemo: UIView, DemoViewProtocol {
         addSubview(blueView)
         addSubview(greenView)
         addSubview(redView)
+        addSubview(heartView)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -42,8 +44,10 @@ class ViewPortDemo: UIView, DemoViewProtocol {
         greenView.lx.alignLeft(20)
             .set(width: 20)
         
-        self.lx.inViewport(topAnchor: blueView.lx.bottomAnchor, leftAnchor: greenView.lx.rightAnchor) {
-            redView.lx.fill(inset: 5)
+        self.lx.inViewport(topAnchor: blueView.lx.bottomAnchor.insettedBy(5), leftAnchor: greenView.lx.rightAnchor.insettedBy(5), bottomAnchor: self.lx.bottomAnchor.insettedBy(-5), rightAnchor: self.lx.rightAnchor.insettedBy(-5)) {
+            redView.lx.fill()
+            heartView.lx.bottomAnchor.follow(self.lx.bottomAnchor)
+            heartView.lx.rightAnchor.follow(self.lx.rightAnchor)
         }
     }
     
