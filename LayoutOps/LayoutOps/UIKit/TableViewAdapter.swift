@@ -28,7 +28,8 @@ public final class TableViewDisplayAdapter {
     }
     
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return cellNodeSequence.size(for: indexPath, size: CGSize(width: tableView.bounds.size.width, height: 0)).height
+        let separatorHeight: CGFloat = ((tableView.separatorStyle == .none) ? 0.0 : 1.0/UIScreen.main.scale)
+        return cellNodeSequence.size(for: indexPath, size: CGSize(width: tableView.bounds.size.width, height: 0)).height + separatorHeight
     }
     
     public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -86,7 +87,15 @@ public final class NodeSequenceDisplayAdapter<Index: Hashable> {
     
     func size(for index: Index, size: CGSize) -> CGSize {
         let node = itemNode(index, false)
-        node.layout(for: size)
+        
+        
+        let didLayoutForWidth = (size.width > 0 && isAlmostEqual(left:  node.frame.width, right: size.width)) || isAlmostEqual(left: size.width, right: 0)
+        let didLayoutForHeight = (size.height > 0 && isAlmostEqual(left:  node.frame.height, right: size.height)) || isAlmostEqual(left: size.height, right: 0)
+        
+        if !(didLayoutForWidth && didLayoutForHeight) {
+            node.layout(for: size)
+        }
+        
         cache[index] = node
         return node.frame.size
     }

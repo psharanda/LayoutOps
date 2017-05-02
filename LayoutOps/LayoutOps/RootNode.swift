@@ -58,7 +58,7 @@ public final class RootNode: Layoutable {
     }
     
     public func install(in container: NodeContainer) {
-        if container.bounds.size != bounds.size {
+        if !isAlmostEqual(left: container.bounds.size, right: bounds.size) {
             layout(for: container.bounds.size)
         }
         subnodes.forEach {
@@ -79,3 +79,4 @@ public final class RootNode: Layoutable {
 }
 
 extension RootNode: LayoutingCompatible { }
+
