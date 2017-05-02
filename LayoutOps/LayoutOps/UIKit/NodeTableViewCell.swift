@@ -11,14 +11,6 @@ public protocol NodeItemView: class {
 
 open class NodeTableViewCell: UITableViewCell, NodeItemView {
 
-    public required init(reuseIdentifier: String?) {
-        super.init(style: .default, reuseIdentifier: reuseIdentifier)
-    }
-    
-    public required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
-    
     open override func layoutSubviews() {
         super.layoutSubviews()
         rootNode?.install(in: contentView)
@@ -33,14 +25,6 @@ open class NodeTableViewCell: UITableViewCell, NodeItemView {
 }
 
 open class NodeTableHeaderFooterView: UITableViewHeaderFooterView, NodeItemView {
-    
-    public required override init(reuseIdentifier: String?) {
-        super.init(reuseIdentifier: reuseIdentifier)
-    }
-    
-    public required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
     
     open override func layoutSubviews() {
         super.layoutSubviews()

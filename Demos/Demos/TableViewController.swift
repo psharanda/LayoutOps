@@ -205,18 +205,6 @@ class TableViewController: UIViewController {
 
 extension TableViewController: UITableViewDelegate, UITableViewDataSource {
     
-    public func cellForRowAt<T: NodeTableViewCell>(indexPath: IndexPath, reuseIdentifier: String  = String(describing: T.self)) -> T {
-        return (tableView.dequeueReusableCell(withIdentifier: reuseIdentifier) as? T)  ?? T(reuseIdentifier: reuseIdentifier)
-    }
-    
-    public func viewForFooterInSection<T: NodeTableHeaderFooterView>(section: Int, reuseIdentifier: String  = String(describing: T.self)) -> T {
-        return (tableView.dequeueReusableCell(withIdentifier: reuseIdentifier) as? T)  ?? T(reuseIdentifier: reuseIdentifier)
-    }
-    
-    public func viewForHeaderInSection<T: NodeTableHeaderFooterView>(section: Int, reuseIdentifier: String  = String(describing: T.self)) -> T {
-        return (tableView.dequeueReusableCell(withIdentifier: reuseIdentifier) as? T)  ?? T(reuseIdentifier: reuseIdentifier)
-    }
-    
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return tweets.count
@@ -230,15 +218,18 @@ extension TableViewController: UITableViewDelegate, UITableViewDataSource {
 
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return cellForRowAt(indexPath: indexPath)
+        let id = "cellId"
+        return tableView.dequeueReusableCell(withIdentifier: id) ?? NodeTableViewCell(style: .default, reuseIdentifier: id)
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return viewForHeaderInSection(section: section)
+        let id = "headerId"
+        return tableView.dequeueReusableHeaderFooterView(withIdentifier: id) ?? NodeTableHeaderFooterView(reuseIdentifier: id)
     }
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        return viewForFooterInSection(section: section)
+        let id = "footerId"
+        return tableView.dequeueReusableHeaderFooterView(withIdentifier: id) ?? NodeTableHeaderFooterView(reuseIdentifier: id)
     }
     
     //rows
