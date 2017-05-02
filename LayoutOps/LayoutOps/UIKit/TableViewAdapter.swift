@@ -5,41 +5,98 @@
 
 import Foundation
 
-public final class TableViewAdapter {
-    private let nodeForIndexPath: (IndexPath, Bool)-> RootNode
-    private var nodesCache = [IndexPath: RootNode]()
+public final class TableViewDisplayAdapter {
     
-    public init(nodeForIndexPath: @escaping (IndexPath, Bool)-> RootNode) {
-        self.nodeForIndexPath = nodeForIndexPath
+    private let headerNodeSequence: NodeSequenceDisplayAdapter<Int>
+    private let footerNodeSequence: NodeSequenceDisplayAdapter<Int>
+    private let cellNodeSequence: NodeSequenceDisplayAdapter<IndexPath>
+    
+    
+    public init(headerNodeForSection: @escaping (Int, Bool)-> RootNode = { _, _ in RootNode(estimatedHeight: 0) },
+                footerNodeForSection: @escaping (Int, Bool)-> RootNode = { _, _ in RootNode(estimatedHeight: 0) },
+                cellNodeForIndexPath: @escaping (IndexPath, Bool)-> RootNode) {
+        headerNodeSequence = NodeSequenceDisplayAdapter(itemNode: headerNodeForSection)
+        footerNodeSequence = NodeSequenceDisplayAdapter(itemNode: footerNodeForSection)
+        cellNodeSequence = NodeSequenceDisplayAdapter(itemNode: cellNodeForIndexPath)
     }
     
+    //MARK: - cells
+
+    
     public func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        if tableView.frame.width < 1 {
-            return 0
-        }
-        
-        let node = nodeForIndexPath(indexPath, true)
-        node.layout(for: CGSize(width: tableView.frame.width, height: 0))
-        return node.frame.height + ((tableView.separatorStyle == .none) ? 0.0 : 0.5)
+        return cellNodeSequence.estimatedSize(for: indexPath, size: CGSize(width: tableView.bounds.size.width, height: 0)).height
     }
     
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let node = nodeForIndexPath(indexPath, false)
-        node.layout(for: CGSize(width: tableView.frame.width, height: 0))
-        nodesCache[indexPath] = node
-        return node.frame.height + ((tableView.separatorStyle == .none) ? 0.0 : 0.5)
-    }
-    
-    public func tableView<T: NodeTableViewCell>(_ tableView: UITableView, cellForRowAt indexPath: IndexPath, reuseIdentifier: String  = String(describing: T.self)) -> T {
-        return (tableView.dequeueReusableCell(withIdentifier: reuseIdentifier) as? T)  ?? T(reuseIdentifier: reuseIdentifier)
+        return cellNodeSequence.size(for: indexPath, size: CGSize(width: tableView.bounds.size.width, height: 0)).height
     }
     
     public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if let c = cell as? NodeTableViewCell {
-            c.rootNode = nodesCache[indexPath]
-            nodesCache[indexPath] = nil
+        cellNodeSequence.willDisplay(view: cell, for: indexPath)
+    }
+    
+    //MARK: - footers
+    
+    public func tableView(_ tableView: UITableView, estimatedHeightForFooterInSection section: Int) -> CGFloat {
+        return footerNodeSequence.estimatedSize(for: section, size: CGSize(width: tableView.bounds.size.width, height: 0)).height
+    }
+    
+    public func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return footerNodeSequence.size(for: section, size: CGSize(width: tableView.bounds.size.width, height: 0)).height
+    }
+    
+    public func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
+        footerNodeSequence.willDisplay(view: view, for: section)
+    }
+    
+    //MARK: - headers
+    
+    public func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
+        return headerNodeSequence.estimatedSize(for: section, size: CGSize(width: tableView.bounds.size.width, height: 0)).height
+    }
+    
+    public func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return headerNodeSequence.size(for: section, size: CGSize(width: tableView.bounds.size.width, height: 0)).height
+    }
+    
+    public func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        headerNodeSequence.willDisplay(view: view, for: section)
+    }
+}
+
+public final class NodeSequenceDisplayAdapter<Index: Hashable> {
+    
+    private let itemNode: (Index, Bool)-> RootNode
+    
+    private var cache = [Index: RootNode]()
+    
+    public init(itemNode: @escaping (Index, Bool)-> RootNode) {
+        self.itemNode = itemNode
+    }
+    
+    func estimatedSize(for index: Index, size: CGSize) -> CGSize {
+        if size.width < 1 && size.height < 1 {
+            return CGSize()
+        }
+        
+        let node = itemNode(index, true)
+        node.layout(for: size)
+        return node.frame.size
+    }
+    
+    func size(for index: Index, size: CGSize) -> CGSize {
+        let node = itemNode(index, false)
+        node.layout(for: size)
+        cache[index] = node
+        return node.frame.size
+    }
+    
+    func willDisplay(view: UIView, for index: Index) {
+        if let v = view as? NodeItemView {
+            v.rootNode = cache[index]
+            cache[index] = nil
         } else {
-            print("[WARNING:LayoutOps:installNode] \(cell) is not subclass of NodeTableViewCell")
+            print("[WARNING:LayoutOps:willDisplay] \(view) is not conforming of NodeItemView")
         }
     }
 }

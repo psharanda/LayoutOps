@@ -194,31 +194,49 @@ class TableViewController: UIViewController {
         tableView.lx.fill()
     }
     
-    fileprivate lazy var adapter: TableViewAdapter = { [unowned self] in
-        return TableViewAdapter { indexPath, estimated in
+    fileprivate lazy var adapter: TableViewDisplayAdapter = { [unowned self] in
+        return TableViewDisplayAdapter(headerNodeForSection: { index, estimated in
+            return TweetCell.headerRootNode(title: "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Lorem ipsum dolor sit amet, consectetur adipiscing elit.", estimated: estimated)
+        }, cellNodeForIndexPath: { indexPath, estimated in
             return TweetCell.buildRootNode(self.tweets[indexPath.row], estimated: estimated)
-        }
+        })
     }()
 }
 
 extension TableViewController: UITableViewDelegate, UITableViewDataSource {
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tweets.count
+    public func cellForRowAt<T: NodeTableViewCell>(indexPath: IndexPath, reuseIdentifier: String  = String(describing: T.self)) -> T {
+        return (tableView.dequeueReusableCell(withIdentifier: reuseIdentifier) as? T)  ?? T(reuseIdentifier: reuseIdentifier)
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return adapter.tableView(tableView, cellForRowAt: indexPath)
+    public func viewForFooterInSection<T: NodeTableHeaderFooterView>(section: Int, reuseIdentifier: String  = String(describing: T.self)) -> T {
+        return (tableView.dequeueReusableCell(withIdentifier: reuseIdentifier) as? T)  ?? T(reuseIdentifier: reuseIdentifier)
+    }
+    
+    public func viewForHeaderInSection<T: NodeTableHeaderFooterView>(section: Int, reuseIdentifier: String  = String(describing: T.self)) -> T {
+        return (tableView.dequeueReusableCell(withIdentifier: reuseIdentifier) as? T)  ?? T(reuseIdentifier: reuseIdentifier)
+    }
+    
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return tweets.count
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
+    //adapted
+    
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         adapter.tableView(tableView, willDisplay: cell, forRowAt: indexPath)
     }
     
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        return viewForFooterInSection(section: section)
+    }
+    
+    //rows
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return adapter.tableView(tableView, estimatedHeightForRowAt: indexPath)
     }
@@ -226,9 +244,43 @@ extension TableViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return adapter.tableView(tableView, heightForRowAt: indexPath)
     }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return cellForRowAt(indexPath: indexPath)
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        return viewForHeaderInSection(section: section)
+    }
+    
+    //footers
+    func tableView(_ tableView: UITableView, estimatedHeightForFooterInSection section: Int) -> CGFloat {
+        return adapter.tableView(tableView, estimatedHeightForFooterInSection: section)
+    }
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return adapter.tableView(tableView, heightForFooterInSection: section)
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
+        adapter.tableView(tableView, willDisplayFooterView: view, forSection: section)
+    }
+    
+    //headers
+    
+    func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
+        return adapter.tableView(tableView, estimatedHeightForHeaderInSection: section)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return adapter.tableView(tableView, heightForHeaderInSection: section)
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        adapter.tableView(tableView, willDisplayHeaderView: view, forSection: section)
+    }
 }
 
-class TweetCell: NodeTableViewCell {
+enum TweetCell {
     
     enum Tags: String, TagConvertible {
         case user
@@ -262,6 +314,28 @@ class TweetCell: NodeTableViewCell {
         } else {
             return .attributed(TweetCell.attributedStringWithTweet(model.tweet))
         }
+    }
+    
+    static func headerRootNode(title: String, estimated: Bool) -> RootNode {
+        if estimated {
+            return RootNode(estimatedHeight: 40)
+        }
+        
+        let titleNode = LabelNode(tag: "title", text: .regular(title, UIFont.boldSystemFont(ofSize: 12)), numberOfLines: 0) {
+            return $0 ?? UILabel()
+        }
+        
+        let rootNode = RootNode(subnodes: [titleNode]) { rootNode in
+            let pad: CGFloat = 12
+            titleNode.lx.hfillvfit(inset: pad)
+            rootNode.lx.vwrap(
+                Fix(pad),
+                Fix(titleNode),
+                Fix(pad)
+            )
+        }
+        
+        return rootNode
     }
     
     static func buildRootNode(_ model: TweetModel, estimated: Bool) -> RootNode {
