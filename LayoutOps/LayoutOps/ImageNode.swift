@@ -9,9 +9,9 @@ open class ImageNode<T: UIImageView>: Node<T> {
     
     private let image: UIImage?
     
-    public init(tag: TagConvertible, image: UIImage?, subnodes: [NodeProtocol] = [], initializer: @escaping (T?)->T) {
+    public init(tag: TagConvertible, image: UIImage?, subnodes: [NodeProtocol] = [], prepareForReuse: @escaping ((T)->Void) = {_ in }, initializer: @escaping (T?)->T) {
         self.image = image
-        super.init(tag: tag, subnodes: subnodes) { (imageView: T?) -> T in
+        super.init(tag: tag, subnodes: subnodes, prepareForReuse: prepareForReuse) { (imageView: T?) -> T in
             let imgView = initializer(imageView)
             imgView.image = image
             return imgView

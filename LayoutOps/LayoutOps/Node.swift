@@ -54,13 +54,14 @@ open class Node<T: NodeContainer>: NodeProtocol {
     //MARK: - state
     private var subnodes: [NodeProtocol]
     private let initializer: ((T?)->T)
-    public var prepareForReuse: ((T)->Void)?
+    public let prepareForReuse: ((T)->Void)
     private let tag: TagConvertible
     
-    public init(tag: TagConvertible, subnodes: [NodeProtocol] = [], initializer: @escaping (T?)->T) {
+    public init(tag: TagConvertible, subnodes: [NodeProtocol] = [], prepareForReuse: @escaping ((T)->Void) = {_ in }, initializer: @escaping (T?)->T) {
         self.tag = tag
         self.initializer = initializer
         self.subnodes = subnodes
+        self.prepareForReuse = prepareForReuse
         
         subnodes.forEach {
             $0.lx_parent = self
@@ -85,7 +86,7 @@ open class Node<T: NodeContainer>: NodeProtocol {
     
     public func prepareForReuse(in container: NodeContainer) {
         if let v = container.lx_child(with: tag.tag), let viewWithTag = v as? T  {
-            prepareForReuse?(viewWithTag)
+            prepareForReuse(viewWithTag)
             
             subnodes.forEach {
                 $0.prepareForReuse(in: viewWithTag)

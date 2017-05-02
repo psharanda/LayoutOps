@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		1B009CC21EB8D13200C6C5F7 /* RootNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B009CC11EB8D13200C6C5F7 /* RootNode.swift */; };
-		1B009CC41EB8D15100C6C5F7 /* ViewNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B009CC31EB8D15100C6C5F7 /* ViewNode.swift */; };
 		1B009CC71EB8D28F00C6C5F7 /* UIView+NodeContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B009CC61EB8D28F00C6C5F7 /* UIView+NodeContainer.swift */; };
 		1B11ECF71DE4F915001FEBE7 /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B11ECF61DE4F915001FEBE7 /* Node.swift */; };
 		1B11ECFE1DE57CC6001FEBE7 /* LabelNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B11ECFD1DE57CC6001FEBE7 /* LabelNode.swift */; };
@@ -31,7 +30,6 @@
 
 /* Begin PBXFileReference section */
 		1B009CC11EB8D13200C6C5F7 /* RootNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootNode.swift; sourceTree = "<group>"; };
-		1B009CC31EB8D15100C6C5F7 /* ViewNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewNode.swift; sourceTree = "<group>"; };
 		1B009CC61EB8D28F00C6C5F7 /* UIView+NodeContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+NodeContainer.swift"; sourceTree = "<group>"; };
 		1B11ECF61DE4F915001FEBE7 /* Node.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
 		1B11ECFD1DE57CC6001FEBE7 /* LabelNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelNode.swift; sourceTree = "<group>"; };
@@ -140,7 +138,6 @@
 			children = (
 				1B11ECF61DE4F915001FEBE7 /* Node.swift */,
 				1B009CC11EB8D13200C6C5F7 /* RootNode.swift */,
-				1B009CC31EB8D15100C6C5F7 /* ViewNode.swift */,
 				1B11ECFD1DE57CC6001FEBE7 /* LabelNode.swift */,
 				1B11ECFF1DE57D03001FEBE7 /* ImageNode.swift */,
 				1B20DAE21DEF386600FE6643 /* SwitchNode.swift */,
@@ -232,7 +229,6 @@
 				1B20DAE31DEF386600FE6643 /* SwitchNode.swift in Sources */,
 				1B49D7101DB8D02800823FF3 /* SizeToFit.swift in Sources */,
 				1B7857CE1E6019D00025DD28 /* Utils.swift in Sources */,
-				1B009CC41EB8D15100C6C5F7 /* ViewNode.swift in Sources */,
 				1B49D7131DB8D02800823FF3 /* Follow.swift in Sources */,
 				1B11ECF71DE4F915001FEBE7 /* Node.swift in Sources */,
 				1B49D7141DB8D02800823FF3 /* Basic.swift in Sources */,

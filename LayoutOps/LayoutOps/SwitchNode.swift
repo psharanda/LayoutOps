@@ -8,9 +8,9 @@ import UIKit
 open class SwitchNode<T: UISwitch>: Node<T> {
     
     
-    public override init(tag: TagConvertible, subnodes: [NodeProtocol] = [], initializer: @escaping (T?)->T) {
+    public override init(tag: TagConvertible, subnodes: [NodeProtocol] = [], prepareForReuse: @escaping ((T)->Void) = {_ in }, initializer: @escaping (T?)->T) {
     
-        super.init(tag: tag, subnodes: subnodes) { (switchView: T?) -> T in
+        super.init(tag: tag, subnodes: subnodes, prepareForReuse: prepareForReuse) { (switchView: T?) -> T in
             return initializer(switchView)
         }
     }
