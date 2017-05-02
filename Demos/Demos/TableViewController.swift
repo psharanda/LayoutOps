@@ -194,8 +194,8 @@ class TableViewController: UIViewController {
         tableView.lx.fill()
     }
     
-    fileprivate lazy var adapter: TableViewDisplayAdapter = { [unowned self] in
-        return TableViewDisplayAdapter(headerNodeForSection: { index, estimated in
+    fileprivate lazy var adapter: TableViewNodesDisplayAdapter = { [unowned self] in
+        return TableViewNodesDisplayAdapter(headerNodeForSection: { index, estimated in
             return TweetCell.headerRootNode(title: "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Lorem ipsum dolor sit amet, consectetur adipiscing elit.", estimated: estimated)
         }, cellNodeForIndexPath: { indexPath, estimated in
             return TweetCell.buildRootNode(self.tweets[indexPath.row], estimated: estimated)
@@ -227,9 +227,14 @@ extension TableViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     //adapted
+
     
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        adapter.tableView(tableView, willDisplay: cell, forRowAt: indexPath)
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return cellForRowAt(indexPath: indexPath)
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        return viewForHeaderInSection(section: section)
     }
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
@@ -245,13 +250,10 @@ extension TableViewController: UITableViewDelegate, UITableViewDataSource {
         return adapter.tableView(tableView, heightForRowAt: indexPath)
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return cellForRowAt(indexPath: indexPath)
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        adapter.tableView(tableView, willDisplay: cell, forRowAt: indexPath)
     }
-    
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return viewForHeaderInSection(section: section)
-    }
+
     
     //footers
     func tableView(_ tableView: UITableView, estimatedHeightForFooterInSection section: Int) -> CGFloat {
@@ -318,7 +320,7 @@ enum TweetCell {
     
     static func headerRootNode(title: String, estimated: Bool) -> RootNode {
         if estimated {
-            return RootNode(estimatedHeight: 40)
+            return RootNode(height: 40)
         }
         
         let titleNode = LabelNode(tag: "title", text: .regular(title, UIFont.boldSystemFont(ofSize: 12)), numberOfLines: 0) {
@@ -341,7 +343,7 @@ enum TweetCell {
     static func buildRootNode(_ model: TweetModel, estimated: Bool) -> RootNode {
     
         if estimated {
-            return RootNode(estimatedHeight: 100)
+            return RootNode(height: 100)
         }
 
         //prepare attributed strings
@@ -371,6 +373,7 @@ enum TweetCell {
         }
         
         let rootNode = RootNode(subnodes: [avatarNode, userNode, tweetNode, timeStampNode]) { rootNode in
+            
             let pad: CGFloat = 12
             
             //layout

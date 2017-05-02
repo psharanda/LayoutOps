@@ -39,21 +39,21 @@ public final class RootNode: Layoutable {
         }
     }
     
-    public convenience init(estimatedWidth: CGFloat) {
+    public convenience init(width: CGFloat) {
         self.init { rootNode in
-            rootNode.frame.size.width = estimatedWidth
+            rootNode.frame.size.width = width
         }
     }
     
-    public convenience init(estimatedHeight: CGFloat) {
+    public convenience init(height: CGFloat) {
         self.init { rootNode in
-            rootNode.frame.size.height = estimatedHeight
+            rootNode.frame.size.height = height
         }
     }
     
-    public convenience init(estimatedSize: CGSize) {
+    public convenience init(size: CGSize) {
         self.init { rootNode in
-            rootNode.frame.size = estimatedSize
+            rootNode.frame.size = size
         }
     }
     

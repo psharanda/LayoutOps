@@ -5,23 +5,23 @@
 
 import Foundation
 
-public final class TableViewDisplayAdapter {
+public final class TableViewNodesDisplayAdapter {
     
-    private let headerNodeSequence: NodeSequenceDisplayAdapter<Int>
-    private let footerNodeSequence: NodeSequenceDisplayAdapter<Int>
-    private let cellNodeSequence: NodeSequenceDisplayAdapter<IndexPath>
+    private let headerNodeSequence: NodesSequenceDisplayAdapter<Int>
+    private let footerNodeSequence: NodesSequenceDisplayAdapter<Int>
+    private let cellNodeSequence: NodesSequenceDisplayAdapter<IndexPath>
     
     
-    public init(headerNodeForSection: @escaping (Int, Bool)-> RootNode = { _, _ in RootNode(estimatedHeight: 0) },
-                footerNodeForSection: @escaping (Int, Bool)-> RootNode = { _, _ in RootNode(estimatedHeight: 0) },
+    public init(headerNodeForSection: @escaping (Int, Bool)-> RootNode = { _, _ in RootNode(height: 0) },
+                footerNodeForSection: @escaping (Int, Bool)-> RootNode = { _, _ in RootNode(height: 0) },
                 cellNodeForIndexPath: @escaping (IndexPath, Bool)-> RootNode) {
-        headerNodeSequence = NodeSequenceDisplayAdapter(itemNode: headerNodeForSection)
-        footerNodeSequence = NodeSequenceDisplayAdapter(itemNode: footerNodeForSection)
-        cellNodeSequence = NodeSequenceDisplayAdapter(itemNode: cellNodeForIndexPath)
+        headerNodeSequence = NodesSequenceDisplayAdapter(itemNode: headerNodeForSection)
+        footerNodeSequence = NodesSequenceDisplayAdapter(itemNode: footerNodeForSection)
+        cellNodeSequence = NodesSequenceDisplayAdapter(itemNode: cellNodeForIndexPath)
     }
     
+    
     //MARK: - cells
-
     
     public func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return cellNodeSequence.estimatedSize(for: indexPath, size: CGSize(width: tableView.bounds.size.width, height: 0)).height
@@ -65,47 +65,3 @@ public final class TableViewDisplayAdapter {
     }
 }
 
-public final class NodeSequenceDisplayAdapter<Index: Hashable> {
-    
-    private let itemNode: (Index, Bool)-> RootNode
-    
-    private var cache = [Index: RootNode]()
-    
-    public init(itemNode: @escaping (Index, Bool)-> RootNode) {
-        self.itemNode = itemNode
-    }
-    
-    func estimatedSize(for index: Index, size: CGSize) -> CGSize {
-        if size.width < 1 && size.height < 1 {
-            return CGSize()
-        }
-        
-        let node = itemNode(index, true)
-        node.layout(for: size)
-        return node.frame.size
-    }
-    
-    func size(for index: Index, size: CGSize) -> CGSize {
-        let node = itemNode(index, false)
-        
-        
-        let didLayoutForWidth = (size.width > 0 && isAlmostEqual(left:  node.frame.width, right: size.width)) || isAlmostEqual(left: size.width, right: 0)
-        let didLayoutForHeight = (size.height > 0 && isAlmostEqual(left:  node.frame.height, right: size.height)) || isAlmostEqual(left: size.height, right: 0)
-        
-        if !(didLayoutForWidth && didLayoutForHeight) {
-            node.layout(for: size)
-        }
-        
-        cache[index] = node
-        return node.frame.size
-    }
-    
-    func willDisplay(view: UIView, for index: Index) {
-        if let v = view as? NodeItemView {
-            v.rootNode = cache[index]
-            cache[index] = nil
-        } else {
-            print("[WARNING:LayoutOps:willDisplay] \(view) is not conforming of NodeItemView")
-        }
-    }
-}
