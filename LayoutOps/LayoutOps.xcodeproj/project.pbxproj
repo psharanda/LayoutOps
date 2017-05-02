@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1B009CC21EB8D13200C6C5F7 /* RootNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B009CC11EB8D13200C6C5F7 /* RootNode.swift */; };
+		1B009CC41EB8D15100C6C5F7 /* ViewNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B009CC31EB8D15100C6C5F7 /* ViewNode.swift */; };
+		1B009CC71EB8D28F00C6C5F7 /* UIView+NodeContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B009CC61EB8D28F00C6C5F7 /* UIView+NodeContainer.swift */; };
 		1B11ECF71DE4F915001FEBE7 /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B11ECF61DE4F915001FEBE7 /* Node.swift */; };
 		1B11ECFE1DE57CC6001FEBE7 /* LabelNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B11ECFD1DE57CC6001FEBE7 /* LabelNode.swift */; };
 		1B11ED001DE57D03001FEBE7 /* ImageNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B11ECFF1DE57D03001FEBE7 /* ImageNode.swift */; };
@@ -27,6 +30,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1B009CC11EB8D13200C6C5F7 /* RootNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootNode.swift; sourceTree = "<group>"; };
+		1B009CC31EB8D15100C6C5F7 /* ViewNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewNode.swift; sourceTree = "<group>"; };
+		1B009CC61EB8D28F00C6C5F7 /* UIView+NodeContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+NodeContainer.swift"; sourceTree = "<group>"; };
 		1B11ECF61DE4F915001FEBE7 /* Node.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
 		1B11ECFD1DE57CC6001FEBE7 /* LabelNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelNode.swift; sourceTree = "<group>"; };
 		1B11ECFF1DE57D03001FEBE7 /* ImageNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageNode.swift; sourceTree = "<group>"; };
@@ -59,6 +65,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1B009CC51EB8D26300C6C5F7 /* UIKit */ = {
+			isa = PBXGroup;
+			children = (
+				1B009CC61EB8D28F00C6C5F7 /* UIView+NodeContainer.swift */,
+			);
+			name = UIKit;
+			sourceTree = "<group>";
+		};
 		1B9EC1A01EAF4EB700D5938A /* UIKit */ = {
 			isa = PBXGroup;
 			children = (
@@ -125,9 +139,12 @@
 			isa = PBXGroup;
 			children = (
 				1B11ECF61DE4F915001FEBE7 /* Node.swift */,
+				1B009CC11EB8D13200C6C5F7 /* RootNode.swift */,
+				1B009CC31EB8D15100C6C5F7 /* ViewNode.swift */,
 				1B11ECFD1DE57CC6001FEBE7 /* LabelNode.swift */,
 				1B11ECFF1DE57D03001FEBE7 /* ImageNode.swift */,
 				1B20DAE21DEF386600FE6643 /* SwitchNode.swift */,
+				1B009CC51EB8D26300C6C5F7 /* UIKit */,
 			);
 			name = Nodes;
 			sourceTree = "<group>";
@@ -215,10 +232,13 @@
 				1B20DAE31DEF386600FE6643 /* SwitchNode.swift in Sources */,
 				1B49D7101DB8D02800823FF3 /* SizeToFit.swift in Sources */,
 				1B7857CE1E6019D00025DD28 /* Utils.swift in Sources */,
+				1B009CC41EB8D15100C6C5F7 /* ViewNode.swift in Sources */,
 				1B49D7131DB8D02800823FF3 /* Follow.swift in Sources */,
 				1B11ECF71DE4F915001FEBE7 /* Node.swift in Sources */,
 				1B49D7141DB8D02800823FF3 /* Basic.swift in Sources */,
+				1B009CC21EB8D13200C6C5F7 /* RootNode.swift in Sources */,
 				1B6645E41DB8F44C0059CFC8 /* Accelerate.swift in Sources */,
+				1B009CC71EB8D28F00C6C5F7 /* UIView+NodeContainer.swift in Sources */,
 				1B9EC1A71EAF4FB000D5938A /* UIView+Layoutable.swift in Sources */,
 				1B9EC1A61EAF4FB000D5938A /* TableViewAdapter.swift in Sources */,
 				1B49D7151DB8D02800823FF3 /* PutWrap.swift in Sources */,

@@ -9,11 +9,11 @@ private func follow_helper(_ anchorToFollow: Anchor, followerAnchor: Anchor) {
     let toFollowView = anchorToFollow.view
     let followerView = followerAnchor.view
     
-    if(toFollowView.__lx_parent == nil) {
+    if(toFollowView.lx_parent == nil) {
         print("[WARNING:LayoutOps:follow] nil parent \(toFollowView)")
-    } else if(followerView.__lx_parent == nil) {
+    } else if(followerView.lx_parent == nil) {
         print("[WARNING:LayoutOps:follow] nil parent \(followerView)")
-    } else if(toFollowView.__lx_parent !== followerView.__lx_parent) {
+    } else if(toFollowView.lx_parent !== followerView.lx_parent) {
         print("[WARNING:LayoutOps:follow] different parents for \(toFollowView) and \(followerView)")
     }
     

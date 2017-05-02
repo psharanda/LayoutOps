@@ -5,10 +5,10 @@
 
 import UIKit
 
-open class SwitchNode: AnyNode {
+open class SwitchNode<T: UISwitch>: Node<T> {
     
     
-    public override init<T: UISwitch>(tag: Taggable, subnodes: [AnyNode] = [], initializer: @escaping (T?)->T) {
+    public override init(tag: TagConvertible, subnodes: [NodeProtocol] = [], initializer: @escaping (T?)->T) {
     
         super.init(tag: tag, subnodes: subnodes) { (switchView: T?) -> T in
             return initializer(switchView)

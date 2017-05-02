@@ -5,63 +5,36 @@
 
 import UIKit
 
-public protocol Taggable {
+public protocol TagConvertible {
     var tag: String {get}
 }
 
-extension Taggable where Self: RawRepresentable, Self.RawValue == String {
+extension TagConvertible where Self: RawRepresentable, Self.RawValue == String {
     public var tag: String {
         return rawValue
     }
 }
 
-extension String: Taggable {
+extension String: TagConvertible {
     public var tag: String {
         return self
     }
 }
 
-private var key: UInt8 = 0
-
-extension UIView {
-    fileprivate func subviewWithStringTag(_ stringTag: String) -> UIView? {
-        for v in subviews {
-            if v.stringTag == stringTag {
-                return v
-            }
-        }
-        return nil
-    }
-    
-    fileprivate var stringTag: String? {
-        set {
-            objc_setAssociatedObject(self, &key, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-        get {
-            return objc_getAssociatedObject(self, &key) as? String
-        }
-    }
-    
-    fileprivate func _findViewWithTag(_ tag: Taggable) -> UIView? {
-        if tag.tag == stringTag {
-            return self
-        }
-        
-        for v in subviews {
-            if let v = v.findViewWithTag(tag) {
-                return v
-            }
-        }
-        
-        return nil
-    }
-    
-    public func findViewWithTag<T: UIView>(_ tag: Taggable) -> T? {
-        return _findViewWithTag(tag).flatMap { $0 as? T }
-    }
+public protocol NodeProtocol: Layoutable {
+    var lx_parent: Layoutable? {get set}
+    func install(in container: NodeContainer)
+    func prepareForReuse(in container: NodeContainer)
 }
 
-open class AnyNode: Layoutable {
+public protocol NodeContainer: Layoutable {
+    var lx_tag: String? {get set}
+    func lx_add(child: NodeContainer)
+    func lx_child(with tag: String) -> NodeContainer?
+    
+}
+
+open class Node<T: NodeContainer>: NodeProtocol {
     
     //MARK: - layoutable
     public var bounds: CGRect {
@@ -70,44 +43,38 @@ open class AnyNode: Layoutable {
     
     public var frame = CGRect()
     
-    public var __lx_viewport: CGRect?
+    public var lx_viewport: CGRect?
     
     public func sizeThatFits(_ size: CGSize) -> CGSize {
         return CGSize()
     }
     
-    public weak var __lx_parent: Layoutable?
+    public weak var lx_parent: Layoutable?
     
     //MARK: - state
-    private var subnodes: [AnyNode]
+    private var subnodes: [NodeProtocol]
+    private let initializer: ((T?)->T)
+    public var prepareForReuse: ((T)->Void)?
+    private let tag: TagConvertible
     
-    private let initializer: ((UIView?)->UIView)
-    
-    private let tag: Taggable
-    
-    public init<T: UIView>(tag: Taggable, subnodes: [AnyNode] = [], initializer: @escaping (T?)->T) {
-        
+    public init(tag: TagConvertible, subnodes: [NodeProtocol] = [], initializer: @escaping (T?)->T) {
         self.tag = tag
-        self.initializer = {
-            initializer(($0 as? T))
-        }
+        self.initializer = initializer
         self.subnodes = subnodes
         
         subnodes.forEach {
-            $0.__lx_parent = self
+            $0.lx_parent = self
         }
     }
     
-    fileprivate func install(in view: UIView) {
-        let realTag = tag.tag
+    public func install(in container: NodeContainer) {
+        let viewWithTag = container.lx_child(with: tag.tag)
         
-        let viewWithTag = view.subviewWithStringTag(realTag)
+        let nodeView = initializer(viewWithTag.flatMap { $0 as? T } )
+        nodeView.lx_tag = tag.tag
         
-        let nodeView = initializer(viewWithTag)
-        nodeView.stringTag = realTag
-        
-        if nodeView.superview == nil {
-            view.addSubview(nodeView)
+        if nodeView.lx_parent == nil {
+            container.lx_add(child: nodeView)
         }
         nodeView.frame = frame
         
@@ -116,105 +83,16 @@ open class AnyNode: Layoutable {
         }
     }
     
-    public var prepareForReuse: ((UIView)->Void)?
-    
-    fileprivate func doPrepareForReuse(in view: UIView) {
-        
-        if let viewWithTag = view.subviewWithStringTag(tag.tag) {
+    public func prepareForReuse(in container: NodeContainer) {
+        if let v = container.lx_child(with: tag.tag), let viewWithTag = v as? T  {
             prepareForReuse?(viewWithTag)
             
             subnodes.forEach {
-                $0.doPrepareForReuse(in: viewWithTag)
+                $0.prepareForReuse(in: viewWithTag)
             }
         }
     }
 }
 
-public final class RootNode: Layoutable {
-
-    public var bounds: CGRect {
-        return CGRect(x: 0, y: 0, width: frame.width, height: frame.height)
-    }
-    
-    public var frame = CGRect()
-    
-    public var __lx_viewport: CGRect?
-    
-    public func sizeThatFits(_ size: CGSize) -> CGSize {
-        return CGSize()
-    }
-    
-    public weak var __lx_parent: Layoutable? {
-        return nil
-    }
-    
-    private var subnodes: [AnyNode]
-    
-    private let layout: (RootNode)->Void
-
-    public init(subnodes: [AnyNode] = [], layout: @escaping (RootNode)->Void) {
-        self.subnodes = subnodes        
-        self.layout = layout
-        
-        subnodes.forEach {
-            $0.__lx_parent = self
-        }
-    }
-    
-    public convenience init(estimatedWidth: CGFloat) {
-        self.init { rootNode in
-            rootNode.frame.size.width = estimatedWidth
-        }
-    }
-    
-    public convenience init(estimatedHeight: CGFloat) {
-        self.init { rootNode in
-            rootNode.frame.size.height = estimatedHeight
-        }
-    }
-    
-    public convenience init(estimatedSize: CGSize) {
-        self.init { rootNode in
-            rootNode.frame.size = estimatedSize
-        }
-    }
-    
-    public func install(in view: UIView) {
-        if view.bounds.size != bounds.size {
-            layout(for: view.bounds.size)
-        }
-        subnodes.forEach {
-            $0.install(in: view)
-        }
-    }
-    
-    public func layout(for size: CGSize) {
-        frame = CGRect(x: 0, y: 0, width: size.width, height: size.height)
-        layout(self)
-    }
-    
-    public func prepareForReuse(in view: UIView) {
-        subnodes.forEach {
-            $0.doPrepareForReuse(in: view)
-        }
-    }
-}
-
-open class Node<T: UIView>: AnyNode {
-    
-    public init(tag: Taggable, subnodes: [AnyNode] = [], initializer: @escaping (T?)->T) {
-        super.init(tag: tag, subnodes: subnodes) { (view: T?) -> T in            
-            return initializer(view)
-        }
-    }    
-}
-
-extension AnyNode: LayoutingCompatible { }
-
-extension RootNode: LayoutingCompatible { }
-
-
-
-
-
+extension Node: LayoutingCompatible { }
 

@@ -13,11 +13,11 @@ extension Layouting where Base: Layoutable {
 
     fileprivate func processInParent(_ block: (CGRect, CGRect)->CGRect) -> Layouting<Base> {
         
-        guard let __lx_parent = base.__lx_parent else {
+        guard let lx_parent = base.lx_parent else {
             return self
         }
         
-        let superviewFrameInViewPort = __lx_parent.boundsOrViewPort
+        let superviewFrameInViewPort = lx_parent.boundsOrViewPort
         let superviewBoundsInViewPort = CGRect(x: 0, y: 0, width: superviewFrameInViewPort.width, height: superviewFrameInViewPort.height)
         
         let frame = base.frame

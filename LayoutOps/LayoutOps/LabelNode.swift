@@ -34,12 +34,12 @@ public enum LabelNodeString {
     case estimated(LabelNodeEstimation)
 }
 
-open class LabelNode: AnyNode {
+open class LabelNode<T: UILabel>: Node<T> {
     
     fileprivate let numberOfLines: Int
     fileprivate let text: LabelNodeString
     
-    public init<T: UILabel>(tag: Taggable, text: LabelNodeString, numberOfLines: Int = 1, subnodes: [AnyNode] = [], initializer: @escaping (T?)->T) {
+    public init(tag: TagConvertible, text: LabelNodeString, numberOfLines: Int = 1, subnodes: [NodeProtocol] = [], initializer: @escaping (T?)->T) {
         self.text = text
         self.numberOfLines = numberOfLines
         super.init(tag: tag, subnodes: subnodes) { (label: T?) -> T in

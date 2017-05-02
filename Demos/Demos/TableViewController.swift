@@ -230,7 +230,7 @@ extension TableViewController: UITableViewDelegate, UITableViewDataSource {
 
 class TweetCell: NodeTableViewCell {
     
-    enum Tags: String, Taggable {
+    enum Tags: String, TagConvertible {
         case user
         case tweet
         case avatar

@@ -215,9 +215,9 @@ extension FixStrategy {
 private func putOperation<T: BoxDimension>(_ superview: Layoutable, intentions: [PutIntention], dimension: T, wrapParent: Bool) {
     
     func testView(view: Layoutable) {
-        if view.__lx_parent == nil {
+        if view.lx_parent == nil {
             print("[WARNING:LayoutOps:put] nil parent for \(view)")
-        } else if view.__lx_parent !== superview {
+        } else if view.lx_parent !== superview {
             print("[WARNING:LayoutOps:put] wrong parent \(view)")
         }
     }

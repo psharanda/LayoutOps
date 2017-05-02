@@ -9,10 +9,10 @@ extension Layouting where Base: Layoutable {
     
     @discardableResult
     public func inViewport(rect: CGRect, block: ()->Void) -> Layouting<Base> {
-        let oldViewport = base.__lx_viewport
-        base.__lx_viewport = rect
+        let oldViewport = base.lx_viewport
+        base.lx_viewport = rect
         block()
-        base.__lx_viewport = oldViewport
+        base.lx_viewport = oldViewport
         return self
     }
     
