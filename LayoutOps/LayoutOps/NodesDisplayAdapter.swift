@@ -5,13 +5,14 @@
 
 import Foundation
 
-public final class NodesSequenceDisplayAdapter<Index: Hashable> {
+final class NodesSequenceDisplayAdapter<Index: Hashable> {
     
     private let itemNode: (Index, Bool)-> RootNode
     
     private var cache = [Index: RootNode]()
     
-    public init(itemNode: @escaping (Index, Bool)-> RootNode) {
+    
+    init(itemNode: @escaping (Index, Bool)-> RootNode) {
         self.itemNode = itemNode
     }
     

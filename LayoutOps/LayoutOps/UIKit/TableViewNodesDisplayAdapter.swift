@@ -39,7 +39,12 @@ public final class TableViewNodesDisplayAdapter {
     //MARK: - footers
     
     public func tableView(_ tableView: UITableView, estimatedHeightForFooterInSection section: Int) -> CGFloat {
-        return footerNodeSequence.estimatedSize(for: section, size: CGSize(width: tableView.bounds.size.width, height: 0)).height
+        let h = footerNodeSequence.estimatedSize(for: section, size: CGSize(width: tableView.bounds.size.width, height: 0)).height
+        if isAlmostEqual(left: h, right: 0) {
+            return 2
+        } else {
+            return h
+        }
     }
     
     public func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
@@ -59,7 +64,12 @@ public final class TableViewNodesDisplayAdapter {
     //MARK: - headers
     
     public func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
-        return headerNodeSequence.estimatedSize(for: section, size: CGSize(width: tableView.bounds.size.width, height: 0)).height
+        let h = headerNodeSequence.estimatedSize(for: section, size: CGSize(width: tableView.bounds.size.width, height: 0)).height
+        if isAlmostEqual(left: h, right: 0) {
+            return 2
+        } else {
+            return h
+        }
     }
     
     public func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
