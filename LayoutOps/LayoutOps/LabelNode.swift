@@ -92,9 +92,9 @@ open class LabelNode<T: UILabel>: Node<T> {
     private func estimatedHeightWithFont(estimation: LabelNodeEstimation, width: CGFloat) -> CGFloat {
         
         let numberOfLettersPerLine = width/font.xHeight
-        let numberOfLines = Int(round(CGFloat(estimation.length)/numberOfLettersPerLine))
+        let numLines = max(1, Int(round(CGFloat(estimation.length)/numberOfLettersPerLine)))
         
-        let finalNumberOfLines = min(numberOfLines, (numberOfLines == 0) ? Int.max : numberOfLines)
+        let finalNumberOfLines = min(numLines, (numberOfLines == 0) ? Int.max : numberOfLines)
         
         return CGFloat(finalNumberOfLines)*font.lineHeight*estimation.lineHeightMultiple + CGFloat(finalNumberOfLines - 1)*estimation.lineSpacing
         
