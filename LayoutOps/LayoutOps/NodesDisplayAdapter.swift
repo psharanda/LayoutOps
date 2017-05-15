@@ -44,7 +44,6 @@ final class NodesSequenceDisplayAdapter<Index: Hashable> {
     func willDisplay(view: UIView, for index: Index) {
         if let v = view as? NodeItemView {
             v.rootNode = cache[index]
-            cache[index] = nil
         }
     }
 }
