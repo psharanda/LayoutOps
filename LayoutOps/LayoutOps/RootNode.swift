@@ -59,16 +59,23 @@ public final class RootNode: Layoutable {
     
     public func install(in container: NodeContainer) {
         if !isAlmostEqual(left: container.bounds.size, right: bounds.size) {
-            layout(for: container.bounds.size)
+            _ = calculate(for: container.bounds.size)
         }
         subnodes.forEach {
             $0.install(in: container)
         }
     }
     
-    public func layout(for size: CGSize) {
-        frame = CGRect(x: 0, y: 0, width: size.width, height: size.height)
-        layout(self)
+    public func calculate(for size: CGSize) -> CGSize {
+        let didLayoutForWidth = (size.width > 0 && isAlmostEqual(left: frame.size.width, right: size.width)) || isAlmostEqual(left: size.width, right: 0)
+        let didLayoutForHeight = (size.height > 0 && isAlmostEqual(left: frame.size.height, right: size.height)) || isAlmostEqual(left: size.height, right: 0)
+        
+        if !(didLayoutForWidth && didLayoutForHeight) {
+            frame = CGRect(x: 0, y: 0, width: size.width, height: size.height)
+            layout(self)
+        }
+    
+        return frame.size
     }
     
     public func prepareForReuse(in container: NodeContainer) {
@@ -80,3 +87,4 @@ public final class RootNode: Layoutable {
 
 extension RootNode: LayoutingCompatible { }
 
+extension RootNode: PresentationModel { }

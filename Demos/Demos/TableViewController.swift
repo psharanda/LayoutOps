@@ -71,106 +71,10 @@ extension TweetModel {
     
 }
 
-//class TableViewController: UIViewController {
-//    
-//    fileprivate lazy var tableView: UITableView = {
-//        let tableView = UITableView(frame: CGRect(), style: .plain)
-//        
-//        tableView.delegate = self
-//        tableView.dataSource = self
-//        tableView.separatorStyle = .none
-//        return tableView
-//    }()
-//    
-//    fileprivate var nodeModels: [(TweetModel, RootNode)] = []
-//    private var referenceWidth: CGFloat = 0
-//    
-//    override func viewDidLoad() {
-//        super.viewDidLoad()
-//        
-//        title = "Table Demo"
-//        view.addSubview(tableView)
-//        
-//        nodeModels = TweetModel.stubData().map { ($0, RootNode())}
-//    }
-//    
-//    override func viewDidLayoutSubviews() {
-//        super.viewDidLayoutSubviews()
-//        tableView.lx.fill()
-//        
-//        let width = tableView.frame.width
-//        
-//        if width != referenceWidth {
-//            referenceWidth = width
-//            
-//            let dateStart = Date()
-//            let models = nodeModels.map { $0.0 }
-//            DispatchQueue.global(qos: .background).async {
-//                models.parallelMap(striding: 2, filler: (TweetModel(), RootNode()), f:  {
-//                    ($0, TweetCell.buildRootNode($0, width: width))
-//                }) {[weak self] in
-//                    print("did cache in \(Date().timeIntervalSince(dateStart))s")
-//                    self?.didLoad(nodeModels: $0, width: width)
-//                }
-//            }
-//        }
-//    }
-//    
-//    private func didLoad(nodeModels: [(TweetModel, RootNode)], width: CGFloat) {
-//        
-//        if width == referenceWidth {
-//            self.nodeModels = nodeModels
-//        }
-//    }
-//}
-//
-//extension TableViewController: UITableViewDelegate, UITableViewDataSource {
-//
-//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return nodeModels.count
-//    }
-//    
-//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        let cellId = "CellId"
-//        let cell = (tableView.dequeueReusableCell(withIdentifier: cellId) as? TweetCell) ?? TweetCell(style: .default, reuseIdentifier: cellId)
-//        return cell
-//    }
-//    
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        tableView.deselectRow(at: indexPath, animated: true)
-//    }
-//    
-//    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-//        (cell as? TweetCell)?.rootNode = nodeModels[indexPath.row].1
-//    }
-//
-//    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-//        return 100
-//    }
-//    
-//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-//        
-//        let (model, rootNode) = nodeModels[indexPath.row]
-//        
-//        if rootNode.frame.width != tableView.frame.width {
-//            let newRootNode = TweetCell.buildRootNode(model, width: tableView.frame.width)
-//            nodeModels[indexPath.row] = (model, newRootNode)
-//            
-//            if let cell = tableView.cellForRow(at: indexPath) {
-//                if let cell = cell as? TweetCell {
-//                    cell.rootNode = newRootNode
-//                }
-//            }
-//        }
-//        
-//        return nodeModels[indexPath.row].1.frame.height
-//    }
-//}
-
 class TableViewController: UIViewController {
     
     fileprivate lazy var tableView: UITableView = {
-        let tableView = UITableView(frame: CGRect(), style: .plain)
+        let tableView = UITableView(frame: CGRect(), style: .grouped)
         
         tableView.delegate = self
         tableView.dataSource = self
@@ -179,6 +83,7 @@ class TableViewController: UIViewController {
     }()
     
     fileprivate var tweets: [TweetModel] = TweetModel.stubData()
+    fileprivate var nodeModels: [(TweetModel, RootNode)]?
     
     private var referenceWidth: CGFloat = 0
     
@@ -187,27 +92,82 @@ class TableViewController: UIViewController {
         
         title = "Table Demo"
         view.addSubview(tableView)
+        
+        navigationItem.rightBarButtonItem = editButtonItem
+        
+        nodeModels = tweets.map { ($0, RootNode())}
+    }
+    
+    override func setEditing(_ editing: Bool, animated: Bool) {
+        super.setEditing(editing, animated: animated)
+        tableView.setEditing(editing, animated: animated)
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        
+        
+        let width = view.frame.width
+        
+        if width != referenceWidth {
+            nodeModels = nil
+            referenceWidth = width
+            
+            let dateStart = Date()
+            let models = tweets
+            DispatchQueue.global(qos: .background).async {
+                models.parallelMap(striding: 2, filler: (TweetModel(), RootNode()), f:  {
+                    let node = TweetCell.buildRootNode($0, estimated: false)
+                    _ = node.calculate(for: CGSize(width: width, height: 0))
+                    return ($0, node)
+                }) {[weak self] in
+                    print("did cache in \(Date().timeIntervalSince(dateStart))s")
+                    self?.didLoad(nodeModels: $0, width: width)
+                }
+            }
+        }
+        
         tableView.lx.fill()
     }
     
-    fileprivate lazy var adapter: TableViewNodesDisplayAdapter = { [unowned self] in
-        return TableViewNodesDisplayAdapter(headerNodeForSection: { index, estimated in
-            return TweetCell.headerRootNode(title: "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Lorem ipsum dolor sit amet, consectetur adipiscing elit.", estimated: estimated)
+    private func didLoad(nodeModels: [(TweetModel, RootNode)], width: CGFloat) {
+        
+        if width == referenceWidth {
+            self.nodeModels = nodeModels
+        }
+    }
+    
+    fileprivate lazy var adapter: TableViewPresentationAdapter = { [unowned self] in
+        return TableViewPresentationAdapter(headerNodeForSection: { index, estimated in
+            return NodeTableHeaderFooter(model: TweetCell.headerRootNode(title: "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Lorem ipsum dolor sit amet, consectetur adipiscing elit.", estimated: estimated))
         }, cellNodeForIndexPath: { indexPath, estimated in
-            return TweetCell.buildRootNode(self.tweets[indexPath.row], estimated: estimated)
+            if indexPath.section == 0 {
+                return TableRow<ClassicCell>(model: ClassicModel(title: "Hello Classic Cell") {
+                    print("action!")
+                })
+            } else {
+                if let nodeModel = self.nodeModels?[indexPath.row]  {
+                    return NodeTableRow(model: nodeModel.1)
+                } else {
+                    return NodeTableRow(model: TweetCell.buildRootNode(self.tweets[indexPath.row], estimated: estimated))
+                }
+            }
         })
     }()
 }
 
 extension TableViewController: UITableViewDelegate, UITableViewDataSource {
     
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 2
+    }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tweets.count
+        if section == 0 {
+            return 3
+        } else {
+            return tweets.count
+        }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -215,24 +175,21 @@ extension TableViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     //adapted
-
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let id = "cellId"
-        return tableView.dequeueReusableCell(withIdentifier: id) ?? NodeTableViewCell(style: .default, reuseIdentifier: id)
+        return adapter.tableView(tableView, cellForRowAt: indexPath)
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let id = "headerId"
-        return tableView.dequeueReusableHeaderFooterView(withIdentifier: id) ?? NodeTableHeaderFooterView(reuseIdentifier: id)
+        return adapter.tableView(tableView, viewForHeaderInSection: section)
     }
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        let id = "footerId"
-        return tableView.dequeueReusableHeaderFooterView(withIdentifier: id) ?? NodeTableHeaderFooterView(reuseIdentifier: id)
+        return adapter.tableView(tableView, viewForFooterInSection: section)
     }
     
     //rows
+    
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return adapter.tableView(tableView, estimatedHeightForRowAt: indexPath)
     }
@@ -241,21 +198,12 @@ extension TableViewController: UITableViewDelegate, UITableViewDataSource {
         return adapter.tableView(tableView, heightForRowAt: indexPath)
     }
     
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        adapter.tableView(tableView, willDisplay: cell, forRowAt: indexPath)
-    }
-
-    
     //footers
     func tableView(_ tableView: UITableView, estimatedHeightForFooterInSection section: Int) -> CGFloat {
         return adapter.tableView(tableView, estimatedHeightForFooterInSection: section)
     }
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return adapter.tableView(tableView, heightForFooterInSection: section)
-    }
-    
-    func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
-        adapter.tableView(tableView, willDisplayFooterView: view, forSection: section)
     }
     
     //headers
@@ -268,9 +216,14 @@ extension TableViewController: UITableViewDelegate, UITableViewDataSource {
         return adapter.tableView(tableView, heightForHeaderInSection: section)
     }
     
-    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-        adapter.tableView(tableView, willDisplayHeaderView: view, forSection: section)
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
     }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        
+    }
+    
 }
 
 enum TweetCell {
@@ -398,10 +351,17 @@ enum TweetCell {
                 Fix(tweetNode)
             )
             
+            if rootNode.frame.size.height > 10 { // in editing mode...
+                let newTweetHeight = (rootNode.frame.height - pad - tweetNode.frame.minY)
+                tweetNode.lx.set(height: newTweetHeight)
+            }
+            
             timeStampNode.lx.firstBaselineAnchor.follow(userNode.lx.firstBaselineAnchor)
             
             //calculate final cell height
             rootNode.frame.size.height = max(tweetNode.frame.maxY + pad, avatarNode.frame.maxY + pad)
+            
+            
         }
         
         return rootNode
@@ -433,6 +393,7 @@ extension TweetCell {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .left
         paragraphStyle.lineHeightMultiple = 1.2
+        paragraphStyle.lineBreakMode = .byTruncatingTail
         let attributes = [
             NSParagraphStyleAttributeName: paragraphStyle,
             NSFontAttributeName: UIFont.systemFont(ofSize: 15.0),
@@ -514,5 +475,36 @@ extension Array {
 extension RootNode {
     convenience init() {
         self.init(subnodes: [], layout: { _ in })
+    }
+}
+
+struct ClassicModel {
+    let title: String
+    let action: ()->Void
+    init(title: String, action: @escaping ()->Void ) {
+        self.title = title
+        self.action = action
+    }
+}
+
+class ClassicCell: UITableViewCell, PresentationModelView {
+    
+    var presentationModel: ClassicModel? {
+        didSet {
+            self.textLabel?.text = presentationModel?.title
+        }
+    }
+    
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+        if selected {
+            presentationModel?.action()
+        }
+    }
+}
+
+extension ClassicModel: PresentationModel {
+    func calculate(for size: CGSize) -> CGSize {
+        return CGSize(width: size.width, height: 50)
     }
 }

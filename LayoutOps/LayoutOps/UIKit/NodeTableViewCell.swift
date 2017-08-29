@@ -5,39 +5,36 @@
 
 import UIKit
 
-public protocol NodeItemView: class {
-    var rootNode: RootNode? {get set}
-}
-
-open class NodeTableViewCell: UITableViewCell, NodeItemView {
-
+open class NodeTableViewCell: UITableViewCell, PresentationModelView {
     open override func layoutSubviews() {
         super.layoutSubviews()
-        rootNode?.install(in: contentView)
+        presentationModel?.install(in: contentView)
     }
     
     open override func prepareForReuse() {
         super.prepareForReuse()
-        rootNode?.prepareForReuse(in: contentView)
+        presentationModel?.prepareForReuse(in: contentView)
     }
-    
-    public var rootNode: RootNode?
+    public typealias PresentationModelType = RootNode
+    public var presentationModel: RootNode?
 }
 
-open class NodeTableHeaderFooterView: UITableViewHeaderFooterView, NodeItemView {
+public typealias NodeTableRow = TableRow<NodeTableViewCell>
+
+open class NodeTableHeaderFooterView: UITableViewHeaderFooterView, PresentationModelView {
     
     open override func layoutSubviews() {
         super.layoutSubviews()
-        rootNode?.install(in: contentView)
+        presentationModel?.install(in: contentView)
     }
     
     open override func prepareForReuse() {
         super.prepareForReuse()
-        rootNode?.prepareForReuse(in: contentView)
+        presentationModel?.prepareForReuse(in: contentView)
     }
-    
-    public var rootNode: RootNode?
+    public typealias PresentationModelType = RootNode
+    public var presentationModel: RootNode?
 }
 
-
+public typealias NodeTableHeaderFooter = TableHeaderFooter<NodeTableHeaderFooterView>
 
