@@ -5,11 +5,11 @@
 
 import Foundation
 
-public protocol PresentationModel {
+public protocol PresentationModelProtocol {
     func calculate(for size: CGSize) -> CGSize
 }
 
 public protocol PresentationModelView: class {
-    associatedtype PresentationModelType: PresentationModel
+    associatedtype PresentationModelType: PresentationModelProtocol
     var presentationModel: PresentationModelType? {get set}
 }

@@ -7,42 +7,42 @@ import Foundation
 
 public final class TableViewPresentationAdapter {
     
-    private let headerNodeSequence: FooterHeaderSequenceDisplayAdapter
-    private let footerNodeSequence: FooterHeaderSequenceDisplayAdapter
-    private let cellNodeSequence: RowsSequenceDisplayAdapter
+    private let headerSequenceDisplayAdapter: FooterHeaderSequenceDisplayAdapter
+    private let footerSequenceDisplayAdapter: FooterHeaderSequenceDisplayAdapter
+    private let rowsSequenceDisplayAdapter: RowsSequenceDisplayAdapter
     
     
     public init(headerNodeForSection: @escaping (Int, Bool)-> TableHeaderFooterProtocol = { _, _ in TableHeaderFooter<NodeTableHeaderFooterView>(model: RootNode(height: 0)) },
                 footerNodeForSection: @escaping (Int, Bool)-> TableHeaderFooterProtocol = { _, _ in  TableHeaderFooter<NodeTableHeaderFooterView>(model: RootNode(height: 0)) },
                 cellNodeForIndexPath: @escaping (IndexPath, Bool)-> TableRowProtocol) {
-        headerNodeSequence = FooterHeaderSequenceDisplayAdapter(itemNode: headerNodeForSection)
-        footerNodeSequence = FooterHeaderSequenceDisplayAdapter(itemNode: footerNodeForSection)
-        cellNodeSequence = RowsSequenceDisplayAdapter(itemNode: cellNodeForIndexPath)
+        headerSequenceDisplayAdapter = FooterHeaderSequenceDisplayAdapter(itemNode: headerNodeForSection)
+        footerSequenceDisplayAdapter = FooterHeaderSequenceDisplayAdapter(itemNode: footerNodeForSection)
+        rowsSequenceDisplayAdapter = RowsSequenceDisplayAdapter(itemNode: cellNodeForIndexPath)
     }
     
     //MARK: - cells
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return cellNodeSequence.makeView(tableView, for: indexPath)
+        return rowsSequenceDisplayAdapter.makeView(tableView, for: indexPath)
     }
     
     public func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return cellNodeSequence.estimatedSize(for: indexPath, size: CGSize(width: tableView.bounds.size.width, height: 0)).height
+        return rowsSequenceDisplayAdapter.estimatedSize(for: indexPath, size: CGSize(width: tableView.bounds.size.width, height: 0)).height
     }
     
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let separatorHeight: CGFloat = ((tableView.separatorStyle == .none) ? 0.0 : 1.0/UIScreen.main.scale)
-        return cellNodeSequence.size(for: indexPath, size: CGSize(width: tableView.bounds.size.width, height: 0)).height + separatorHeight
+        return rowsSequenceDisplayAdapter.size(for: indexPath, size: CGSize(width: tableView.bounds.size.width, height: 0)).height + separatorHeight
     }
     
     //MARK: - footers
     
     public func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        return footerNodeSequence.makeView(tableView, for: section)
+        return footerSequenceDisplayAdapter.makeView(tableView, for: section)
     }
     
     public func tableView(_ tableView: UITableView, estimatedHeightForFooterInSection section: Int) -> CGFloat {
-        let h = footerNodeSequence.estimatedSize(for: section, size: CGSize(width: tableView.bounds.size.width, height: 0)).height
+        let h = footerSequenceDisplayAdapter.estimatedSize(for: section, size: CGSize(width: tableView.bounds.size.width, height: 0)).height
         if isAlmostEqual(left: h, right: 0) {
             return 2
         } else {
@@ -51,7 +51,7 @@ public final class TableViewPresentationAdapter {
     }
     
     public func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        let h = footerNodeSequence.size(for: section, size: CGSize(width: tableView.bounds.size.width, height: 0)).height
+        let h = footerSequenceDisplayAdapter.size(for: section, size: CGSize(width: tableView.bounds.size.width, height: 0)).height
         
         if isAlmostEqual(left: h, right: 0) {
             return CGFloat.leastNormalMagnitude
@@ -63,11 +63,11 @@ public final class TableViewPresentationAdapter {
     //MARK: - headers
     
     public func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return headerNodeSequence.makeView(tableView, for: section)
+        return headerSequenceDisplayAdapter.makeView(tableView, for: section)
     }
     
     public func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
-        let h = headerNodeSequence.estimatedSize(for: section, size: CGSize(width: tableView.bounds.size.width, height: 0)).height
+        let h = headerSequenceDisplayAdapter.estimatedSize(for: section, size: CGSize(width: tableView.bounds.size.width, height: 0)).height
         if isAlmostEqual(left: h, right: 0) {
             return 2
         } else {
@@ -76,7 +76,7 @@ public final class TableViewPresentationAdapter {
     }
     
     public func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        let h = headerNodeSequence.size(for: section, size: CGSize(width: tableView.bounds.size.width, height: 0)).height
+        let h = headerSequenceDisplayAdapter.size(for: section, size: CGSize(width: tableView.bounds.size.width, height: 0)).height
         
         if isAlmostEqual(left: h, right: 0) {
             return CGFloat.leastNormalMagnitude

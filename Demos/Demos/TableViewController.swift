@@ -94,8 +94,6 @@ class TableViewController: UIViewController {
         view.addSubview(tableView)
         
         navigationItem.rightBarButtonItem = editButtonItem
-        
-        nodeModels = tweets.map { ($0, RootNode())}
     }
     
     override func setEditing(_ editing: Bool, animated: Bool) {
@@ -141,10 +139,8 @@ class TableViewController: UIViewController {
         return TableViewPresentationAdapter(headerNodeForSection: { index, estimated in
             return NodeTableHeaderFooter(model: TweetCell.headerRootNode(title: "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Lorem ipsum dolor sit amet, consectetur adipiscing elit.", estimated: estimated))
         }, cellNodeForIndexPath: { indexPath, estimated in
-            if indexPath.section == 0 {
-                return TableRow<ClassicCell>(model: ClassicModel(title: "Hello Classic Cell") {
-                    print("action!")
-                })
+            if indexPath.section == 0 { 
+                return tableRow(from: ClassicModel(title: "Hello Classic Cell"), estimated: estimated, cell: ClassicCell.self)
             } else {
                 if let nodeModel = self.nodeModels?[indexPath.row]  {
                     return NodeTableRow(model: nodeModel.1)
@@ -478,33 +474,107 @@ extension RootNode {
     }
 }
 
-struct ClassicModel {
-    let title: String
-    let action: ()->Void
-    init(title: String, action: @escaping ()->Void ) {
-        self.title = title
-        self.action = action
+/////
+
+public enum CacheResult<T: HeightConvertible> {
+    case precise(T)
+    case estimated(CGFloat)
+    
+    public var height: CGFloat {
+        switch self {
+        case .estimated(let val):
+            return val
+        case .precise(let x):
+            return x.height
+        }
+    }
+    
+    public var estimatedHeight: CGFloat? {
+        switch self {
+        case .estimated(let val):
+            return val
+        case .precise:
+            return nil
+        }
+    }
+    
+    public var result: T? {
+        switch self {
+        case .estimated:
+            return nil
+        case .precise(let res):
+            return res
+        }
     }
 }
 
-class ClassicCell: UITableViewCell, PresentationModelView {
+public protocol HeightConvertible {
+    var height: CGFloat {get}
+}
+
+extension CGFloat: HeightConvertible {
+    public var height: CGFloat {
+        return self
+    }
+}
+
+/////////////////////////
+
+struct PresentationModelAdaptor<ModelType>: PresentationModelProtocol {
     
-    var presentationModel: ClassicModel? {
+    let model: ModelType
+    let estimated: Bool
+    let calc: (CGSize) -> CGSize
+    
+    
+    init<T: PresentationModelConverter>(model: ModelType, estimated: Bool, converter: T.Type) where ModelType == T.ModelType {
+        self.model = model
+        self.estimated = estimated
+        calc = {
+            return CGSize(width: $0.width, height: converter.height(for: model, width: $0.width, estimated: estimated).height)
+        }
+    }
+    
+    func calculate(for size: CGSize) -> CGSize {
+        return calc(size)
+    }
+}
+
+protocol PresentationModelConverter {
+    associatedtype ModelType
+    associatedtype CacheType: HeightConvertible
+    static func height(for model: ModelType, width: CGFloat, estimated: Bool) -> CacheResult<CacheType>
+}
+
+//////////////
+
+
+struct ClassicModel {
+    let title: String
+}
+
+class ClassicCell: UITableViewCell, PresentationModelView, PresentationModelConverter {
+    
+    var presentationModel: PresentationModelAdaptor<ClassicModel>? {
         didSet {
-            self.textLabel?.text = presentationModel?.title
+            self.textLabel?.text = presentationModel?.model.title
         }
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         if selected {
-            presentationModel?.action()
+            //presentationModel?.action()
         }
+    }
+    
+    static func height(for model: ClassicModel, width: CGFloat, estimated: Bool) -> CacheResult<CGFloat> {
+        return .precise(50)
     }
 }
 
-extension ClassicModel: PresentationModel {
-    func calculate(for size: CGSize) -> CGSize {
-        return CGSize(width: size.width, height: 50)
-    }
+func tableRow<ModelType, CellType: UITableViewCell>(from model: ModelType, estimated: Bool, cell: CellType.Type, reuseIdentifier: String = String(describing: CellType.self), style: UITableViewCellStyle = .default) -> TableRow<CellType> where CellType: PresentationModelConverter & PresentationModelView, CellType.ModelType == ModelType, CellType.PresentationModelType == PresentationModelAdaptor<ModelType> {
+    let m =  PresentationModelAdaptor(model: model, estimated: estimated, converter: CellType.self)
+    return TableRow<CellType>(model: m, reuseIdentifier: reuseIdentifier, style: style)
 }
+

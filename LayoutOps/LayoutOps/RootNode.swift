@@ -87,4 +87,4 @@ public final class RootNode: Layoutable {
 
 extension RootNode: LayoutingCompatible { }
 
-extension RootNode: PresentationModel { }
+extension RootNode: PresentationModelProtocol { }
