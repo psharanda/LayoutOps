@@ -9,7 +9,7 @@ public protocol PresentationModelProtocol {
     func calculate(for size: CGSize) -> CGSize
 }
 
-public protocol PresentationModelView: class {
+public protocol PresentationModelViewProtocol: class {
     associatedtype PresentationModelType: PresentationModelProtocol
     var presentationModel: PresentationModelType? {get set}
 }

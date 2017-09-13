@@ -553,7 +553,7 @@ struct ClassicModel {
     let title: String
 }
 
-class ClassicCell: UITableViewCell, PresentationModelView, PresentationModelConverter {
+class ClassicCell: UITableViewCell, PresentationModelViewProtocol, PresentationModelConverter {
     
     var presentationModel: PresentationModelAdaptor<ClassicModel>? {
         didSet {
@@ -573,7 +573,7 @@ class ClassicCell: UITableViewCell, PresentationModelView, PresentationModelConv
     }
 }
 
-func tableRow<ModelType, CellType: UITableViewCell>(from model: ModelType, estimated: Bool, cell: CellType.Type, reuseIdentifier: String = String(describing: CellType.self), style: UITableViewCellStyle = .default) -> TableRow<CellType> where CellType: PresentationModelConverter & PresentationModelView, CellType.ModelType == ModelType, CellType.PresentationModelType == PresentationModelAdaptor<ModelType> {
+func tableRow<ModelType, CellType: UITableViewCell>(from model: ModelType, estimated: Bool, cell: CellType.Type, reuseIdentifier: String = String(describing: CellType.self), style: UITableViewCellStyle = .default) -> TableRow<CellType> where CellType: PresentationModelConverter & PresentationModelViewProtocol, CellType.ModelType == ModelType, CellType.PresentationModelType == PresentationModelAdaptor<ModelType> {
     let m =  PresentationModelAdaptor(model: model, estimated: estimated, converter: CellType.self)
     return TableRow<CellType>(model: m, reuseIdentifier: reuseIdentifier, style: style)
 }

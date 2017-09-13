@@ -12,7 +12,7 @@ public protocol PresentationItemProtocol: class {
     func calculate(for size: CGSize) -> CGSize
 }
 
-public class PresentationItem<ViewType>: PresentationItemProtocol where ViewType: PresentationModelView  {
+public class PresentationItem<ViewType>: PresentationItemProtocol where ViewType: PresentationModelViewProtocol  {
     
     public var model: ViewType.PresentationModelType
     

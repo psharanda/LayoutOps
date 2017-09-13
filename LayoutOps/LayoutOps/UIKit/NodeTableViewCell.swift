@@ -5,7 +5,7 @@
 
 import UIKit
 
-open class NodeTableViewCell: UITableViewCell, PresentationModelView {
+open class NodeTableViewCell: UITableViewCell, PresentationModelViewProtocol {
     open override func layoutSubviews() {
         super.layoutSubviews()
         presentationModel?.install(in: contentView)
@@ -21,7 +21,7 @@ open class NodeTableViewCell: UITableViewCell, PresentationModelView {
 
 public typealias NodeTableRow = TableRow<NodeTableViewCell>
 
-open class NodeTableHeaderFooterView: UITableViewHeaderFooterView, PresentationModelView {
+open class NodeTableHeaderFooterView: UITableViewHeaderFooterView, PresentationModelViewProtocol {
     
     open override func layoutSubviews() {
         super.layoutSubviews()

@@ -9,7 +9,7 @@ public protocol TableRowProtocol: PresentationItemProtocol  {
     func makeView(_ tableView: UITableView) -> UITableViewCell
 }
 
-public class TableRow<ViewType: UITableViewCell>: PresentationItem<ViewType>, TableRowProtocol where ViewType: PresentationModelView {
+public class TableRow<ViewType: UITableViewCell>: PresentationItem<ViewType>, TableRowProtocol where ViewType: PresentationModelViewProtocol {
     
     public let style: UITableViewCellStyle
     public let reuseIdentifier: String

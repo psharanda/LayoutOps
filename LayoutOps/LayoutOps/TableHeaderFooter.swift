@@ -12,7 +12,7 @@ public protocol TableHeaderFooterProtocol: PresentationItemProtocol  {
     func makeView(_ tableView: UITableView) -> UITableViewHeaderFooterView
 }
 
-public class TableHeaderFooter<ViewType: UITableViewHeaderFooterView>: PresentationItem<ViewType>, TableHeaderFooterProtocol where ViewType: PresentationModelView {
+public class TableHeaderFooter<ViewType: UITableViewHeaderFooterView>: PresentationItem<ViewType>, TableHeaderFooterProtocol where ViewType: PresentationModelViewProtocol {
     
     public let reuseIdentifier: String
     
