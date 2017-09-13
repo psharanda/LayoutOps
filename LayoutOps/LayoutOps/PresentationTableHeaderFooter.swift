@@ -1,5 +1,5 @@
 //
-//  TableHeaderFooter.swift
+//  PresentationTableHeaderFooter.swift
 //  LayoutOps
 //
 //  Created by Pavel Sharanda on 27.08.17.
@@ -8,11 +8,11 @@
 
 import Foundation
 
-public protocol TableHeaderFooterProtocol: PresentationItemProtocol  {
+public protocol PresentationTableHeaderFooterProtocol: PresentationItemProtocol  {
     func makeView(_ tableView: UITableView) -> UITableViewHeaderFooterView
 }
 
-public class TableHeaderFooter<ViewType: UITableViewHeaderFooterView>: PresentationItem<ViewType>, TableHeaderFooterProtocol where ViewType: PresentationModelViewProtocol {
+public class PresentationTableHeaderFooter<ViewType: UITableViewHeaderFooterView>: PresentationItem<ViewType>, PresentationTableHeaderFooterProtocol where ViewType: PresentationModelViewProtocol {
     
     public let reuseIdentifier: String
     

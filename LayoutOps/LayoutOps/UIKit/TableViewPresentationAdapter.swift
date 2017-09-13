@@ -7,17 +7,17 @@ import Foundation
 
 public final class TableViewPresentationAdapter {
     
-    private let headerSequenceDisplayAdapter: FooterHeaderSequenceDisplayAdapter
-    private let footerSequenceDisplayAdapter: FooterHeaderSequenceDisplayAdapter
-    private let rowsSequenceDisplayAdapter: RowsSequenceDisplayAdapter
+    private let headerSequenceDisplayAdapter: FooterHeaderSequencePresentationAdapter
+    private let footerSequenceDisplayAdapter: FooterHeaderSequencePresentationAdapter
+    private let rowsSequenceDisplayAdapter: RowsSequencePresentationAdapter
     
     
-    public init(headerNodeForSection: @escaping (Int, Bool)-> TableHeaderFooterProtocol = { _, _ in TableHeaderFooter<NodeTableHeaderFooterView>(model: RootNode(height: 0)) },
-                footerNodeForSection: @escaping (Int, Bool)-> TableHeaderFooterProtocol = { _, _ in  TableHeaderFooter<NodeTableHeaderFooterView>(model: RootNode(height: 0)) },
-                cellNodeForIndexPath: @escaping (IndexPath, Bool)-> TableRowProtocol) {
-        headerSequenceDisplayAdapter = FooterHeaderSequenceDisplayAdapter(itemNode: headerNodeForSection)
-        footerSequenceDisplayAdapter = FooterHeaderSequenceDisplayAdapter(itemNode: footerNodeForSection)
-        rowsSequenceDisplayAdapter = RowsSequenceDisplayAdapter(itemNode: cellNodeForIndexPath)
+    public init(headerNodeForSection: @escaping (Int, Bool)-> PresentationTableHeaderFooterProtocol = { _, _ in PresentationTableHeaderFooter<NodeTableHeaderFooterView>(model: RootNode(height: 0)) },
+                footerNodeForSection: @escaping (Int, Bool)-> PresentationTableHeaderFooterProtocol = { _, _ in  PresentationTableHeaderFooter<NodeTableHeaderFooterView>(model: RootNode(height: 0)) },
+                cellNodeForIndexPath: @escaping (IndexPath, Bool)-> PresentationTableRowProtocol) {
+        headerSequenceDisplayAdapter = FooterHeaderSequencePresentationAdapter(itemNode: headerNodeForSection)
+        footerSequenceDisplayAdapter = FooterHeaderSequencePresentationAdapter(itemNode: footerNodeForSection)
+        rowsSequenceDisplayAdapter = RowsSequencePresentationAdapter(itemNode: cellNodeForIndexPath)
     }
     
     //MARK: - cells
@@ -86,14 +86,14 @@ public final class TableViewPresentationAdapter {
     }
 }
 
-class RowsSequenceDisplayAdapter {
+class RowsSequencePresentationAdapter {
     
-    private let itemNode: (IndexPath, Bool)-> TableRowProtocol
+    private let itemNode: (IndexPath, Bool)-> PresentationTableRowProtocol
     
-    private var cache = [IndexPath: TableRowProtocol]()
+    private var cache = [IndexPath: PresentationTableRowProtocol]()
     
     
-    init(itemNode: @escaping (IndexPath, Bool)-> TableRowProtocol) {
+    init(itemNode: @escaping (IndexPath, Bool)-> PresentationTableRowProtocol) {
         self.itemNode = itemNode
     }
     
@@ -117,14 +117,14 @@ class RowsSequenceDisplayAdapter {
     }
 }
 
-class FooterHeaderSequenceDisplayAdapter {
+class FooterHeaderSequencePresentationAdapter {
     
-    private let itemNode: (Int, Bool)-> TableHeaderFooterProtocol
+    private let itemNode: (Int, Bool)-> PresentationTableHeaderFooterProtocol
     
-    private var cache = [Int: TableHeaderFooterProtocol]()
+    private var cache = [Int: PresentationTableHeaderFooterProtocol]()
     
     
-    init(itemNode: @escaping (Int, Bool)-> TableHeaderFooterProtocol) {
+    init(itemNode: @escaping (Int, Bool)-> PresentationTableHeaderFooterProtocol) {
         self.itemNode = itemNode
     }
     

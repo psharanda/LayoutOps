@@ -5,11 +5,11 @@
 
 import Foundation
 
-public protocol TableRowProtocol: PresentationItemProtocol  {
+public protocol PresentationTableRowProtocol: PresentationItemProtocol  {
     func makeView(_ tableView: UITableView) -> UITableViewCell
 }
 
-public class TableRow<ViewType: UITableViewCell>: PresentationItem<ViewType>, TableRowProtocol where ViewType: PresentationModelViewProtocol {
+public class PresentationTableRow<ViewType: UITableViewCell>: PresentationItem<ViewType>, PresentationTableRowProtocol where ViewType: PresentationModelViewProtocol {
     
     public let style: UITableViewCellStyle
     public let reuseIdentifier: String

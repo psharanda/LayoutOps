@@ -573,8 +573,8 @@ class ClassicCell: UITableViewCell, PresentationModelViewProtocol, PresentationM
     }
 }
 
-func tableRow<ModelType, CellType: UITableViewCell>(from model: ModelType, estimated: Bool, cell: CellType.Type, reuseIdentifier: String = String(describing: CellType.self), style: UITableViewCellStyle = .default) -> TableRow<CellType> where CellType: PresentationModelConverter & PresentationModelViewProtocol, CellType.ModelType == ModelType, CellType.PresentationModelType == PresentationModelAdaptor<ModelType> {
+func tableRow<ModelType, CellType: UITableViewCell>(from model: ModelType, estimated: Bool, cell: CellType.Type, reuseIdentifier: String = String(describing: CellType.self), style: UITableViewCellStyle = .default) -> PresentationTableRow<CellType> where CellType: PresentationModelConverter & PresentationModelViewProtocol, CellType.ModelType == ModelType, CellType.PresentationModelType == PresentationModelAdaptor<ModelType> {
     let m =  PresentationModelAdaptor(model: model, estimated: estimated, converter: CellType.self)
-    return TableRow<CellType>(model: m, reuseIdentifier: reuseIdentifier, style: style)
+    return PresentationTableRow<CellType>(model: m, reuseIdentifier: reuseIdentifier, style: style)
 }
 

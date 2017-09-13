@@ -19,7 +19,7 @@ open class NodeTableViewCell: UITableViewCell, PresentationModelViewProtocol {
     public var presentationModel: RootNode?
 }
 
-public typealias NodeTableRow = TableRow<NodeTableViewCell>
+public typealias NodeTableRow = PresentationTableRow<NodeTableViewCell>
 
 open class NodeTableHeaderFooterView: UITableViewHeaderFooterView, PresentationModelViewProtocol {
     
@@ -36,5 +36,5 @@ open class NodeTableHeaderFooterView: UITableViewHeaderFooterView, PresentationM
     public var presentationModel: RootNode?
 }
 
-public typealias NodeTableHeaderFooter = TableHeaderFooter<NodeTableHeaderFooterView>
+public typealias NodeTableHeaderFooter = PresentationTableHeaderFooter<NodeTableHeaderFooterView>
 
