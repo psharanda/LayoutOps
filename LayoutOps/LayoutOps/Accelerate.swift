@@ -11,7 +11,7 @@ public protocol LayoutableWithFont: Layoutable {
     var font: UIFont! {get}
 }
 
-extension Layouting where Base: Layoutable, Base: LayoutableWithFont {
+extension Layouting where Base: LayoutableWithFont {
     
     @discardableResult
     public func alignToFirstBaseline<T: LayoutingCompatible>(ofSingleLineFittedLabel label: T) -> Layouting<Base> where T: LayoutableWithFont {

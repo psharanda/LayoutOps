@@ -45,17 +45,17 @@ open class Node<T: NodeContainer>: NodeProtocol {
     
     public var lx_viewport: CGRect?
     
-    public func sizeThatFits(_ size: CGSize) -> CGSize {
+    open func sizeThatFits(_ size: CGSize) -> CGSize {
         return CGSize()
     }
     
     public weak var lx_parent: Layoutable?
     
     //MARK: - state
-    private var subnodes: [NodeProtocol]
+    public var subnodes: [NodeProtocol]
     private let initializer: ((T?)->T)
-    public let prepareForReuse: ((T)->Void)
-    private let tag: TagConvertible
+    private let prepareForReuse: ((T)->Void)
+    public let tag: TagConvertible
     
     public init(tag: TagConvertible, subnodes: [NodeProtocol] = [], prepareForReuse: @escaping ((T)->Void) = {_ in }, initializer: @escaping (T?)->T) {
         self.tag = tag

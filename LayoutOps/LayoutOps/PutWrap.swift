@@ -32,7 +32,7 @@ public enum PutIntention {
      */
     case fix(views: [Layoutable]?, strategy: FixStrategy)
     
-    public func when(_ condition: (Void) -> Bool) -> PutIntention {
+    public func when(_ condition: () -> Bool) -> PutIntention {
         if condition() {
             return self
         } else {
@@ -103,7 +103,7 @@ public enum WrapIntention {
     
     case fix(views: [Layoutable]?, strategy: FixStrategy)
     
-    public func when(_ condition: (Void) -> Bool) -> WrapIntention {
+    public func when(_ condition: () -> Bool) -> WrapIntention {
         if condition() {
             return self
         } else {

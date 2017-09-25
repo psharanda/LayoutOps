@@ -8,15 +8,42 @@
 
 import Foundation
 
-extension Thread {
-    func cachedObject<T: AnyObject>(for key: String, create: () -> T) -> T {
-        if let cachedObject = threadDictionary[key] as? T {
-            return cachedObject
-        } else {
-            let newObject = create()
-            threadDictionary[key] = newObject
-            return newObject
-        }
+extension NSAttributedString {
+    
+    /// Returns a new NSAttributedString with a given font and the same attributes.
+    func fixed(with font: UIFont) -> NSAttributedString {
+        let fontAttribute = [NSAttributedStringKey.font: font]
+        let attributedTextWithFont = NSMutableAttributedString(string: string, attributes: fontAttribute)
+        let fullRange = NSMakeRange(0, string.count)
+        attributedTextWithFont.beginEditing()
+        self.enumerateAttributes(in: fullRange, options: .longestEffectiveRangeNotRequired, using: { (attributes, range, _) in
+            
+            var a = attributes
+            if let p = attributes[NSAttributedStringKey.paragraphStyle] as? NSParagraphStyle, p.lineBreakMode != .byWordWrapping {
+                let newStyle: NSMutableParagraphStyle = p.mutableCopy() as! NSMutableParagraphStyle
+                newStyle.lineBreakMode = .byWordWrapping
+                a[NSAttributedStringKey.paragraphStyle] = newStyle
+            }
+            
+            attributedTextWithFont.addAttributes(a, range: range)
+        })
+        attributedTextWithFont.endEditing()
+        
+        return attributedTextWithFont
+    }
+    
+    func boundingSize(for size: CGSize, numberOfLines: Int) -> CGSize {
+        let textContainer = NSTextContainer(size: size)
+        textContainer.maximumNumberOfLines = numberOfLines
+        
+        let textStorage = NSTextStorage(attributedString: self)
+        
+        let layoutManager = NSLayoutManager()
+        layoutManager.addTextContainer(textContainer)
+        
+        textStorage.addLayoutManager(layoutManager)
+        
+        return layoutManager.usedRect(for: textContainer).size
     }
 }
 

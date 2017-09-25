@@ -26,7 +26,7 @@ public final class RootNode: Layoutable {
         return nil
     }
     
-    private var subnodes: [NodeProtocol]
+    public var subnodes: [NodeProtocol]
     
     private let layout: (RootNode)->Void
     

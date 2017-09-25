@@ -5,6 +5,8 @@
 
 import UIKit
 
+private let stubLabel = UILabel()
+
 public struct LabelNodeEstimation {
     public let length: Int
     public let font: UIFont
@@ -34,10 +36,10 @@ public enum LabelNodeString {
     case estimated(LabelNodeEstimation)
 }
 
-open class LabelNode<T: UILabel>: Node<T> {
+public class LabelNode<T: UILabel>: Node<T> {
     
-    fileprivate let numberOfLines: Int
-    fileprivate let text: LabelNodeString
+    public let numberOfLines: Int
+    public let text: LabelNodeString
     
     public init(tag: TagConvertible, text: LabelNodeString, numberOfLines: Int = 1, subnodes: [NodeProtocol] = [], prepareForReuse: @escaping ((T)->Void) = {_ in }, initializer: @escaping (T?)->T) {
         self.text = text
@@ -59,35 +61,56 @@ open class LabelNode<T: UILabel>: Node<T> {
         }
     }
     
-    open override func sizeThatFits(_ size: CGSize) -> CGSize {
+    public override func sizeThatFits(_ size: CGSize) -> CGSize {
         switch text {
         case .attributed(let attrString):
-            let label = stubLabel()
-            label.attributedText = attrString
-            return label.sizeThatFits(size)
+            
+            guard let attrString = attrString else {
+                return .zero
+            }
+            
+            if attrString.length == 0 {
+                return .zero
+            }
+            
+            if Thread.current.isMainThread {
+                let label = preparedStubLabel()
+                label.attributedText = attrString
+                return label.sizeThatFits(size)
+            } else {
+                return attrString.fixed(with: UIFont.systemFont(ofSize: 17)).boundingSize(for: size, numberOfLines: numberOfLines)
+            }
         case .regular(let string, let font):
-            let label = stubLabel()
-            label.text = string
-            label.font = font
-            return label.sizeThatFits(size)
+            
+            guard let string = string else {
+                return .zero
+            }
+            
+            if string.isEmpty {
+                return .zero
+            }
+            
+            if Thread.current.isMainThread {
+                let label = preparedStubLabel()
+                label.text = string
+                label.font = font
+                return label.sizeThatFits(size)
+            } else {
+                return NSAttributedString(string: string, attributes: [NSAttributedStringKey.font: font]).boundingSize(for: size, numberOfLines: numberOfLines)
+            }
         case .estimated(let estimation):
             let h = estimatedHeightWithFont(estimation: estimation, width: size.width)
             return CGSize(width:size.width, height: h)
         }
     }
     
-    private func stubLabel() -> UILabel {
-        let label = Thread.current.cachedObject(for: "LabelNode.label") {
-            return UILabel()
-        }
-        
-        label.attributedText = nil
-        label.text = nil
-        label.font = nil
-        label.numberOfLines = numberOfLines
-        return label
+    private func preparedStubLabel() -> UILabel {
+        stubLabel.attributedText = nil
+        stubLabel.text = nil
+        stubLabel.font = nil
+        stubLabel.numberOfLines = numberOfLines
+        return stubLabel
     }
-    
     
     private func estimatedHeightWithFont(estimation: LabelNodeEstimation, width: CGFloat) -> CGFloat {
         
@@ -146,7 +169,7 @@ extension NSAttributedString {
     var firstCharacterFont: UIFont? {
         if length > 0 {
             var ptr = NSRange()
-            return attribute(NSFontAttributeName, at: 0, effectiveRange: &ptr) as? UIFont
+            return attribute(NSAttributedStringKey.font, at: 0, effectiveRange: &ptr) as? UIFont
         } else {
             return nil
         }
@@ -155,7 +178,7 @@ extension NSAttributedString {
     var lastCharacterFont: UIFont? {
         if length > 0 {
             var ptr = NSRange()
-            return attribute(NSFontAttributeName, at: length - 1, effectiveRange: &ptr) as? UIFont
+            return attribute(NSAttributedStringKey.font, at: length - 1, effectiveRange: &ptr) as? UIFont
         } else {
             return nil
         }
@@ -164,7 +187,7 @@ extension NSAttributedString {
     var suggestedParagraphStyle: NSParagraphStyle? {
         if length > 0 {
             var ptr = NSRange()
-            return attribute(NSParagraphStyleAttributeName, at: 0, effectiveRange: &ptr) as? NSParagraphStyle
+            return attribute(NSAttributedStringKey.paragraphStyle, at: 0, effectiveRange: &ptr) as? NSParagraphStyle
         } else {
             return nil
         }

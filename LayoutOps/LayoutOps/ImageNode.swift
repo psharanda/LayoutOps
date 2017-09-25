@@ -5,9 +5,9 @@
 
 import UIKit
 
-open class ImageNode<T: UIImageView>: Node<T> {
+public class ImageNode<T: UIImageView>: Node<T> {
     
-    private let image: UIImage?
+    public let image: UIImage?
     
     public init(tag: TagConvertible, image: UIImage?, subnodes: [NodeProtocol] = [], prepareForReuse: @escaping ((T)->Void) = {_ in }, initializer: @escaping (T?)->T) {
         self.image = image
@@ -18,13 +18,7 @@ open class ImageNode<T: UIImageView>: Node<T> {
         }
     }
     
-    open override func sizeThatFits(_ size: CGSize) -> CGSize {
-        
-        let imageView = Thread.current.cachedObject(for: "ImageNode.imageView") {
-            return UIImageView()
-        }
-        
-        imageView.image = image
-        return imageView.sizeThatFits(size)
+    public override func sizeThatFits(_ size: CGSize) -> CGSize {
+        return image?.size ?? .zero
     }
 }

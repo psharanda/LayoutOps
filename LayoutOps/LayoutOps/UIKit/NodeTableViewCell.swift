@@ -16,7 +16,7 @@ open class NodeTableViewCell: UITableViewCell, PresentationModelViewProtocol {
         presentationModel?.prepareForReuse(in: contentView)
     }
     public typealias PresentationModelType = RootNode
-    public var presentationModel: RootNode?
+    open var presentationModel: RootNode?
 }
 
 public typealias NodeTableRow = PresentationTableRow<NodeTableViewCell>
@@ -33,7 +33,7 @@ open class NodeTableHeaderFooterView: UITableViewHeaderFooterView, PresentationM
         presentationModel?.prepareForReuse(in: contentView)
     }
     public typealias PresentationModelType = RootNode
-    public var presentationModel: RootNode?
+    open var presentationModel: RootNode?
 }
 
 public typealias NodeTableHeaderFooter = PresentationTableHeaderFooter<NodeTableHeaderFooterView>
