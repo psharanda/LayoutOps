@@ -12,17 +12,17 @@ extension NSAttributedString {
     
     /// Returns a new NSAttributedString with a given font and the same attributes.
     func fixed(with font: UIFont) -> NSAttributedString {
-        let fontAttribute = [NSAttributedStringKey.font: font]
+        let fontAttribute = [NSFontAttributeName: font]
         let attributedTextWithFont = NSMutableAttributedString(string: string, attributes: fontAttribute)
         let fullRange = NSMakeRange(0, string.count)
         attributedTextWithFont.beginEditing()
         self.enumerateAttributes(in: fullRange, options: .longestEffectiveRangeNotRequired, using: { (attributes, range, _) in
             
             var a = attributes
-            if let p = attributes[NSAttributedStringKey.paragraphStyle] as? NSParagraphStyle, p.lineBreakMode != .byWordWrapping {
+            if let p = attributes[NSParagraphStyleAttributeName] as? NSParagraphStyle, p.lineBreakMode != .byWordWrapping {
                 let newStyle: NSMutableParagraphStyle = p.mutableCopy() as! NSMutableParagraphStyle
                 newStyle.lineBreakMode = .byWordWrapping
-                a[NSAttributedStringKey.paragraphStyle] = newStyle
+                a[NSParagraphStyleAttributeName] = newStyle
             }
             
             attributedTextWithFont.addAttributes(a, range: range)

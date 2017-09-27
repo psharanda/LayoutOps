@@ -96,7 +96,7 @@ public class LabelNode<T: UILabel>: Node<T> {
                 label.font = font
                 return label.sizeThatFits(size)
             } else {
-                return NSAttributedString(string: string, attributes: [NSAttributedStringKey.font: font]).boundingSize(for: size, numberOfLines: numberOfLines)
+                return NSAttributedString(string: string, attributes: [NSFontAttributeName: font]).boundingSize(for: size, numberOfLines: numberOfLines)
             }
         case .estimated(let estimation):
             let h = estimatedHeightWithFont(estimation: estimation, width: size.width)
@@ -169,7 +169,7 @@ extension NSAttributedString {
     var firstCharacterFont: UIFont? {
         if length > 0 {
             var ptr = NSRange()
-            return attribute(NSAttributedStringKey.font, at: 0, effectiveRange: &ptr) as? UIFont
+            return attribute(NSFontAttributeName, at: 0, effectiveRange: &ptr) as? UIFont
         } else {
             return nil
         }
@@ -178,7 +178,7 @@ extension NSAttributedString {
     var lastCharacterFont: UIFont? {
         if length > 0 {
             var ptr = NSRange()
-            return attribute(NSAttributedStringKey.font, at: length - 1, effectiveRange: &ptr) as? UIFont
+            return attribute(NSFontAttributeName, at: length - 1, effectiveRange: &ptr) as? UIFont
         } else {
             return nil
         }
@@ -187,7 +187,7 @@ extension NSAttributedString {
     var suggestedParagraphStyle: NSParagraphStyle? {
         if length > 0 {
             var ptr = NSRange()
-            return attribute(NSAttributedStringKey.paragraphStyle, at: 0, effectiveRange: &ptr) as? NSParagraphStyle
+            return attribute(NSParagraphStyleAttributeName, at: 0, effectiveRange: &ptr) as? NSParagraphStyle
         } else {
             return nil
         }
