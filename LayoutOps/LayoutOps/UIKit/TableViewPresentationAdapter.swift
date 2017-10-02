@@ -20,6 +20,13 @@ public final class TableViewPresentationAdapter {
         rowsSequenceDisplayAdapter = RowsSequencePresentationAdapter(itemNode: cellNodeForIndexPath)
     }
     
+    //call this before any reload*/insert*/delete*/move* tableview methods
+    public func resetCache() {
+        headerSequenceDisplayAdapter.resetCache()
+        footerSequenceDisplayAdapter.resetCache()
+        rowsSequenceDisplayAdapter.resetCache()
+    }
+    
     //MARK: - cells
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -123,6 +130,10 @@ class RowsSequencePresentationAdapter {
     func makeView(_ tableView: UITableView, for index: IndexPath) -> UITableViewCell {
         return node(for: index).makeView(tableView)
     }
+    
+    func resetCache() {
+        cache.removeAll()
+    }
 }
 
 class FooterHeaderSequencePresentationAdapter {
@@ -161,6 +172,10 @@ class FooterHeaderSequencePresentationAdapter {
     
     func makeView(_ tableView: UITableView, for index: Int) -> UIView {
         return node(for: index).makeView(tableView)
+    }
+    
+    func resetCache() {
+        cache.removeAll()
     }
 }
 
