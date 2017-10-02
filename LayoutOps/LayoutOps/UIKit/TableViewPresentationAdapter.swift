@@ -106,14 +106,22 @@ class RowsSequencePresentationAdapter {
         return node.calculate(for: size)
     }
     
+    private func node(for index: IndexPath) -> PresentationTableRowProtocol {
+        if let node = cache[index] {
+            return node
+        }
+        
+        let node = itemNode(index, false)
+        cache[index] = node
+        return node
+    }
+    
     func size(for index: IndexPath, size: CGSize) -> CGSize {
-        return cache[index]?.calculate(for: size) ?? CGSize()
+        return node(for: index).calculate(for: size)
     }
     
     func makeView(_ tableView: UITableView, for index: IndexPath) -> UITableViewCell {
-        let node = itemNode(index, false)
-        cache[index] = node
-        return node.makeView(tableView)
+        return node(for: index).makeView(tableView)
     }
 }
 
@@ -137,14 +145,22 @@ class FooterHeaderSequencePresentationAdapter {
         return node.calculate(for: size)
     }
     
-    func size(for index: Int, size: CGSize) -> CGSize {
+    private func node(for index: Int) -> PresentationTableHeaderFooterProtocol {
+        if let node = cache[index] {
+            return node
+        }
+        
         let node = itemNode(index, false)
         cache[index] = node
-        return node.calculate(for: size)
+        return node
+    }
+    
+    func size(for index: Int, size: CGSize) -> CGSize {
+         return node(for: index).calculate(for: size)
     }
     
     func makeView(_ tableView: UITableView, for index: Int) -> UIView {
-        return cache[index]?.makeView(tableView) ?? UIView()
+        return node(for: index).makeView(tableView)
     }
 }
 
