@@ -7,10 +7,14 @@ import Foundation
 
 
 public enum FixStrategy {
-    case first //all elements in fix equal to first
-    case min //all elements in fix equal to max element
-    case max //all elements in fix equal to min element
-    case value(CGFloat) //all elements in fix equal to value
+    ///all elements in fix equal to first
+    case first
+    ///all elements in fix equal to max element
+    case min
+    ///all elements in fix equal to min element
+    case max
+    ///all elements in fix equal to value
+    case value(CGFloat)
 }
 
 public enum PutIntention {

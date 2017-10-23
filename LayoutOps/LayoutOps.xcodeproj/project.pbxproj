@@ -26,10 +26,11 @@
 		1B6645E41DB8F44C0059CFC8 /* Accelerate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6645E31DB8F44C0059CFC8 /* Accelerate.swift */; };
 		1B7857CE1E6019D00025DD28 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B7857CD1E6019D00025DD28 /* Utils.swift */; };
 		1B9EC19F1EAF4E7000D5938A /* NodeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B9EC19E1EAF4E7000D5938A /* NodeTableViewCell.swift */; };
-		1B9EC1A61EAF4FB000D5938A /* TableViewPresentationAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B9EC1A41EAF4FB000D5938A /* TableViewPresentationAdapter.swift */; };
+		1B9EC1A61EAF4FB000D5938A /* BaseTableViewPresentationAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B9EC1A41EAF4FB000D5938A /* BaseTableViewPresentationAdapter.swift */; };
 		1B9EC1A71EAF4FB000D5938A /* UIView+Layoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B9EC1A51EAF4FB000D5938A /* UIView+Layoutable.swift */; };
 		1BAD4FEF1CDF54CA00692E31 /* LayoutOps.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BAD4FEE1CDF54CA00692E31 /* LayoutOps.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1BDCF03F1E3BD43800BEADEE /* LX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BDCF03E1E3BD43800BEADEE /* LX.swift */; };
+		1BFD41661F9E682A00D9A5F8 /* TableViewPresentationAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BFD41651F9E682A00D9A5F8 /* TableViewPresentationAdapter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,12 +53,13 @@
 		1B6645E31DB8F44C0059CFC8 /* Accelerate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Accelerate.swift; sourceTree = "<group>"; };
 		1B7857CD1E6019D00025DD28 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		1B9EC19E1EAF4E7000D5938A /* NodeTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NodeTableViewCell.swift; path = UIKit/NodeTableViewCell.swift; sourceTree = "<group>"; };
-		1B9EC1A41EAF4FB000D5938A /* TableViewPresentationAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TableViewPresentationAdapter.swift; path = UIKit/TableViewPresentationAdapter.swift; sourceTree = "<group>"; };
+		1B9EC1A41EAF4FB000D5938A /* BaseTableViewPresentationAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BaseTableViewPresentationAdapter.swift; path = UIKit/BaseTableViewPresentationAdapter.swift; sourceTree = "<group>"; };
 		1B9EC1A51EAF4FB000D5938A /* UIView+Layoutable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIView+Layoutable.swift"; path = "UIKit/UIView+Layoutable.swift"; sourceTree = "<group>"; };
 		1BAD4FEB1CDF54CA00692E31 /* LayoutOps.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LayoutOps.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1BAD4FEE1CDF54CA00692E31 /* LayoutOps.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LayoutOps.h; sourceTree = "<group>"; };
 		1BAD4FF01CDF54CA00692E31 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1BDCF03E1E3BD43800BEADEE /* LX.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LX.swift; sourceTree = "<group>"; };
+		1BFD41651F9E682A00D9A5F8 /* TableViewPresentationAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TableViewPresentationAdapter.swift; path = UIKit/TableViewPresentationAdapter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,8 +80,9 @@
 				1B50F7991F535BCB0036BEC7 /* PresentationItem.swift */,
 				1B50F79B1F535D740036BEC7 /* PresentationTableRow.swift */,
 				1B50F79D1F5360510036BEC7 /* PresentationTableHeaderFooter.swift */,
-				1B9EC1A41EAF4FB000D5938A /* TableViewPresentationAdapter.swift */,
 				1B9EC19E1EAF4E7000D5938A /* NodeTableViewCell.swift */,
+				1B9EC1A41EAF4FB000D5938A /* BaseTableViewPresentationAdapter.swift */,
+				1BFD41651F9E682A00D9A5F8 /* TableViewPresentationAdapter.swift */,
 			);
 			name = Table;
 			sourceTree = "<group>";
@@ -243,6 +246,7 @@
 				1B7857CE1E6019D00025DD28 /* Utils.swift in Sources */,
 				1B50F7971F52F2F80036BEC7 /* PresentationModel.swift in Sources */,
 				1B50F79A1F535BCB0036BEC7 /* PresentationItem.swift in Sources */,
+				1BFD41661F9E682A00D9A5F8 /* TableViewPresentationAdapter.swift in Sources */,
 				1B49D7131DB8D02800823FF3 /* Follow.swift in Sources */,
 				1B11ECF71DE4F915001FEBE7 /* Node.swift in Sources */,
 				1B49D7141DB8D02800823FF3 /* Basic.swift in Sources */,
@@ -250,7 +254,7 @@
 				1B6645E41DB8F44C0059CFC8 /* Accelerate.swift in Sources */,
 				1B009CC71EB8D28F00C6C5F7 /* UIView+NodeContainer.swift in Sources */,
 				1B9EC1A71EAF4FB000D5938A /* UIView+Layoutable.swift in Sources */,
-				1B9EC1A61EAF4FB000D5938A /* TableViewPresentationAdapter.swift in Sources */,
+				1B9EC1A61EAF4FB000D5938A /* BaseTableViewPresentationAdapter.swift in Sources */,
 				1B50F79E1F5360510036BEC7 /* PresentationTableHeaderFooter.swift in Sources */,
 				1B49D7151DB8D02800823FF3 /* PutWrap.swift in Sources */,
 				1B11ECFE1DE57CC6001FEBE7 /* LabelNode.swift in Sources */,

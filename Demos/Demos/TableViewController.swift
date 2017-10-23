@@ -83,7 +83,7 @@ class TableViewController: UIViewController {
     }()
     
     fileprivate var tweets: [TweetModel] = TweetModel.stubData()
-    fileprivate var nodeModels: [(TweetModel, RootNode)]?
+    fileprivate var presentationCache: [(TweetModel, RootNode)]?
     
     private var referenceWidth: CGFloat = 0
     
@@ -108,7 +108,7 @@ class TableViewController: UIViewController {
         let width = view.frame.width
         
         if width != referenceWidth {
-            nodeModels = nil
+            presentationCache = nil
             referenceWidth = width
             
             let dateStart = Date()
@@ -122,7 +122,7 @@ class TableViewController: UIViewController {
                 
                 DispatchQueue.main.async { [weak self] in
                     print("did cache in \(Date().timeIntervalSince(dateStart))s")
-                    self?.didLoad(nodeModels: cachedModels, width: width)
+                    self?.didLoad(presentationCache: cachedModels, width: width)
                 }
             }
         }
@@ -130,22 +130,22 @@ class TableViewController: UIViewController {
         tableView.lx.fill()
     }
     
-    private func didLoad(nodeModels: [(TweetModel, RootNode)], width: CGFloat) {
+    private func didLoad(presentationCache: [(TweetModel, RootNode)], width: CGFloat) {
         
         if width == referenceWidth {
-            self.nodeModels = nodeModels
+            self.presentationCache = presentationCache
         }
     }
     
     fileprivate lazy var adapter: TableViewPresentationAdapter = { [unowned self] in
-        return TableViewPresentationAdapter(headerNodeForSection: { index, estimated in
+        return TableViewPresentationAdapter(presentationItemForHeader: { index, estimated in
             return NodeTableHeaderFooter(model: TweetCell.headerRootNode(title: "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Lorem ipsum dolor sit amet, consectetur adipiscing elit.", estimated: estimated))
-        }, cellNodeForIndexPath: { indexPath, estimated in
+        }, presentationItemForRow: { indexPath, estimated in
             if indexPath.section == 0 { 
                 return tableRow(from: ClassicModel(title: "Hello Classic Cell"), estimated: estimated, cell: ClassicCell.self)
             } else {
-                if let nodeModel = self.nodeModels?[indexPath.row]  {
-                    return NodeTableRow(model: nodeModel.1)
+                if let node = self.presentationCache?[indexPath.row]  {
+                    return NodeTableRow(model: node.1)
                 } else {
                     return NodeTableRow(model: TweetCell.buildRootNode(self.tweets[indexPath.row], estimated: estimated))
                 }
