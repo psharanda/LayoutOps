@@ -32,10 +32,12 @@ extension NSAttributedString {
         return attributedTextWithFont
     }
     
-    func boundingSize(for size: CGSize, numberOfLines: Int) -> CGSize {
+    func boundingSize(for size: CGSize, numberOfLines: Int, lineBreakMode: NSLineBreakMode) -> CGSize {
         let textContainer = NSTextContainer(size: size)
         textContainer.maximumNumberOfLines = numberOfLines
         textContainer.lineFragmentPadding = 0
+        textContainer.lineBreakMode = lineBreakMode
+        
         let textStorage = NSTextStorage(attributedString: self)
         
         let layoutManager = NSLayoutManager()

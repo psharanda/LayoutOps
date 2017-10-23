@@ -114,13 +114,15 @@ class TableViewController: UIViewController {
             let dateStart = Date()
             let models = tweets
             DispatchQueue.global(qos: .background).async {
-                models.parallelMap(striding: 2, filler: (TweetModel(), RootNode()), f:  {
+                let cachedModels: [(TweetModel, RootNode)] = models.concurrentMap  {
                     let node = TweetCell.buildRootNode($0, estimated: false)
                     _ = node.calculate(for: CGSize(width: width, height: 0))
                     return ($0, node)
-                }) {[weak self] in
+                }
+                
+                DispatchQueue.main.async { [weak self] in
                     print("did cache in \(Date().timeIntervalSince(dateStart))s")
-                    self?.didLoad(nodeModels: $0, width: width)
+                    self?.didLoad(nodeModels: cachedModels, width: width)
                 }
             }
         }
@@ -231,31 +233,16 @@ enum TweetCell {
         case timestamp
     }
     
-    static func labelNodeText_userInfo(model: TweetModel, estimated: Bool) -> LabelNodeString {
-        if estimated {
-            let e = LabelNodeEstimation(length: model.name.characters.count + model.username.characters.count + 1, font: .boldSystemFont(ofSize: 12.0))
-            return .estimated(e)
-        } else {
-            return .attributed(TweetCell.attributedStringWithName(model.name, username: model.username))
-        }
+    static func labelNodeText_userInfo(model: TweetModel) -> LabelNodeString {
+        return .attributed(TweetCell.attributedStringWithName(model.name, username: model.username))
     }
     
-    static func labelNodeText_displayableDate(model: TweetModel, estimated: Bool) -> LabelNodeString {
-        if estimated {
-            let e = LabelNodeEstimation(length: 10, font: .systemFont(ofSize: 14.0))
-            return .estimated(e)
-        } else {
-            return .attributed(TweetCell.attributedStringWithDisplayableDate(model.displayableDate))
-        }
+    static func labelNodeText_displayableDate(model: TweetModel) -> LabelNodeString {
+        return .attributed(TweetCell.attributedStringWithDisplayableDate(model.displayableDate))
     }
     
-    static func labelNodeText_tweet(model: TweetModel, estimated: Bool) -> LabelNodeString {
-        if estimated {
-            let e = LabelNodeEstimation(length: model.tweet.characters.count, font: .systemFont(ofSize: 15.0), numberOfLines: Int.max, lineHeightMultiple: 1.2)
-            return .estimated(e)
-        } else {
-            return .attributed(TweetCell.attributedStringWithTweet(model.tweet))
-        }
+    static func labelNodeText_tweet(model: TweetModel) -> LabelNodeString {
+        return .attributed(TweetCell.attributedStringWithTweet(model.tweet))
     }
     
     static func headerRootNode(title: String, estimated: Bool) -> RootNode {
@@ -287,9 +274,9 @@ enum TweetCell {
         }
 
         //prepare attributed strings
-        let userInfo = labelNodeText_userInfo(model: model, estimated: estimated)
-        let displayableDate = labelNodeText_displayableDate(model: model, estimated: estimated)
-        let tweet = labelNodeText_tweet(model: model, estimated: estimated)
+        let userInfo = labelNodeText_userInfo(model: model)
+        let displayableDate = labelNodeText_displayableDate(model: model)
+        let tweet = labelNodeText_tweet(model: model)
         
         //setup hierarchy
         let avatarNode = ImageNode(tag: Tags.avatar, image: model.thumbnail) {
@@ -300,15 +287,15 @@ enum TweetCell {
             return imageView
         }
         
-        let userNode = LabelNode(tag: Tags.user, text: userInfo) {
+        let userNode = LabelNode(tag: Tags.user, text: userInfo, estimated: estimated) {
             return $0 ?? UILabel()
         }
         
-        let tweetNode = LabelNode(tag: Tags.tweet, text: tweet, numberOfLines: 0) {
+        let tweetNode = LabelNode(tag: Tags.tweet, text: tweet, numberOfLines: 0, estimated: estimated) {
             return $0 ?? UILabel()
         }
         
-        let timeStampNode = LabelNode(tag: Tags.timestamp, text: displayableDate) {
+        let timeStampNode = LabelNode(tag: Tags.timestamp, text: displayableDate, estimated: estimated) {
             return $0 ?? UILabel()
         }
         
@@ -444,33 +431,20 @@ extension String {
     
 }
 
-extension Array {
-    func parallelMap<R>(striding n: Int, filler: R, f: @escaping (Element) -> R, completion: @escaping ([R]) -> ()) {
-        let N = self.count
+extension RandomAccessCollection {
+    func concurrentMap<T>(_ transform: (Iterator.Element)->T) -> [T] {
+        let n = numericCast(self.count) as Int
+        let p = UnsafeMutablePointer<T>.allocate(capacity: n)
+        defer { p.deallocate(capacity: n) }
         
-        var finalResult = Array<R>(repeating: filler, count: N)
-        
-        finalResult.withUnsafeMutableBufferPointer { res in
-            DispatchQueue.concurrentPerform(iterations: N/n) { k in
-                for i in (k * n)..<((k + 1) * n) {
-                    res[i] = f(self[i])
-                }
-            }
+        DispatchQueue.concurrentPerform(iterations: n) {
+            offset in
+            (p + offset).initialize(
+                to: transform(
+                    self[index(startIndex, offsetBy: numericCast(offset))]))
         }
         
-        for i in (N - (N % n))..<N {
-            finalResult[i] = f(self[i])
-        }
-        
-        DispatchQueue.main.async {
-            completion(finalResult)
-        }
-    }
-}
-
-extension RootNode {
-    convenience init() {
-        self.init(subnodes: [], layout: { _ in })
+        return Array(UnsafeMutableBufferPointer(start: p, count: n))
     }
 }
 

@@ -7,43 +7,25 @@ import UIKit
 
 private let stubLabel = UILabel()
 
-public struct LabelNodeEstimation {
-    public let length: Int
-    public let font: UIFont
-    public let lineSpacing: CGFloat
-    public let lineHeightMultiple: CGFloat
-    
-    public init(length: Int, font: UIFont, numberOfLines: Int = 1, lineSpacing: CGFloat = 0, lineHeightMultiple: CGFloat = 1.2) {
-        self.length = length
-        self.font = font
-        self.lineSpacing = lineSpacing
-        self.lineHeightMultiple = lineHeightMultiple
-    }
-    
-    public init(string: String?, font: UIFont, numberOfLines: Int = 1, lineSpacing: CGFloat = 0, lineHeightMultiple: CGFloat = 1.2) {
-        self.init(length: string?.characters.count ?? 0, font: font, numberOfLines: numberOfLines, lineSpacing: lineSpacing, lineHeightMultiple: lineHeightMultiple)
-    }
-    
-    public init(attributedString: NSAttributedString?, numberOfLines: Int = 1) {
-        let ps = attributedString?.suggestedParagraphStyle
-        self.init(length: attributedString?.length ?? 0, font: attributedString?.firstCharacterFont ?? UIFont.systemFont(ofSize: 12), numberOfLines: numberOfLines, lineSpacing: ps?.lineSpacing ?? 0, lineHeightMultiple:  ps?.lineHeightMultiple ?? 1)
-    }
-}
-
 public enum LabelNodeString {
     case regular(String?, UIFont)
     case attributed(NSAttributedString?)
-    case estimated(LabelNodeEstimation)
 }
 
 public class LabelNode<T: UILabel>: Node<T> {
     
     public let numberOfLines: Int
+    public let lineBreakMode: NSLineBreakMode
+    public let textAlignment: NSTextAlignment
     public let text: LabelNodeString
+    public let estimated: Bool
     
-    public init(tag: TagConvertible, text: LabelNodeString, numberOfLines: Int = 1, subnodes: [NodeProtocol] = [], prepareForReuse: @escaping ((T)->Void) = {_ in }, initializer: @escaping (T?)->T) {
+    public init(tag: TagConvertible, text: LabelNodeString, numberOfLines: Int = 1, lineBreakMode: NSLineBreakMode = .byTruncatingTail, textAlignment: NSTextAlignment = .natural,  estimated: Bool = false, subnodes: [NodeProtocol] = [], prepareForReuse: @escaping ((T)->Void) = {_ in }, initializer: @escaping (T?)->T) {
         self.text = text
         self.numberOfLines = numberOfLines
+        self.textAlignment = textAlignment
+        self.lineBreakMode = lineBreakMode
+        self.estimated = estimated
         super.init(tag: tag, subnodes: subnodes, prepareForReuse: prepareForReuse) { (label: T?) -> T in
             
             let l = initializer(label)
@@ -53,15 +35,25 @@ public class LabelNode<T: UILabel>: Node<T> {
             case .regular(let string, let font):
                 l.font = font
                 l.text = string
-            case .estimated:
+            }
+            
+            if estimated {
                 print("[WARNING:LayoutOps:LabelNode] you should not install nodes used for estimation")
             }
+            
             l.numberOfLines = numberOfLines
+            l.textAlignment = textAlignment
+            l.lineBreakMode = lineBreakMode
             return l
         }
     }
     
     public override func sizeThatFits(_ size: CGSize) -> CGSize {
+        
+        if estimated {
+            return CGSize(width:size.width, height: estimatedHeight(for: size.width))
+        }
+        
         switch text {
         case .attributed(let attrString):
             
@@ -78,7 +70,7 @@ public class LabelNode<T: UILabel>: Node<T> {
                 label.attributedText = attrString
                 return label.sizeThatFits(size)
             } else {
-                return attrString.fixed(with: UIFont.systemFont(ofSize: 17)).boundingSize(for: size, numberOfLines: numberOfLines)
+                return attrString.fixed(with: UIFont.systemFont(ofSize: 17)).boundingSize(for: size, numberOfLines: numberOfLines, lineBreakMode: lineBreakMode)
             }
         case .regular(let string, let font):
             
@@ -96,11 +88,8 @@ public class LabelNode<T: UILabel>: Node<T> {
                 label.font = font
                 return label.sizeThatFits(size)
             } else {
-                return NSAttributedString(string: string, attributes: [NSAttributedStringKey.font: font]).boundingSize(for: size, numberOfLines: numberOfLines)
+                return NSAttributedString(string: string, attributes: [NSAttributedStringKey.font: font]).boundingSize(for: size, numberOfLines: numberOfLines, lineBreakMode: lineBreakMode)
             }
-        case .estimated(let estimation):
-            let h = estimatedHeightWithFont(estimation: estimation, width: size.width)
-            return CGSize(width:size.width, height: h)
         }
     }
     
@@ -109,18 +98,27 @@ public class LabelNode<T: UILabel>: Node<T> {
         stubLabel.text = nil
         stubLabel.font = nil
         stubLabel.numberOfLines = numberOfLines
+        stubLabel.textAlignment = textAlignment
+        stubLabel.lineBreakMode = lineBreakMode
         return stubLabel
     }
     
-    private func estimatedHeightWithFont(estimation: LabelNodeEstimation, width: CGFloat) -> CGFloat {
-        
+    private func estimatedHeight(for width: CGFloat) -> CGFloat {
         let numberOfLettersPerLine = width/font.xHeight
-        let numLines = Int(ceil(CGFloat(estimation.length)/numberOfLettersPerLine))
-        
+        let numLines = Int(ceil(CGFloat(textLength)/numberOfLettersPerLine))
+
         let finalNumberOfLines = min(numLines, (numberOfLines == 0) ? Int.max : numberOfLines)
-        
-        return CGFloat(finalNumberOfLines)*font.lineHeight*estimation.lineHeightMultiple + CGFloat(finalNumberOfLines - 1)*estimation.lineSpacing
-        
+
+        return CGFloat(finalNumberOfLines)*font.lineHeight + CGFloat(finalNumberOfLines - 1)
+    }
+    
+    private var textLength:Int {
+        switch text {
+        case .attributed(let attr):
+            return attr?.string.count ?? 0
+        case .regular(let s, _):
+            return s?.count ?? 0
+        }
     }
 }
 
@@ -128,7 +126,7 @@ extension LabelNode: Baselinable {
     public func baselineValueOfType(_ type: BaselineType, size: CGSize) -> CGFloat {
         let sz = sizeThatFits(size)
         var font: UIFont?
-        
+
         switch text {
         case .attributed(let attr):
             switch type {
@@ -139,10 +137,8 @@ extension LabelNode: Baselinable {
             }
         case .regular(_, let f):
             font = f
-        case .estimated(let estimation):
-            font = estimation.font
         }
-        
+
         switch type {
         case .first:
             return (size.height - sz.height)/2 + (font?.ascender ?? 0)
@@ -159,8 +155,6 @@ extension LabelNode: LayoutableWithFont {
             return attr?.firstCharacterFont
         case .regular(_, let f):
             return f
-        case .estimated(let estimation):
-            return estimation.font
         }
     }
 }
@@ -174,7 +168,7 @@ extension NSAttributedString {
             return nil
         }
     }
-    
+
     var lastCharacterFont: UIFont? {
         if length > 0 {
             var ptr = NSRange()
@@ -183,7 +177,7 @@ extension NSAttributedString {
             return nil
         }
     }
-    
+
     var suggestedParagraphStyle: NSParagraphStyle? {
         if length > 0 {
             var ptr = NSRange()
@@ -193,3 +187,4 @@ extension NSAttributedString {
         }
     }
 }
+
