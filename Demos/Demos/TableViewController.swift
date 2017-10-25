@@ -66,7 +66,7 @@ extension TweetModel {
             tweet: "Just discovered LayoutOps... silly name, great framework #yatusabes",
             thumbnail: #imageLiteral(resourceName: "thumb-nacho")
         )
-        return (0..<500).map { _ in  [tweetFelix, tweetEloy, tweetJavi, tweetNacho] }.flatMap { $0 }
+        return (0..<50).map { _ in  [tweetFelix, tweetEloy, tweetJavi, tweetNacho] }.flatMap { $0 }
     }
     
 }
@@ -101,18 +101,29 @@ class TableViewController: UIViewController {
         tableView.setEditing(editing, animated: animated)
     }
     
+    private var cancelCaching: (()->Void)?
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        
         
         let width = view.frame.width
         
         if width != referenceWidth {
+            
+            cancelCaching?()
+            
             presentationCache = nil
             referenceWidth = width
             
             let dateStart = Date()
             let models = tweets
+            
+            var cancelled = false
+            
+            cancelCaching = {
+                cancelled = true
+            }
+            
             DispatchQueue.global(qos: .background).async {
                 let cachedModels: [(TweetModel, RootNode)] = models.concurrentMap  {
                     let node = TweetCell.buildRootNode($0, estimated: false)
@@ -121,20 +132,15 @@ class TableViewController: UIViewController {
                 }
                 
                 DispatchQueue.main.async { [weak self] in
-                    print("did cache in \(Date().timeIntervalSince(dateStart))s")
-                    self?.didLoad(presentationCache: cachedModels, width: width)
+                    if !cancelled {
+                        print("did cache in \(Date().timeIntervalSince(dateStart))s")
+                        self?.presentationCache = cachedModels
+                    }
                 }
             }
         }
         
         tableView.lx.fill()
-    }
-    
-    private func didLoad(presentationCache: [(TweetModel, RootNode)], width: CGFloat) {
-        
-        if width == referenceWidth {
-            self.presentationCache = presentationCache
-        }
     }
     
     fileprivate lazy var adapter: TableViewPresentationAdapter = { [unowned self] in

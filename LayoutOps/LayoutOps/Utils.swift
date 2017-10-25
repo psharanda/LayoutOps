@@ -38,12 +38,14 @@ extension NSAttributedString {
         textContainer.lineFragmentPadding = 0
         textContainer.lineBreakMode = lineBreakMode
         
-        let textStorage = NSTextStorage(attributedString: self)
-        
         let layoutManager = NSLayoutManager()
+        //TODO: investigate this
+        //layoutManager.usesFontLeading = false
         layoutManager.addTextContainer(textContainer)
         
+        let textStorage = NSTextStorage()
         textStorage.addLayoutManager(layoutManager)
+        textStorage.setAttributedString(self)
         
         return layoutManager.usedRect(for: textContainer).size
     }
