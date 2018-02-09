@@ -429,7 +429,7 @@ extension String {
         let matches = String.regex.matches(
             in: self,
             options: .reportCompletion,
-            range: NSMakeRange(0, self.characters.count)
+            range: NSMakeRange(0, self.count)
         )
         
         return matches.map { $0.range }
