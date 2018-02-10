@@ -86,12 +86,12 @@ extension Layouting where Base: Layoutable {
     
     #if os(macOS)
     @discardableResult
-    func fill(insets:NSEdgeInsets) -> Layouting<Base> {
+    public func fill(insets:NSEdgeInsets) -> Layouting<Base> {
         return fill(insets: LXEdgeInsets(top: insets.top, left: insets.left, bottom: insets.bottom, right: insets.right))
     }
     #else
     @discardableResult
-    func fill(insets: UIEdgeInsets) -> Layouting<Base> {
+    public func fill(insets: UIEdgeInsets) -> Layouting<Base> {
         return fill(insets: LXEdgeInsets(top: insets.top, left: insets.left, bottom: insets.bottom, right: insets.right))
     }
     #endif
