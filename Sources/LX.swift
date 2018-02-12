@@ -13,13 +13,17 @@ import UIKit
 
 public protocol Layoutable: class {
     var lx_parent: Layoutable? {get}
-    var lx_bounds: CGRect {get}
     var lx_frame: CGRect {get set}
     var lx_viewport: CGRect? {get set}
     func lx_sizeThatFits(_ size: CGSize) -> CGSize
 }
 
 extension Layoutable {
+    
+    public var lx_bounds: CGRect {
+        return CGRect(x: 0, y: 0, width: lx_frame.width, height: lx_frame.height)
+    }
+    
     func updateFrame(_ newValue: CGRect) {
         lx_frame = CGRect(x: newValue.origin.x.pixelPerfect, y: newValue.origin.y.pixelPerfect, width: newValue.size.width.ceilPixelPerfect, height: newValue.size.height.ceilPixelPerfect)
     }

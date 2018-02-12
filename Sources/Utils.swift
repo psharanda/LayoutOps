@@ -32,7 +32,7 @@ extension CGFloat {
 
 extension CGRect {
     //convert from cartesian <-> flipped coordinate space
-    func flipped(in rect: CGRect) -> CGRect {
-        return CGRect(x: minX, y: rect.height - maxY, width: width, height: height)
+    func flipped(in rect: CGRect?) -> CGRect {
+        return CGRect(x: minX, y: (rect?.height ?? 0) - maxY, width: width, height: height)
     }
 }

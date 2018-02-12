@@ -248,13 +248,23 @@ private func putOperation<T: BoxDimension>(_ superview: Layoutable, intentions: 
     
     var totalSizeForFlexs = T.getDimension(bounds).size
     
+    
+    var totalFix: CGFloat = 0.0
+    
     for i in intentions {
         switch (i) {
         case .flex(_, let weight):
             totalWeight += weight
         case .fix(let views, let value):
-            totalSizeForFlexs -= value.calculateValue(forViews: views, dimension: dimension)
+            let v = value.calculateValue(forViews: views, dimension: dimension)
+            totalFix += v
+            totalSizeForFlexs -= v
         }
+    }
+    
+    if wrapParent {
+        let dim = T.getDimension(superview.lx_frame)
+        superview.lx_frame = T.setDimension(Dimension(origin: dim.origin, size: totalFix - dim.origin), inRect: superview.lx_frame)
     }
     
     let unoSize = totalSizeForFlexs/totalWeight
@@ -267,7 +277,7 @@ private func putOperation<T: BoxDimension>(_ superview: Layoutable, intentions: 
             let newSize = weight * unoSize
             
             if let views = views {
-                views.forEach {view in
+                views.forEach { view in
                     let fr = view.lx_frame
                     view.updateFrame(T.setDimension(Dimension(origin: start, size: newSize), inRect: fr))
                 }
@@ -289,10 +299,7 @@ private func putOperation<T: BoxDimension>(_ superview: Layoutable, intentions: 
         }
     }
     
-    if wrapParent {
-        let dim = T.getDimension(superview.lx_frame)
-        superview.lx_frame = T.setDimension(Dimension(origin: dim.origin, size: start - T.getDimension(bounds).origin), inRect: superview.lx_frame)
-    }
+    
 }
 
 extension Layouting where Base: Layoutable {

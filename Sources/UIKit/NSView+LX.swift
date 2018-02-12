@@ -17,23 +17,19 @@ extension NSView: Layoutable {
         return superview
     }
     
-    public var lx_bounds: CGRect {
-        return bounds
-    }
-    
     public var lx_frame: CGRect {
         get {
             if superview?.isFlipped ?? false {
                 return frame
             } else {                
-                return frame.flipped(in: superview?.bounds ?? bounds)
+                return frame.flipped(in: superview?.bounds)
             }
         }
         set {
             if superview?.isFlipped ?? false {
                 frame = newValue
             } else {
-                frame = newValue.flipped(in: superview?.bounds ?? bounds)
+                frame = newValue.flipped(in: superview?.bounds)
             }
             
         }

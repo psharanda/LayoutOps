@@ -14,21 +14,18 @@ private var key: UInt8 = 0
 private var viewPortInsetsKey: UInt8 = 0
 
 extension CALayer: Layoutable {
-    public var lx_bounds: CGRect {
-        return bounds
-    }
     
     public var lx_frame: CGRect {
         get {
             #if os(macOS)
-                return frame.flipped(in: superlayer?.bounds ?? bounds)
+                return frame.flipped(in: superlayer?.bounds)
             #else
                 return frame
             #endif
         }
         set {
             #if os(macOS)
-                frame = newValue.flipped(in: superlayer?.bounds ?? bounds)
+                frame = newValue.flipped(in: superlayer?.bounds)
             #else
                 frame = newValue
             #endif

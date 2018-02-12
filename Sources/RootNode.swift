@@ -13,9 +13,6 @@ import Foundation
 public final class RootNode: Layoutable {
     
     //MARK: - confirm layoutable
-    public var lx_bounds: CGRect {
-        return bounds
-    }
     
     public var lx_frame: CGRect {
         get {

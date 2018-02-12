@@ -41,9 +41,6 @@ public protocol NodeContainer: Layoutable {
 open class Node<T: NodeContainer>: NodeProtocol {
     
     //MARK: - confirm layoutable
-    public var lx_bounds: CGRect {
-        return bounds
-    }
     
     public var lx_frame: CGRect {
         get {

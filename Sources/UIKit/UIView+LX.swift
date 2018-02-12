@@ -14,10 +14,6 @@ private var viewPortInsetsKey: UInt8 = 0
 
 extension UIView: Layoutable {
     
-    public var lx_bounds: CGRect {
-        return bounds
-    }
-    
     public var lx_frame: CGRect {
         get {
             return frame
