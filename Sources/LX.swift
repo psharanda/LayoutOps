@@ -15,7 +15,6 @@ public protocol Layoutable: class {
     var lx_parent: Layoutable? {get}
     var lx_frame: CGRect {get set}
     var lx_viewport: CGRect? {get set}
-    func lx_sizeThatFits(_ size: CGSize) -> CGSize
 }
 
 extension Layoutable {

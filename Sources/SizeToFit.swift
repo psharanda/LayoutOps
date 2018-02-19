@@ -11,6 +11,10 @@ import Foundation
     import UIKit
 #endif
 
+public protocol SelfSizingLayoutable: Layoutable {
+    func sizeThatFits(_ size: CGSize) -> CGSize
+}
+
 public enum SizeToFitIntention {
     /**
      Use defined value
@@ -60,7 +64,7 @@ public enum SizeConstraint {
     }
 }
 
-extension Layouting where Base: Layoutable {
+extension Layouting where Base: SelfSizingLayoutable {
     
     @discardableResult
     public func sizeToFit(width: SizeToFitIntention = .current, height: SizeToFitIntention = .current, widthConstraint: SizeConstraint = .default, heightConstraint: SizeConstraint = .default) -> Layouting<Base> {
@@ -92,7 +96,7 @@ extension Layouting where Base: Layoutable {
             h = fr.height
         }
         
-        var sz = base.lx_sizeThatFits(CGSize(width: w, height: h))
+        var sz = base.sizeThatFits(CGSize(width: w, height: h))
         
         
         switch width {

@@ -33,10 +33,6 @@ extension CALayer: Layoutable {
         
     }
     
-    public func lx_sizeThatFits(_ size: CGSize) -> CGSize {
-        return CGSize()
-    }
-    
     public var lx_parent: Layoutable? {
         return superlayer
     }

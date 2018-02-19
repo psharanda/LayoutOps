@@ -23,10 +23,6 @@ extension UIView: Layoutable {
         }
     }
     
-    public func lx_sizeThatFits(_ size: CGSize) -> CGSize {
-        return sizeThatFits(size)
-    }
-    
     public var lx_parent: Layoutable? {
         return superview
     }
@@ -42,6 +38,8 @@ extension UIView: Layoutable {
 }
 
 extension UIView: LayoutingCompatible { }
+
+extension UIView: SelfSizingLayoutable { }
 
 extension UILabel: Baselinable {
     public func baselineValueOfType(_ type: BaselineType, size: CGSize) -> CGFloat {

@@ -23,10 +23,6 @@ public final class RootNode: Layoutable {
         }
     }
     
-    public func lx_sizeThatFits(_ size: CGSize) -> CGSize {
-        return sizeThatFits(size)
-    }
-    
     public var lx_viewport: CGRect?
     
     public weak var lx_parent: Layoutable? {
@@ -39,10 +35,6 @@ public final class RootNode: Layoutable {
     }
     
     public var frame = CGRect()
-    
-    public func sizeThatFits(_ size: CGSize) -> CGSize {
-        return CGSize()
-    }
     
     public var subnodes: [NodeProtocol]
     

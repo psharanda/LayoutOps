@@ -26,7 +26,7 @@ extension String: TagConvertible {
     }
 }
 
-public protocol NodeProtocol: Layoutable {
+public protocol NodeProtocol: SelfSizingLayoutable {
     var lx_parent: Layoutable? {get set}
     func install(in container: NodeContainer)
     func prepareForReuse(in container: NodeContainer)
@@ -49,10 +49,6 @@ open class Node<T: NodeContainer>: NodeProtocol {
         set {
             frame = newValue
         }
-    }
-    
-    public func lx_sizeThatFits(_ size: CGSize) -> CGSize {
-        return sizeThatFits(size)
     }
     
     public var lx_viewport: CGRect?

@@ -43,21 +43,11 @@ extension NSView: Layoutable {
             return (objc_getAssociatedObject(self, &viewPortInsetsKey) as? NSValue)?.rectValue
         }
     }
-    
-    public func lx_sizeThatFits(_ size: CGSize) -> CGSize {
-        
-        if let control = self as? NSControl {
-            return control.sizeThatFits(size)
-        }
-        else if let imageView = self as? NSImageView {
-            return imageView.image?.size ?? CGSize()
-        }
-        
-        return CGSize()
-    }
 }
 
 extension NSView: LayoutingCompatible { }
+
+extension NSControl: SelfSizingLayoutable { }
 
 private var key: UInt8 = 0
 
