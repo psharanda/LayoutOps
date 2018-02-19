@@ -45,6 +45,14 @@ extension NSView: Layoutable {
     }
     
     public func lx_sizeThatFits(_ size: CGSize) -> CGSize {
+        
+        if let control = self as? NSControl {
+            return control.sizeThatFits(size)
+        }
+        else if let imageView = self as? NSImageView {
+            return imageView.image?.size ?? CGSize()
+        }
+        
         return CGSize()
     }
 }
