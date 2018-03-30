@@ -441,7 +441,7 @@ extension RandomAccessCollection {
     func concurrentMap<T>(_ transform: (Iterator.Element)->T) -> [T] {
         let n = numericCast(self.count) as Int
         let p = UnsafeMutablePointer<T>.allocate(capacity: n)
-        defer { p.deallocate(capacity: n) }
+        defer { p.deallocate() }
         
         DispatchQueue.concurrentPerform(iterations: n) {
             offset in

@@ -41,13 +41,6 @@
 			remoteGlobalIDString = 52D6DA0F1BF000BD002C0205;
 			remoteInfo = "LayoutOps-macOS";
 		};
-		1B498F60202DDB2B00EFF7FC /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1B2B82EC1DD4EAF3008B6450 /* LayoutOps.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 52D6D9E21BEFFF6E002C0205;
-			remoteInfo = "LayoutOps-watchOS";
-		};
 		1B498F62202DDB2B00EFF7FC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 1B2B82EC1DD4EAF3008B6450 /* LayoutOps.xcodeproj */;
@@ -193,7 +186,6 @@
 			children = (
 				1B498F5D202DDB2B00EFF7FC /* LayoutOps.framework */,
 				1B498F5F202DDB2B00EFF7FC /* LayoutOps.framework */,
-				1B498F61202DDB2B00EFF7FC /* LayoutOps.framework */,
 				1B498F63202DDB2B00EFF7FC /* LayoutOps.framework */,
 				1B498F65202DDB2B00EFF7FC /* LayoutOps-iOS Tests.xctest */,
 				1B498F67202DDB2B00EFF7FC /* LayoutOps-macOS Tests.xctest */,
@@ -232,7 +224,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0900;
+				LastUpgradeCheck = 0930;
 				ORGANIZATIONNAME = psharanda;
 				TargetAttributes = {
 					1B2B82D61DD4EAE1008B6450 = {
@@ -279,13 +271,6 @@
 			fileType = wrapper.framework;
 			path = LayoutOps.framework;
 			remoteRef = 1B498F5E202DDB2B00EFF7FC /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		1B498F61202DDB2B00EFF7FC /* LayoutOps.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = LayoutOps.framework;
-			remoteRef = 1B498F60202DDB2B00EFF7FC /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		1B498F63202DDB2B00EFF7FC /* LayoutOps.framework */ = {
@@ -402,12 +387,14 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -455,12 +442,14 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
