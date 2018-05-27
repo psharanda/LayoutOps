@@ -270,36 +270,57 @@ private func putOperation<T: BoxDimension>(_ superview: Layoutable, intentions: 
     let unoSize = totalSizeForFlexs/totalWeight
     
     var start = T.getDimension(bounds).origin
+    
+    var dims = [(PutIntention, Dimension)]()
+    
     for i in intentions {
         switch (i) {
-        case .flex(let views, let weight):
-            
+        case .flex(_, let weight):
             let newSize = weight * unoSize
-            
-            if let views = views {
-                views.forEach { view in
-                    let fr = view.lx_frame
-                    view.updateFrame(T.setDimension(Dimension(origin: start, size: newSize), inRect: fr))
-                }
-                
-                start += newSize
-            } else {
-                start += newSize
-            }
-            
-            totalWeight += weight
+            dims.append((i, Dimension(origin: start.pixelPerfect, size: newSize)))
+            start += newSize
         case .fix(let views, let strategy):
-            let value = strategy.calculateValue(forViews: views, dimension: dimension)
-            
-            views?.forEach {
-                let fr = $0.lx_frame
-                $0.updateFrame(T.setDimension(Dimension(origin: start, size: value), inRect: fr))
-            }            
-            start += value
+            let newSize = strategy.calculateValue(forViews: views, dimension: dimension)
+            dims.append((i, Dimension(origin: start.pixelPerfect, size: newSize)))
+            start += newSize
         }
     }
     
+    var fixedDims = [Dimension]()
     
+    dims.enumerated().forEach { (index, d) in
+        
+        switch d.0 {
+        case .flex:
+            let origin = d.1.origin
+            if index < (dims.count - 1) {
+                fixedDims.append(Dimension(origin: origin, size: dims[index + 1].1.origin - origin))
+            } else {
+                fixedDims.append(Dimension(origin: origin, size: T.getDimension(bounds).origin + T.getDimension(bounds).size - origin))
+            }
+        case .fix:
+            fixedDims.append(d.1)
+        }
+    }
+    
+    intentions.enumerated().forEach { (index, i) in
+        switch (i) {
+        case .flex(let views, _):
+
+            if let views = views {
+                views.forEach { view in
+                    let fr = view.lx_frame
+                    view.updateFrame(T.setDimension(fixedDims[index], inRect: fr))
+                }
+            }
+            
+        case .fix(let views, _):
+            views?.forEach {
+                let fr = $0.lx_frame
+                $0.updateFrame(T.setDimension(fixedDims[index], inRect: fr))
+            }
+        }
+    }
 }
 
 extension Layouting where Base: Layoutable {
