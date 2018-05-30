@@ -264,7 +264,7 @@ private func putOperation<T: BoxDimension>(_ superview: Layoutable, intentions: 
     
     if wrapParent {
         let dim = T.getDimension(superview.lx_frame)
-        superview.lx_frame = T.setDimension(Dimension(origin: dim.origin, size: totalFix - dim.origin), inRect: superview.lx_frame)
+        superview.lx_frame = T.setDimension(Dimension(origin: dim.origin, size: totalFix), inRect: superview.lx_frame)
     }
     
     let unoSize = totalSizeForFlexs/totalWeight
