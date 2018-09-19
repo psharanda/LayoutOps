@@ -47,7 +47,12 @@ extension Layouting where Base: LayoutableWithFont {
 #if os(macOS)
     extension NSFont {
         var lineHeight: CGFloat {
-            return ceil(ascender + fabs(descender) + leading);
+            #if swift(>=4.2)
+                return ceil(ascender + abs(descender) + leading)
+            #else
+                return ceil(ascender + fabs(descender) + leading)
+            #endif
+            
         }
     }
 #endif

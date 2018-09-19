@@ -99,7 +99,12 @@ extension RootNode: LayoutingCompatible { }
 
 func isAlmostEqual(left: CGFloat, right: CGFloat) -> Bool
 {
-    return fabs(left.distance(to: right)) <= 1e-3
+    #if swift(>=4.2)
+        return abs(left.distance(to: right)) <= 1e-3
+    #else
+        return fabs(left.distance(to: right)) <= 1e-3
+    #endif
+    
 }
 
 func isAlmostEqual(left: CGSize, right: CGSize) -> Bool

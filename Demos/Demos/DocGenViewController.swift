@@ -158,7 +158,14 @@ private func imageWithView(_ view: UIView) -> UIImage {
 }
 
 private func saveImageAsPngInTempFolder(_ image: UIImage, name: String) {
-    if let imgData = UIImagePNGRepresentation(image) {
+    
+    #if swift(>=4.2)
+    let imgData = image.pngData()
+    #else
+    let imgData = UIImagePNGRepresentation(image)
+    #endif
+    
+    if let imgData = imgData {
         
         let imgPath = (documentationPath() as NSString).appendingPathComponent(name)
         try? imgData.write(to: URL(fileURLWithPath: imgPath), options: [])

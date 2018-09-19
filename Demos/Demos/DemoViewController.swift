@@ -67,7 +67,14 @@ class DemoViewController: UIViewController {
         
         
         view.lx.inViewport(bottomAnchor: descBackground.lx.topAnchor) {
+            #if swift(>=4.2)
+            demoView.lx.fill(insets: UIEdgeInsets(top: realTopLayoutGuideLength + 20, left: 20, bottom: 20, right: 20))
+            #else
             demoView.lx.fill(insets: UIEdgeInsetsMake(realTopLayoutGuideLength + 20, 20, 20, 20))
+            #endif
+            
+            
+            
         }
         
     }

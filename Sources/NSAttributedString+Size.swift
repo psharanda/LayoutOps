@@ -6,21 +6,27 @@
 import Foundation
 import UIKit
 
+#if swift(>=4.2)
+ typealias AttributedStringKey = NSAttributedString.Key
+#else
+ typealias AttributedStringKey = NSAttributedStringKey
+#endif
+
 extension NSAttributedString {
     
     /// Returns a new NSAttributedString with a given font and the same attributes.
     func fixed(with font: UIFont) -> NSAttributedString {
-        let fontAttribute = [NSAttributedStringKey.font: font]
+        let fontAttribute = [AttributedStringKey.font: font]
         let attributedTextWithFont = NSMutableAttributedString(string: string, attributes: fontAttribute)
         let fullRange = NSMakeRange(0, string.count)
         attributedTextWithFont.beginEditing()
         self.enumerateAttributes(in: fullRange, options: .longestEffectiveRangeNotRequired, using: { (attributes, range, _) in
             
             var a = attributes
-            if let p = attributes[NSAttributedStringKey.paragraphStyle] as? NSParagraphStyle, p.lineBreakMode != .byWordWrapping {
+            if let p = attributes[AttributedStringKey.paragraphStyle] as? NSParagraphStyle, p.lineBreakMode != .byWordWrapping {
                 let newStyle: NSMutableParagraphStyle = p.mutableCopy() as! NSMutableParagraphStyle
                 newStyle.lineBreakMode = .byWordWrapping
-                a[NSAttributedStringKey.paragraphStyle] = newStyle
+                a[AttributedStringKey.paragraphStyle] = newStyle
             }
             
             attributedTextWithFont.addAttributes(a, range: range)

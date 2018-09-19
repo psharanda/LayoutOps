@@ -9,6 +9,12 @@
 import UIKit
 import LayoutOps
 
+#if swift(>=4.2)
+typealias AttributedStringKey = NSAttributedString.Key
+#else
+typealias AttributedStringKey = NSAttributedStringKey
+#endif
+
 struct TweetModel {
     
     let name: String
@@ -224,9 +230,17 @@ extension TableViewController: UITableViewDelegate, UITableViewDataSource {
         return true
     }
     
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    #if swift(>=4.2)
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         
     }
+    #else
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    
+    }
+    #endif
+    
+
     
 }
 
@@ -370,9 +384,9 @@ extension TweetCell {
         paragraphStyle.alignment = .right
         paragraphStyle.lineBreakMode = .byTruncatingTail
         let attributes = [
-            NSAttributedStringKey.paragraphStyle: paragraphStyle,
-            NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14.0),
-            NSAttributedStringKey.foregroundColor: TweetCell.darkGreyColor
+            AttributedStringKey.paragraphStyle: paragraphStyle,
+            AttributedStringKey.font: UIFont.systemFont(ofSize: 14.0),
+            AttributedStringKey.foregroundColor: TweetCell.darkGreyColor
         ]
         
         return NSAttributedString(string: string, attributes: attributes)
@@ -384,15 +398,15 @@ extension TweetCell {
         paragraphStyle.lineHeightMultiple = 1.2
         paragraphStyle.lineBreakMode = .byTruncatingTail
         let attributes = [
-            NSAttributedStringKey.paragraphStyle: paragraphStyle,
-            NSAttributedStringKey.font: UIFont.systemFont(ofSize: 15.0),
-            NSAttributedStringKey.foregroundColor: UIColor.black
+            AttributedStringKey.paragraphStyle: paragraphStyle,
+            AttributedStringKey.font: UIFont.systemFont(ofSize: 15.0),
+            AttributedStringKey.foregroundColor: UIColor.black
         ]
         
         let string = NSMutableAttributedString(string: tweet, attributes: attributes)
         
         for hashtagRange in tweet.easy_hashtagRanges() {
-            string.addAttribute(NSAttributedStringKey.foregroundColor, value: TweetCell.lightBlueColor, range: hashtagRange)
+            string.addAttribute(AttributedStringKey.foregroundColor, value: TweetCell.lightBlueColor, range: hashtagRange)
         }
         
         return string
@@ -401,12 +415,12 @@ extension TweetCell {
     static func attributedStringWithName(_ name: String, username: String) -> NSAttributedString {
         let string = "\(name) \(username)"
         let boldAttributes = [
-            NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 16.0),
-            NSAttributedStringKey.foregroundColor: UIColor.black
+            AttributedStringKey.font: UIFont.boldSystemFont(ofSize: 16.0),
+            AttributedStringKey.foregroundColor: UIColor.black
         ]
         let lightAttributes = [
-            NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14.0),
-            NSAttributedStringKey.foregroundColor: TweetCell.darkGreyColor
+            AttributedStringKey.font: UIFont.systemFont(ofSize: 14.0),
+            AttributedStringKey.foregroundColor: TweetCell.darkGreyColor
         ]
         
         let attributedString = NSMutableAttributedString(string: string, attributes: boldAttributes)
@@ -553,8 +567,17 @@ class ClassicCell: UITableViewCell, PresentationModelViewProtocol, PresentationM
     }
 }
 
+#if swift(>=4.2)
+func tableRow<ModelType, CellType: UITableViewCell>(from model: ModelType, estimated: Bool, cell: CellType.Type, reuseIdentifier: String = String(describing: CellType.self), style: UITableViewCell.CellStyle = .default) -> PresentationTableRow<CellType> where CellType: PresentationModelConverter & PresentationModelViewProtocol, CellType.ModelType == ModelType, CellType.PresentationModelType == PresentationModelAdaptor<ModelType> {
+    let m =  PresentationModelAdaptor(model: model, estimated: estimated, converter: CellType.self)
+    return PresentationTableRow<CellType>(model: m, reuseIdentifier: reuseIdentifier, style: style)
+}
+#else
 func tableRow<ModelType, CellType: UITableViewCell>(from model: ModelType, estimated: Bool, cell: CellType.Type, reuseIdentifier: String = String(describing: CellType.self), style: UITableViewCellStyle = .default) -> PresentationTableRow<CellType> where CellType: PresentationModelConverter & PresentationModelViewProtocol, CellType.ModelType == ModelType, CellType.PresentationModelType == PresentationModelAdaptor<ModelType> {
     let m =  PresentationModelAdaptor(model: model, estimated: estimated, converter: CellType.self)
     return PresentationTableRow<CellType>(model: m, reuseIdentifier: reuseIdentifier, style: style)
 }
+#endif
+
+
 

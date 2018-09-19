@@ -89,7 +89,7 @@ public class LabelNode<T: UILabel>: Node<T> {
                 label.font = font
                 return label.sizeThatFits(size)
             } else {
-                return NSAttributedString(string: string, attributes: [NSAttributedStringKey.font: font]).boundingSize(for: size, numberOfLines: numberOfLines, lineBreakMode: lineBreakMode)
+                return NSAttributedString(string: string, attributes: [AttributedStringKey.font: font]).boundingSize(for: size, numberOfLines: numberOfLines, lineBreakMode: lineBreakMode)
             }
         }
     }
@@ -164,7 +164,7 @@ extension NSAttributedString {
     var firstCharacterFont: UIFont? {
         if length > 0 {
             var ptr = NSRange()
-            return attribute(NSAttributedStringKey.font, at: 0, effectiveRange: &ptr) as? UIFont
+            return attribute(AttributedStringKey.font, at: 0, effectiveRange: &ptr) as? UIFont
         } else {
             return nil
         }
@@ -173,7 +173,7 @@ extension NSAttributedString {
     var lastCharacterFont: UIFont? {
         if length > 0 {
             var ptr = NSRange()
-            return attribute(NSAttributedStringKey.font, at: length - 1, effectiveRange: &ptr) as? UIFont
+            return attribute(AttributedStringKey.font, at: length - 1, effectiveRange: &ptr) as? UIFont
         } else {
             return nil
         }
@@ -182,7 +182,7 @@ extension NSAttributedString {
     var suggestedParagraphStyle: NSParagraphStyle? {
         if length > 0 {
             var ptr = NSRange()
-            return attribute(NSAttributedStringKey.paragraphStyle, at: 0, effectiveRange: &ptr) as? NSParagraphStyle
+            return attribute(AttributedStringKey.paragraphStyle, at: 0, effectiveRange: &ptr) as? NSParagraphStyle
         } else {
             return nil
         }
