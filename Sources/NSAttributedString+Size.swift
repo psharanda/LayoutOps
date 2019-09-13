@@ -3,7 +3,7 @@
 //  Copyright © 2017 Pavel Sharanda. All rights reserved.
 //
 
-import Foundation
+#if os(iOS)
 import UIKit
 
 #if swift(>=4.2)
@@ -54,4 +54,6 @@ extension NSAttributedString {
         return layoutManager.usedRect(for: textContainer).size
     }
 }
+
+#endif
 

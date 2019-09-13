@@ -3,12 +3,8 @@
 //  Copyright © 2016 Pavel Sharanda. All rights reserved.
 //
 
-import Foundation
-#if os(macOS)
-    import Cocoa
-#else
-    import UIKit
-#endif
+#if os(iOS) || os(tvOS)
+import UIKit
 
 private var viewPortInsetsKey: UInt8 = 0
 
@@ -58,6 +54,10 @@ extension UILabel: LayoutableWithFont {
     
 }
 
+#endif
+
+#if os(iOS)
+
 private var key: UInt8 = 0
 
 extension UIView: NodeContainer {
@@ -86,3 +86,5 @@ extension UIView: NodeContainer {
         return nil
     }
 }
+
+#endif

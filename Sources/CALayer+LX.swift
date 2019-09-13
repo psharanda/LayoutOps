@@ -3,11 +3,10 @@
 //  Copyright © 2018 LayoutOps. All rights reserved.
 //
 
-import Foundation
 #if os(macOS)
-    import Cocoa
+import Cocoa
 #else
-    import UIKit
+import UIKit
 #endif
 
 private var key: UInt8 = 0
@@ -59,6 +58,8 @@ extension CALayer: Layoutable {
 
 extension CALayer: LayoutingCompatible { }
 
+#if os(iOS)
+
 extension CALayer: NodeContainer {
     
     public func lx_add(child: NodeContainer) {
@@ -85,3 +86,5 @@ extension CALayer: NodeContainer {
         return nil
     }
 }
+
+#endif

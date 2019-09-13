@@ -3,7 +3,7 @@
 //  Copyright © 2016 Pavel Sharanda. All rights reserved.
 //
 
-import Foundation
+#if os(iOS)
 import UIKit
 
 private let stubLabel = UILabel()
@@ -189,3 +189,4 @@ extension NSAttributedString {
     }
 }
 
+#endif

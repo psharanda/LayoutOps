@@ -3,7 +3,7 @@
 //  Copyright © 2017 Pavel Sharanda. All rights reserved.
 //
 
-import Foundation
+#if os(iOS)
 import UIKit
 
 public protocol PresentationModelProtocol {
@@ -16,3 +16,5 @@ public protocol PresentationModelViewProtocol: class {
 }
 
 extension RootNode: PresentationModelProtocol { }
+
+#endif

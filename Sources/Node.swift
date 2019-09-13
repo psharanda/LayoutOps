@@ -3,12 +3,8 @@
 //  Copyright © 2016 Pavel Sharanda. All rights reserved.
 //
 
-import Foundation
-#if os(macOS)
-    import Cocoa
-#else
-    import UIKit
-#endif
+#if os(iOS)
+import UIKit
 
 public protocol TagConvertible {
     var tag: String {get}
@@ -113,3 +109,4 @@ open class Node<T: NodeContainer>: NodeProtocol {
 
 extension Node: LayoutingCompatible { }
 
+#endif

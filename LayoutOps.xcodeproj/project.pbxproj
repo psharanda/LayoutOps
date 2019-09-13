@@ -19,8 +19,6 @@
 		1B067098202E049C008DDCF0 /* CALayer+LX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B067096202E049C008DDCF0 /* CALayer+LX.swift */; };
 		1B067099202E049C008DDCF0 /* CALayer+LX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B067096202E049C008DDCF0 /* CALayer+LX.swift */; };
 		1B06709C202E056F008DDCF0 /* NSView+LX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B06709A202E056F008DDCF0 /* NSView+LX.swift */; };
-		1B06709E202E0620008DDCF0 /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B498F26202DD3BB00EFF7FC /* Node.swift */; };
-		1B06709F202E0620008DDCF0 /* RootNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B498F1E202DD3BA00EFF7FC /* RootNode.swift */; };
 		1B0670A1202E4E67008DDCF0 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B0670A0202E4E67008DDCF0 /* Utils.swift */; };
 		1B0670A2202E4E67008DDCF0 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B0670A0202E4E67008DDCF0 /* Utils.swift */; };
 		1B0670A3202E4E67008DDCF0 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B0670A0202E4E67008DDCF0 /* Utils.swift */; };
@@ -54,18 +52,6 @@
 		1B9A3CA1202DDCF300E244F0 /* SizeToFit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B498F24202DD3BB00EFF7FC /* SizeToFit.swift */; };
 		1B9A3CA2202DDCF300E244F0 /* Viewport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B498F31202DD3BB00EFF7FC /* Viewport.swift */; };
 		1B9A3CA3202DDCF300E244F0 /* PutWrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B498F20202DD3BA00EFF7FC /* PutWrap.swift */; };
-		1B9A3CA4202DDCF300E244F0 /* NSAttributedString+Size.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B498F2E202DD3BB00EFF7FC /* NSAttributedString+Size.swift */; };
-		1B9A3CAE202DDCFD00E244F0 /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B498F26202DD3BB00EFF7FC /* Node.swift */; };
-		1B9A3CAF202DDCFD00E244F0 /* RootNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B498F1E202DD3BA00EFF7FC /* RootNode.swift */; };
-		1B9A3CB0202DDCFD00E244F0 /* LabelNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B498F1F202DD3BA00EFF7FC /* LabelNode.swift */; };
-		1B9A3CB1202DDCFD00E244F0 /* ImageNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B498F1D202DD3BA00EFF7FC /* ImageNode.swift */; };
-		1B9A3CB3202DDD4300E244F0 /* PresentationItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B498F2D202DD3BB00EFF7FC /* PresentationItem.swift */; };
-		1B9A3CB4202DDD4300E244F0 /* PresentationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B498F32202DD3BB00EFF7FC /* PresentationModel.swift */; };
-		1B9A3CB5202DDD4300E244F0 /* PresentationTableHeaderFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B498F30202DD3BB00EFF7FC /* PresentationTableHeaderFooter.swift */; };
-		1B9A3CB6202DDD4300E244F0 /* PresentationTableRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B498F23202DD3BB00EFF7FC /* PresentationTableRow.swift */; };
-		1B9A3CB7202DDD4300E244F0 /* NodeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B498F28202DD3BB00EFF7FC /* NodeTableViewCell.swift */; };
-		1B9A3CB8202DDD4300E244F0 /* BaseTableViewPresentationAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B498F2A202DD3BB00EFF7FC /* BaseTableViewPresentationAdapter.swift */; };
-		1B9A3CB9202DDD4300E244F0 /* TableViewPresentationAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B498F2B202DD3BB00EFF7FC /* TableViewPresentationAdapter.swift */; };
 		1B9A3CBB202DDD4C00E244F0 /* UIView+LX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B498F29202DD3BB00EFF7FC /* UIView+LX.swift */; };
 		52D6D9871BEFF229002C0205 /* LayoutOps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52D6D97C1BEFF229002C0205 /* LayoutOps.framework */; };
 		8933C78E1EB5B82C000D00A4 /* LayoutOpsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8933C7891EB5B82A000D00A4 /* LayoutOpsTests.swift */; };
@@ -589,29 +575,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1B9A3CB9202DDD4300E244F0 /* TableViewPresentationAdapter.swift in Sources */,
 				1B067099202E049C008DDCF0 /* CALayer+LX.swift in Sources */,
-				1B9A3CB8202DDD4300E244F0 /* BaseTableViewPresentationAdapter.swift in Sources */,
 				1B9A3CA0202DDCF300E244F0 /* Follow.swift in Sources */,
 				1B9A3CBB202DDD4C00E244F0 /* UIView+LX.swift in Sources */,
-				1B9A3CB6202DDD4300E244F0 /* PresentationTableRow.swift in Sources */,
-				1B9A3CB7202DDD4300E244F0 /* NodeTableViewCell.swift in Sources */,
-				1B9A3CB3202DDD4300E244F0 /* PresentationItem.swift in Sources */,
-				1B9A3CAE202DDCFD00E244F0 /* Node.swift in Sources */,
 				1B9A3C9F202DDCF300E244F0 /* Basic.swift in Sources */,
-				1B9A3CA4202DDCF300E244F0 /* NSAttributedString+Size.swift in Sources */,
 				1B9A3C9D202DDCF300E244F0 /* Accelerate.swift in Sources */,
-				1B9A3CB5202DDD4300E244F0 /* PresentationTableHeaderFooter.swift in Sources */,
 				1B9A3CA3202DDCF300E244F0 /* PutWrap.swift in Sources */,
 				1B9A3CA1202DDCF300E244F0 /* SizeToFit.swift in Sources */,
 				1B0670A3202E4E67008DDCF0 /* Utils.swift in Sources */,
-				1B9A3CAF202DDCFD00E244F0 /* RootNode.swift in Sources */,
-				1B9A3CB1202DDCFD00E244F0 /* ImageNode.swift in Sources */,
 				1B9A3CA2202DDCF300E244F0 /* Viewport.swift in Sources */,
 				1B9A3C9E202DDCF300E244F0 /* Anchor.swift in Sources */,
 				1B9A3C9C202DDCF300E244F0 /* LX.swift in Sources */,
-				1B9A3CB4202DDD4300E244F0 /* PresentationModel.swift in Sources */,
-				1B9A3CB0202DDCFD00E244F0 /* LabelNode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -622,12 +596,10 @@
 				1B06708F202DEA8C008DDCF0 /* Follow.swift in Sources */,
 				1B067098202E049C008DDCF0 /* CALayer+LX.swift in Sources */,
 				1B06708E202DEA8C008DDCF0 /* Basic.swift in Sources */,
-				1B06709E202E0620008DDCF0 /* Node.swift in Sources */,
 				1B06708C202DEA8C008DDCF0 /* Accelerate.swift in Sources */,
 				1B0670A2202E4E67008DDCF0 /* Utils.swift in Sources */,
 				1B067092202DEA8C008DDCF0 /* PutWrap.swift in Sources */,
 				1B067090202DEA8C008DDCF0 /* SizeToFit.swift in Sources */,
-				1B06709F202E0620008DDCF0 /* RootNode.swift in Sources */,
 				1B067091202DEA8C008DDCF0 /* Viewport.swift in Sources */,
 				1B06709C202E056F008DDCF0 /* NSView+LX.swift in Sources */,
 				1B06708D202DEA8C008DDCF0 /* Anchor.swift in Sources */,

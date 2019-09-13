@@ -3,10 +3,8 @@
 //  Copyright © 2017 Pavel Sharanda. All rights reserved.
 //
 
-import Foundation
+#if os(iOS)
 import UIKit
-
-
 
 public protocol PresentationTableRowProtocol: PresentationItemProtocol  {
     func makeView(_ tableView: UITableView) -> UITableViewCell
@@ -39,3 +37,4 @@ public class PresentationTableRow<ViewType: UITableViewCell>: PresentationItem<V
     }
 }
 
+#endif

@@ -3,7 +3,7 @@
 //  Copyright © 2017 Pavel Sharanda. All rights reserved.
 //
 
-import Foundation
+#if os(iOS)
 import UIKit
 
 ///Base adapter with agressive caching, though needs manual reset for cache
@@ -69,3 +69,5 @@ public class TableViewPresentationAdapter: BaseTableViewPresentationAdapter {
         resetCacheClosure()
     }
 }
+
+#endif

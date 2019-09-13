@@ -6,7 +6,7 @@
 //  Copyright © 2017 Pavel Sharanda. All rights reserved.
 //
 
-import Foundation
+#if os(iOS)
 import UIKit
 
 public protocol PresentationItemProtocol: class {
@@ -29,3 +29,5 @@ public class PresentationItem<ViewType>: PresentationItemProtocol where ViewType
         return model.calculate(for: size)
     }
 }
+
+#endif

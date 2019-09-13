@@ -3,7 +3,7 @@
 //  Copyright © 2017 Pavel Sharanda. All rights reserved.
 //
 
-import Foundation
+#if os(iOS)
 import UIKit
 
 public protocol PresentationTableHeaderFooterProtocol: PresentationItemProtocol  {
@@ -26,3 +26,4 @@ public class PresentationTableHeaderFooter<ViewType: UITableViewHeaderFooterView
     }
 }
 
+#endif

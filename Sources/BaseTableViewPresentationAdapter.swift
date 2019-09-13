@@ -3,9 +3,8 @@
 //  Copyright © 2017 Pavel Sharanda. All rights reserved.
 //
 
-import Foundation
+#if os(iOS)
 import UIKit
-
 
 ///Base adapter without cache
 open class BaseTableViewPresentationAdapter {
@@ -145,3 +144,4 @@ class HeaderFooterSequencePresentationAdapter {
     }
 }
 
+#endif

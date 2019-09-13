@@ -3,7 +3,7 @@
 //  Copyright © 2017 Pavel Sharanda. All rights reserved.
 //
 
-import Foundation
+#if os(iOS)
 import UIKit
 
 open class NodeTableViewCell: UITableViewCell, PresentationModelViewProtocol {
@@ -39,3 +39,4 @@ open class NodeTableHeaderFooterView: UITableViewHeaderFooterView, PresentationM
 
 public typealias NodeTableHeaderFooter = PresentationTableHeaderFooter<NodeTableHeaderFooterView>
 
+#endif

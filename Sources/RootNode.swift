@@ -3,12 +3,8 @@
 //  Copyright © 2017 Pavel Sharanda. All rights reserved.
 //
 
-import Foundation
-#if os(macOS)
-    import Cocoa
-#else
-    import UIKit
-#endif
+#if os(iOS)
+import UIKit
 
 public final class RootNode: Layoutable {
     
@@ -111,3 +107,5 @@ func isAlmostEqual(left: CGSize, right: CGSize) -> Bool
 {
     return isAlmostEqual(left: left.width, right: right.width) && isAlmostEqual(left: left.height, right: right.height)
 }
+
+#endif

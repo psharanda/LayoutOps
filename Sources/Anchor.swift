@@ -3,12 +3,10 @@
 //  Copyright © 2016 Pavel Sharanda. All rights reserved.
 //
 
-import Foundation
-
 #if os(macOS)
-    import Cocoa
+import Cocoa
 #else
-    import UIKit
+import UIKit
 #endif
 
 public protocol Anchor {

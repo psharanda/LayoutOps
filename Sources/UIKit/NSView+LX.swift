@@ -3,12 +3,8 @@
 //  Copyright © 2018 LayoutOps. All rights reserved.
 //
 
-import Foundation
 #if os(macOS)
-    import Cocoa
-#else
-    import UIKit
-#endif
+import Cocoa
 
 private var viewPortInsetsKey: UInt8 = 0
 
@@ -51,29 +47,4 @@ extension NSControl: SelfSizingLayoutable { }
 
 private var key: UInt8 = 0
 
-extension NSView: NodeContainer {
-    
-    public func lx_add(child: NodeContainer) {
-        if let child = child as? NSView {
-            addSubview(child)
-        }
-    }
-    
-    public var lx_tag: String? {
-        set {
-            objc_setAssociatedObject(self, &key, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-        get {
-            return objc_getAssociatedObject(self, &key) as? String
-        }
-    }
-    
-    public func lx_child(with tag: String) -> NodeContainer? {
-        for v in subviews {
-            if v.lx_tag == Optional.some(tag) {
-                return v
-            }
-        }
-        return nil
-    }
-}
+#endif

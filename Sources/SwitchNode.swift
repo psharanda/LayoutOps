@@ -3,7 +3,7 @@
 //  Copyright © 2016 Pavel Sharanda. All rights reserved.
 //
 
-import Foundation
+#if os(iOS)
 import UIKit
 
 public class SwitchNode<T: UISwitch>: Node<T> {
@@ -12,3 +12,5 @@ public class SwitchNode<T: UISwitch>: Node<T> {
         return CGSize(width: 51, height: 31)
     }
 }
+
+#endif

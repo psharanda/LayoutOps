@@ -3,8 +3,6 @@
 //  Copyright © 2017 Pavel Sharanda. All rights reserved.
 //
 
-import Foundation
-
 #if os(macOS)
 import Cocoa
 #else

@@ -3,6 +3,9 @@
 //  Copyright © 2016 Pavel Sharanda. All rights reserved.
 //
 
+#if os(iOS)
+import UIKit
+
 import Foundation
 import UIKit
 
@@ -23,3 +26,5 @@ public class ImageNode<T: UIImageView>: Node<T> {
         return image?.size ?? .zero
     }
 }
+
+#endif
